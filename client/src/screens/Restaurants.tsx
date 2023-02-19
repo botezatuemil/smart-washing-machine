@@ -22,9 +22,11 @@ import {
   RestaurantStackParams,
 } from "../navigation/TabNavigator";
 import Restaurant from "../components/Restaurant";
-import supabase from "../config/supabaseClient";
 import { RestaurantDb, DetailDb, RestaurantDetail } from "../index";
+import { IStudent } from "../interfaces/student.interface";
 const RestaurantStack = createNativeStackNavigator<RestaurantStackParams>();
+import * as api from "../routes/routes"
+import axios, { AxiosError } from "axios";
 
 export const RestaurantsScreenStack = () => {
   return (
@@ -38,48 +40,39 @@ export const RestaurantsScreenStack = () => {
 
 
 const Restaurants = () => {
-  const [restaurantsData, setRestaurantsData] = useState<RestaurantDetail[]>([]);
+  const [students, setStudents] = useState<IStudent[]>([]);
 
   const navigation = useNavigation();
 
-  function isRestaurantDetail(object : unknown): object is RestaurantDetail[] {
-    if (object !== null && typeof object === "object") {
-      return true;
-    }
-    return false;
-  }
-
   const getData = async() => {
-    const result : unknown = await (await supabase.from('Restaurant').select(`name, id, Detail (\*)`)).data;
-    if (isRestaurantDetail(result)) {
-      return result;
-    }
-    return null;
-    //return result.data as RestaurantDetail[]
-  }
+    try {
+      const {data}  = await axios.get('http://192.168.0.103:5000/getStudents') //api.getStudents();
+      setStudents(data as IStudent[]);
+      console.log(data)
+    } catch (error) {
+      const errorMsg = error as AxiosError;
 
-  const fetchRestaurants = async () => {
-    const data = await getData();
-    if (data !== null)
-    setRestaurantsData(data);
-    
-  };
-  useEffect(() => {
-    fetchRestaurants();
-  });
+      console.log(errorMsg.toJSON())
+      // console.log(error)
+    }
+   
+  }
+ 
+
 
   return (
     <View style={styles.container}>
       <Text>Restaurant Page</Text>
 
       <View style={{ width: "100%", height: "50%" }}>
-        <ScrollView style={{ padding: 10, width: "100%" }}>
-          {restaurantsData?.map(resturant => <RestaurantCard name={resturant.name} />)}
-        </ScrollView>
+        {/* <ScrollView style={{ padding: 10, width: "100%" }}>
+          {students?.map(student => <RestaurantCard name={student.name} />)}
+        </ScrollView> */}
       </View>
       <TouchableOpacity
         onPress={() => {
-          return navigation.openDrawer();
+          // return navigation.openDrawer();
+          getData()
         }}
         style={{
           backgroundColor: "black",
