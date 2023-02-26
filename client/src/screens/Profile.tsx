@@ -1,23 +1,23 @@
 import { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import io from "socket.io-client"
+import {PORT, IP} from "@env";
 
 const Profile = () => {
 
   const [status, setStatus] = useState<string>("");
   const [socketMessage, setSocketMessage] = useState<string>();
-  const socket = io("http://192.168.0.111:5000");
- 
 
   useEffect(() => {
-   
+    const socket = io(`http://${IP}:${PORT}`);
+
     socket.on('connect', () => {
       console.log("connected");
       setStatus("connected")
     });
 
-    socket.on('disconnect', () => {
-      console.log("disconnected");
+    socket.on('disconnect', (reason) => {
+      console.log("disconnected", reason);
     });
 
     socket.on('washing_machine', (msg) => {
@@ -25,11 +25,15 @@ const Profile = () => {
       setSocketMessage(msg)
     });
 
-    return () => {
-      socket.close();
-    }
+    setInterval(() => {
+      socket.emit('heartbeat');
+    }, 3000);
 
-  }, [])
+    return () => {
+      socket.disconnect();
+    }
+  },[])
+
 
   return (
     <View style={{ flex: 1, justifyContent: "center" }}>

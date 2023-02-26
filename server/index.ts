@@ -27,17 +27,14 @@ io.on('connection', async(socket) => {
 
   console.log('A user has connected!');
 
-  const data = await getPowerStatus();
-  console.log(data);
-
-  // socket.on('washing_machine', async() => {
-  //   io.emit('washing_machine', data);
-  // });
-
-  io.emit('washing_machine', data);
+  const interval = setInterval(async () => {
+    const data = await getPowerStatus();
+    io.emit('washing_machine', data);
+  }, 3000);
 
   socket.on('disconnect', () => {
     console.log('A user has disconnected.');
+    clearInterval(interval);
   });
 })
 

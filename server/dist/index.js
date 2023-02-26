@@ -31,14 +31,13 @@ const httpServer = (0, http_1.createServer)(app);
 const io = new socket_io_1.Server(httpServer, { cors: { origin: "*" } });
 io.on('connection', (socket) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('A user has connected!');
-    const data = yield (0, mqttServer_1.getPowerStatus)();
-    console.log(data);
-    // socket.on('washing_machine', async() => {
-    //   io.emit('washing_machine', data);
-    // });
-    io.emit('washing_machine', data);
+    const interval = setInterval(() => __awaiter(void 0, void 0, void 0, function* () {
+        const data = yield (0, mqttServer_1.getPowerStatus)();
+        io.emit('washing_machine', data);
+    }), 3000);
     socket.on('disconnect', () => {
         console.log('A user has disconnected.');
+        clearInterval(interval);
     });
 }));
 httpServer.listen(port, () => {

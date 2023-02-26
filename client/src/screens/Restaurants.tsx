@@ -46,7 +46,7 @@ const Restaurants = () => {
 
   const getData = async() => {
     try {
-      const {data}  = await axios.get('http://192.168.0.111:5000/getStudents') //api.getStudents();
+      const {data}  = await  api.getStudents();
       setStudents(data as IStudent[]);
       console.log(data)
     } catch (error) {
