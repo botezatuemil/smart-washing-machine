@@ -1,6 +1,6 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import Explore from "../screens/Explore";
-import Profile from "../screens/Profile";
+import Profile from "../screens/Profile/Profile";
 import TabNavigator from "./TabNavigator";
 
 const DrawerStack = createDrawerNavigator<DrawerStackParams>();

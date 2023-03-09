@@ -26,14 +26,14 @@ const getPowerStatus = () => {
     return new Promise(resolve => {
         client.on('message', (topic, payload) => {
             const tasmotaPayload = JSON.parse(payload.toString());
-            const content = tasmotaPayload.StatusSNS.ENERGY.ApparentPower;
-            console.log('Received Message:', topic, content);
-            const message = content.toString() + "\n";
-            // fs.writeFile('./src/files/data.txt', message, {flag : "a+"}, (err : NodeJS.ErrnoException | null) => {
-            //     if (err) {
-            //         console.log(err);
-            //     }
-            // });
+            const content = tasmotaPayload; //.StatusSNS.ENERGY.ApparentPower
+            // console.log('Received Message:', topic, content);
+            const message = JSON.stringify(content) + "\n";
+            fs.writeFile('./src/files/09.03.2023.txt', message, { flag: "a+" }, (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            });
             resolve(content);
         });
     });

@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import io from "socket.io-client"
 import {PORT, IP} from "@env";
-
+import { Button, YStack } from 'tamagui'
+import * as styles from "./Profile.styles"
 const Profile = () => {
 
   const [status, setStatus] = useState<string>("");
@@ -25,10 +26,6 @@ const Profile = () => {
       setSocketMessage(msg)
     });
 
-    setInterval(() => {
-      socket.emit('heartbeat');
-    }, 3000);
-
     return () => {
       socket.disconnect();
     }
@@ -36,10 +33,11 @@ const Profile = () => {
 
 
   return (
-    <View style={{ flex: 1, justifyContent: "center" }}>
+    <YStack display="flex" w="100%" h="100%" ai="center">
       <Text>{status}</Text>
       <Text>{socketMessage}</Text>
-    </View>
+      <Button  {...styles.button}>Lorem ipsum</Button>
+    </YStack>
   );
 };
 

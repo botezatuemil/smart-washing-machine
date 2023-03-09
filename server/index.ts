@@ -24,12 +24,11 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {cors: {origin: "*"}});
 
 io.on('connection', async(socket) => {
-
+  
   console.log('A user has connected!');
 
   const interval = setInterval(async () => {
-    const data = await getPowerStatus();
-    io.emit('washing_machine', data);
+    // io.emit('washing_machine', data);
   }, 3000);
 
   socket.on('disconnect', () => {
@@ -37,8 +36,9 @@ io.on('connection', async(socket) => {
     clearInterval(interval);
   });
 })
-
-httpServer.listen(port, () => {
+  
+httpServer.listen(port, async() => {
+  const data = await getPowerStatus();
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });
 

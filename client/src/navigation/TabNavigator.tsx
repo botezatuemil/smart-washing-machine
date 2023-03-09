@@ -8,7 +8,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import 'react-native-gesture-handler';
 import Explore from '../screens/Explore';
-import Profile from '../screens/Profile';
+import Profile from '../screens/Profile/Profile';
 import { RestaurantsScreenStack } from '../screens/Restaurants';
 
 const RootStack = createBottomTabNavigator<RootStackParams>();
