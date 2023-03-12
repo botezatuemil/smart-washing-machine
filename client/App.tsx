@@ -1,5 +1,4 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
 import { TamaguiProvider, Theme, YStack } from "tamagui";
 import { NavigationContainer } from "@react-navigation/native";
 import config from "./tamagui.config";
@@ -19,8 +18,10 @@ export default function App() {
   const colorScheme = useColorScheme();
 
   const [loaded] = useFonts({
-    Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
+    Inter: require("@tamagui/font-inter/otf/Inter-Light.otf"),
     InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
+    InterSemi: require("@tamagui/font-inter/otf/Inter-SemiBold.otf"),
+    InterMedium: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
   });
 
   if (!loaded) {
@@ -43,10 +44,3 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    width: "100%",
-  },
-});

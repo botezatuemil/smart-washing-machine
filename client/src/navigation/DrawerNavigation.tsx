@@ -1,21 +1,30 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import Explore from "../screens/Explore";
+import Auth from "../screens/Auth/Auth";
+import Explore from "../screens/Home/Home";
 import Profile from "../screens/Profile/Profile";
 import TabNavigator from "./TabNavigator";
 
 const DrawerStack = createDrawerNavigator<DrawerStackParams>();
 
 export type DrawerStackParams = {
-  Tabs: any;
-  Explore: any;
-  Profile: any;
+  Tabs: undefined;
+  Explore: undefined;
+  Profile: undefined;
+  Auth: undefined;
 };
 const DrawerNavigation = () => {
   return (
     <DrawerStack.Navigator
-      initialRouteName="Tabs"
+      initialRouteName="Auth"
       screenOptions={{ headerShown: false }}
     >
+       <DrawerStack.Screen
+        name="Auth"
+        component={Auth}
+        options={{
+          drawerItemStyle: { height: 0 },
+        }}
+      />
       <DrawerStack.Screen
         name="Tabs"
         component={TabNavigator}

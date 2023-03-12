@@ -1,4 +1,4 @@
-import { createInterFont } from "@tamagui/font-inter";
+import { createInterFont,  } from "@tamagui/font-inter";
 
 import { createMedia } from "@tamagui/react-native-media-driver";
 
@@ -6,114 +6,129 @@ import { shorthands } from "@tamagui/shorthands";
 
 import { themes, tokens } from "@tamagui/theme-base";
 
-import { createTamagui } from "tamagui";
+import { createFont, createTamagui } from "tamagui";
+import { useFonts } from "expo-font";
 
 import { createAnimations } from "@tamagui/animations-react-native";
 const animations = createAnimations({
+  bouncy: {
+    type: "spring",
 
-	bouncy: {
+    damping: 10,
 
-		type: "spring",
+    mass: 0.9,
 
-		damping: 10,
+    stiffness: 100,
+  },
 
-		mass: 0.9,
+  lazy: {
+    type: "spring",
 
-		stiffness: 100,
+    damping: 20,
 
-	},
+    stiffness: 60,
+  },
 
-	lazy: {
+  quick: {
+    type: "spring",
 
-		type: "spring",
+    damping: 20,
 
-		damping: 20,
+    mass: 1.2,
 
-		stiffness: 60,
-
-	},
-
-	quick: {
-
-		type: "spring",
-
-		damping: 20,
-
-		mass: 1.2,
-
-		stiffness: 250,
-
-	},
-
+    stiffness: 250,
+  },
 });
-const headingFont = createInterFont();
+const headingFont = createInterFont({
+	size: {
+		1: 12,
+		2: 14,
+		3: 15,
+		// ...
+	  },
+	  lineHeight: {
+		1: 17,
+		2: 22,
+		3: 25,
+		// ...
+	  },
+	  weight: {
+		1: "300",
+		2: "600",
+	  },
+	  letterSpacing: {
+		4: 0,
+		8: -1,
+	  },
+	
+	  // for native only, alternate family based on weight/style
+	  face: {
+		// pass in weights as keys
+		700: { normal: "InterBold", italic: "InterBold-Italic" },
+		800: { normal: "InterBold", italic: "InterBold-Italic" },
+		900: { normal: "InterBold", italic: "InterBold-Italic" },
+	  },
+});
+
+
 
 const bodyFont = createInterFont();
 const config = createTamagui({
+  animations,
 
-	animations,
+  defaultTheme: "dark",
 
-	defaultTheme: "dark",
+  shouldAddPrefersColorThemes: false,
 
-	shouldAddPrefersColorThemes: false,
+  themeClassNameOnRoot: false,
 
-	themeClassNameOnRoot: false,
+  shorthands,
 
-	shorthands,
+  fonts: {
+    heading: headingFont,
+    body: bodyFont,
+  },
 
-	fonts: {
+  themes,
 
-		heading: headingFont,
+  tokens,
 
-		body: bodyFont,
+  media: createMedia({
+    xs: { maxWidth: 660 },
 
-	},
+    sm: { maxWidth: 800 },
 
-	themes,
+    md: { maxWidth: 1020 },
 
-	tokens,
+    lg: { maxWidth: 1280 },
 
-	media: createMedia({
+    xl: { maxWidth: 1420 },
 
-		xs: { maxWidth: 660 },
+    xxl: { maxWidth: 1600 },
 
-		sm: { maxWidth: 800 },
+    gtXs: { minWidth: 660 + 1 },
 
-		md: { maxWidth: 1020 },
+    gtSm: { minWidth: 800 + 1 },
 
-		lg: { maxWidth: 1280 },
+    gtMd: { minWidth: 1020 + 1 },
 
-		xl: { maxWidth: 1420 },
+    gtLg: { minWidth: 1280 + 1 },
 
-		xxl: { maxWidth: 1600 },
+    short: { maxHeight: 820 },
 
-		gtXs: { minWidth: 660 + 1 },
+    tall: { minHeight: 820 },
 
-		gtSm: { minWidth: 800 + 1 },
+    hoverNone: { hover: "none" },
 
-		gtMd: { minWidth: 1020 + 1 },
-
-		gtLg: { minWidth: 1280 + 1 },
-
-		short: { maxHeight: 820 },
-
-		tall: { minHeight: 820 },
-
-		hoverNone: { hover: "none" },
-
-		pointerCoarse: { pointer: "coarse" },
-
-	}),
-
+    pointerCoarse: { pointer: "coarse" },
+  }),
 });
 export type AppConfig = typeof config;
 declare module "tamagui" {
+  // overrides TamaguiCustomConfig so your custom types
 
-	// overrides TamaguiCustomConfig so your custom types
+  // work everywhere you import `tamagui`
 
-	// work everywhere you import `tamagui`
-
-	interface TamaguiCustomConfig extends AppConfig {}
-
+  interface TamaguiCustomConfig extends AppConfig {}
 }
 export default config;

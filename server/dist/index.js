@@ -32,7 +32,8 @@ const io = new socket_io_1.Server(httpServer, { cors: { origin: "*" } });
 io.on('connection', (socket) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('A user has connected!');
     const interval = setInterval(() => __awaiter(void 0, void 0, void 0, function* () {
-        // io.emit('washing_machine', data);
+        const data = yield (0, mqttServer_1.getPowerStatus)();
+        io.emit('washing_machine', data);
     }), 3000);
     socket.on('disconnect', () => {
         console.log('A user has disconnected.');
@@ -40,7 +41,6 @@ io.on('connection', (socket) => __awaiter(void 0, void 0, void 0, function* () {
     });
 }));
 httpServer.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
-    const data = yield (0, mqttServer_1.getPowerStatus)();
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 }));
 // mqtt server   

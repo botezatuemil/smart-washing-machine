@@ -21,5 +21,6 @@ module.exports = function (api) {
         },
       ],
     ],
+    // assets: ["@tamagui/font-inter/otf"]
   };
 };

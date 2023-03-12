@@ -1,9 +1,8 @@
-import express, { Express, Request, Response } from "express";
+import express, { Express } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import bodyParser from "body-parser";
 import router from "./src/routes/routes";
-import { TasmotaPayload } from "./src/interfaces/index.interface";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import { getPowerStatus } from "./src/utils/mqttServer";
@@ -28,7 +27,8 @@ io.on('connection', async(socket) => {
   console.log('A user has connected!');
 
   const interval = setInterval(async () => {
-    // io.emit('washing_machine', data);
+    const data = await getPowerStatus();
+    io.emit('washing_machine', data);
   }, 3000);
 
   socket.on('disconnect', () => {
@@ -38,15 +38,5 @@ io.on('connection', async(socket) => {
 })
   
 httpServer.listen(port, async() => {
-  const data = await getPowerStatus();
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });
-
-// mqtt server   
-
-
-
-// socket.io server
-
-
-

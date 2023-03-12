@@ -11,15 +11,16 @@ datasource db {
 }
 
 model student {
-  id                  Int     @id @default(autoincrement())
+  id                  Int              @id @default(autoincrement())
   first_name          String
   last_name           String
   email               String
   registration_number Int
   address_id          Int
   dorm_id             Int
-  address             address @relation(fields: [address_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  dorm                dorm    @relation(fields: [dorm_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  address             address          @relation(fields: [address_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  dorm                dorm             @relation(fields: [dorm_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  washing_device      washing_device[]
 }
 
 model address {
@@ -76,6 +77,8 @@ model washing_device {
   laundry_id Int
   laundry    laundry @relation(fields: [laundry_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   type       device
+  student_id Int 
+  student    student @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model smart_plug {
@@ -109,11 +112,11 @@ model admin {
 }
 
 model maintenance {
-  id                 Int @id @default(autoincrement())
+  id                 Int                @id @default(autoincrement())
   washing_device_id  Int
   admin_id           Int
   lastTimeMaintained Int
-  maintenance_status  maintenance_status
+  maintenance_status maintenance_status
 }
 
 enum device {

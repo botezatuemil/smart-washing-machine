@@ -8,35 +8,21 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import RestaurantCard from "../components/RestaurantCard";
+import RestaurantCard from "../../components/RestaurantCard";
 import {
   horizontalScale,
   moderateScale,
   verticalScale,
-} from "../helper/Metrics";
+} from "../../helper/Metrics";
 import { useNavigation } from "@react-navigation/native";
 import {
   createNativeStackNavigator,
 } from "@react-navigation/native-stack";
-import {
-  RestaurantStackParams,
-} from "../navigation/TabNavigator";
-import Restaurant from "../components/Restaurant";
-import { RestaurantDb, DetailDb, RestaurantDetail } from "../index";
-import { IStudent } from "../interfaces/student.interface";
-const RestaurantStack = createNativeStackNavigator<RestaurantStackParams>();
-import * as api from "../routes/routes"
+
+import Restaurant from "../../components/Restaurant";
+import { IStudent } from "../../interfaces";
+import * as api from "../../routes/routes"
 import axios, { AxiosError } from "axios";
-
-export const RestaurantsScreenStack = () => {
-  return (
-    <RestaurantStack.Navigator initialRouteName="Restaurants">
-      <RestaurantStack.Screen name="Restaurant" component={Restaurant} />
-      <RestaurantStack.Screen name="Restaurants" component={Restaurants} />
-    </RestaurantStack.Navigator>
-  );
-};
-
 
 
 const Restaurants = () => {
