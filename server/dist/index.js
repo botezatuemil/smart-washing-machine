@@ -43,5 +43,3 @@ io.on('connection', (socket) => __awaiter(void 0, void 0, void 0, function* () {
 httpServer.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 }));
-// mqtt server   
-// socket.io server

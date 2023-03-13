@@ -7,6 +7,7 @@ import "react-native-gesture-handler";
 import DrawerNavigation from "./src/navigation/DrawerNavigation";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useColorScheme } from "react-native";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 const RootStack = createNativeStackNavigator<RootStackParams>();
 
@@ -28,7 +29,19 @@ export default function App() {
     return null;
   }
 
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+        staleTime: Infinity,
+      },
+      
+    },
+  });
+  
   return (
+    <QueryClientProvider client={queryClient}>
     <TamaguiProvider config={config}>
       <Theme name={colorScheme === "dark" ? "dark" : "light"}>
         <NavigationContainer>
@@ -41,6 +54,7 @@ export default function App() {
         </NavigationContainer>
       </Theme>
     </TamaguiProvider>
+    </QueryClientProvider>
   );
 }
 

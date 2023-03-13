@@ -15,6 +15,7 @@ model student {
   first_name          String
   last_name           String
   email               String
+  password            String
   registration_number Int
   address_id          Int
   dorm_id             Int

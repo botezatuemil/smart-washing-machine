@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   YStack,
   Text,
@@ -12,19 +12,47 @@ import {
 } from "tamagui";
 import * as styles from "./Auth.styles";
 import { useForm, Controller } from "react-hook-form";
-import { FormLogin } from "./Auth.const";
+import { FormLogin,  LoginRequestType } from "./Auth.const";
 import { TouchableOpacity } from "react-native";
+import { useLogin } from "../../api/login/useLogin";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
 
-const Auth = () => {
+
+
+const Auth = ({navigation} : any) => {
   const {
     handleSubmit,
     formState: { errors },
     control,
   } = useForm<FormLogin>();
 
+  const onError = (error: unknown) => {
+    const message = (error as { message?: string }).message;
+      Toast.show({
+        type: "error",
+        text1: message
+      })
+  };
+
+  const onSuccess = async(data: string) => {
+    try {
+      await AsyncStorage.setItem("token", data);
+      navigation.navigate('Tabs')
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const login = useLogin(onSuccess, onError);
+
   const LoginForm = () => {
     const onSubmit = (data: FormLogin) => {
-      console.log("sda");
+      const userData: LoginRequestType = {
+        email: data.email,
+        password: data.password,
+      };
+      login.mutate(userData);
     };
 
     return (
@@ -50,11 +78,12 @@ const Auth = () => {
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                  focusStyle={errors.email && {borderColor: "#FF0000" , borderWidth: 2}}
+                  focusStyle={
+                    errors.email && { borderColor: "#FF0000", borderWidth: 2 }
+                  }
                 />
               )}
               name="email"
-              //#DFE1E9
             />
             {errors.email && (
               <Text {...styles.text} color="#FF0000" fontSize={10} mt={8}>
@@ -79,7 +108,12 @@ const Auth = () => {
                   onChangeText={onChange}
                   value={value}
                   secureTextEntry={true}
-                  focusStyle={errors.password && {borderColor: "#FF0000" , borderWidth: 2}}
+                  focusStyle={
+                    errors.password && {
+                      borderColor: "#FF0000",
+                      borderWidth: 2,
+                    }
+                  }
                 />
               )}
               name="password"
@@ -90,8 +124,10 @@ const Auth = () => {
                   Please enter the password
                 </Text>
               )}
-              <TouchableOpacity style={{marginLeft: "auto" , marginTop : 8}} >
-                <Text  {...styles.text}  fontSize={10}>Forgot your password?</Text>
+              <TouchableOpacity style={{ marginLeft: "auto", marginTop: 8 }}>
+                <Text {...styles.text} fontSize={10}>
+                  Forgot your password?
+                </Text>
               </TouchableOpacity>
             </XStack>
           </YStack>
@@ -99,7 +135,7 @@ const Auth = () => {
 
         <Form.Trigger asChild mt={65}>
           <Button backgroundColor="#0055EE">
-            <Text {...styles.text} color="white" >
+            <Text {...styles.text} color="white">
               Sign In
             </Text>
           </Button>
@@ -125,6 +161,7 @@ const Auth = () => {
             Wash your clothes using our smart machines!
           </Text>
         </YStack>
+        <Toast />
         {LoginForm()}
       </Stack>
     </ScrollView>
