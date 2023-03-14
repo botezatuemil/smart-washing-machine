@@ -1,7 +1,7 @@
 import {YStack, Text} from "tamagui"
 import WashCard from "../../components/WashCard";
 
-const Explore = () => {
+const Home = () => {
   
     return (
       <YStack alignItems="center" bg="white" h="100%" paddingTop={20} justifyContent="center" paddingHorizontal={24} >
@@ -11,4 +11,4 @@ const Explore = () => {
     );
   };
 
-  export default Explore;
+  export default Home;

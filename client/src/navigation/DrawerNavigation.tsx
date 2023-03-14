@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import SplashScreen from "../components/Loading/SplashScreen";
 
 import Auth from "../screens/Auth/Auth";
-import Explore from "../screens/Home/Home";
+import Home from "../screens/Home/Home";
 import Profile from "../screens/Profile/Profile";
 import TabNavigator from "./TabNavigator";
 
@@ -12,7 +12,7 @@ const DrawerStack = createDrawerNavigator<DrawerStackParams>();
 
 export type DrawerStackParams = {
   Tabs: undefined;
-  Explore: undefined;
+  Home: undefined;
   Profile: undefined;
   Auth: undefined;
 };
@@ -59,10 +59,10 @@ const DrawerNavigation = () => {
         }}
       />
       <DrawerStack.Screen
-        name="Explore"
-        component={Explore}
+        name="Home"
+        component={Home}
         options={{
-          drawerLabel: "Explore",
+          drawerLabel: "Home",
         }}
       />
       <DrawerStack.Screen
