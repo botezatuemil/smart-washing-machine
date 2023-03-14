@@ -17,10 +17,7 @@ export type DrawerStackParams = {
   Auth: undefined;
 };
 
-
-
 const DrawerNavigation = () => {
-  // const value = await AsyncStorage.getItem('token');
 
   const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -28,27 +25,23 @@ const DrawerNavigation = () => {
   const retrieveToken = async () => {
     const value = await AsyncStorage.getItem("token");
     setIsLoading(false);
-    setLoggedIn(value === null ? false : true)
+    setLoggedIn(value === null ? false : true);
   };
 
-  
   useEffect(() => {
     retrieveToken();
   }, []);
-  
+
   if (isLoading) {
-    return (
-      <SplashScreen/>
-    )
+    return <SplashScreen />;
   }
 
- 
   return (
     <DrawerStack.Navigator
       initialRouteName="Auth"
       screenOptions={{ headerShown: false }}
     >
-      {!isLoggedIn ? (
+      {!isLoggedIn && (
         <DrawerStack.Screen
           name="Auth"
           component={Auth}
@@ -56,9 +49,9 @@ const DrawerNavigation = () => {
             drawerItemStyle: { height: 0 },
           }}
         />
-      ) : (
-        <>
-        <DrawerStack.Screen
+      )}
+
+      <DrawerStack.Screen
         name="Tabs"
         component={TabNavigator}
         options={{
@@ -79,9 +72,6 @@ const DrawerNavigation = () => {
           drawerLabel: "Profile",
         }}
       />
-        </>
-      )}
-      
     </DrawerStack.Navigator>
   );
 };
