@@ -4,9 +4,12 @@ import Home from "./Home";
 import { Avatar, Text } from "tamagui";
 import EntypoIcon from "react-native-vector-icons/Entypo";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { WashingOption } from "../../interfaces";
+import Laundry from "../../components/laundry/Laundry";
 
 export type HomeStackParams = {
   Home: undefined;
+  Laundry: { option: WashingOption };
 };
 
 const HomeStack = createNativeStackNavigator<HomeStackParams>();
@@ -43,6 +46,11 @@ export const HomeScreenStack = ({ navigation }: any) => {
         name="Home"
         component={Home}
         options={{ title: "LAUNDRY" }}
+      />
+      <HomeStack.Screen
+        name="Laundry"
+        component={Laundry}
+        options={({ route }) => ({ title: route.params.option.toUpperCase() })}
       />
     </HomeStack.Navigator>
   );

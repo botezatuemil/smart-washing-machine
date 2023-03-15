@@ -5,8 +5,8 @@ const Home = () => {
   
     return (
       <YStack alignItems="center" bg="white" h="100%" paddingTop={20} justifyContent="center" paddingHorizontal={24} >
-        <WashCard title="Washing Machine" imagePath={require("../../assets/images/washingMachineCartoon.png")}/>
-        <WashCard title="Tumble Dryer" imagePath={require("../../assets/images/dryerCartoon.png")}/>
+        <WashCard type="washing machine" title="Washing Machine" imagePath={require("../../assets/images/washingMachineCartoon.png")}/>
+        <WashCard type="tumble dryer" title="Tumble Dryer" imagePath={require("../../assets/images/dryerCartoon.png")}/>
       </YStack>
     );
   };

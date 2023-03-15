@@ -1,7 +1,17 @@
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { YStack, Text, Image } from "tamagui";
+import { WashingOption } from "../interfaces";
+import {useNavigation} from  "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { HomeStackParams } from "../screens/Home/HomeNavigator";
+import { RootStackParams } from "../navigation/TabNavigator";
 
-const WashCard: React.FC<{ title: string; imagePath: string }> = (props) => {
+const WashCard: React.FC<{ title: string; imagePath: string, type: WashingOption }> = (props) => {
+
+  const navigation = useNavigation<NativeStackNavigationProp<HomeStackParams>>();
+ const tabNavigator = useNavigation<NativeStackNavigationProp<RootStackParams>>();
+ 
+  
   return (
     <YStack
       marginVertical={20}
@@ -19,6 +29,7 @@ const WashCard: React.FC<{ title: string; imagePath: string }> = (props) => {
       borderRadius={12}
       paddingTop={10}
       width="100%"
+      onPress={() => {navigation.navigate("Laundry", {option: props.type}), tabNavigator.setOptions({navigationBarHidden : true})}}
     >
       <Text fontFamily="InterSemi" fontSize={18} color="#6d6e74">{props.title}</Text>
       <TouchableOpacity>
