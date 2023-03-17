@@ -29,7 +29,7 @@ const WashCard: React.FC<{ title: string; imagePath: string, type: WashingOption
       borderRadius={12}
       paddingTop={10}
       width="100%"
-      onPress={() => {navigation.navigate("Laundry", {option: props.type}), tabNavigator.setOptions({navigationBarHidden : true})}}
+      onPress={() => {  navigation.navigate("Laundry", {option: props.type})}}
     >
       <Text fontFamily="InterSemi" fontSize={18} color="#6d6e74">{props.title}</Text>
       <TouchableOpacity>

@@ -7,6 +7,7 @@ import Octicons from "react-native-vector-icons/Octicons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Home as HomeIcon } from "@tamagui/lucide-icons";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 import WashScreenStack from "../screens/Wash/WashNavigator";
 import HomeScreenStack from "../screens/Home/HomeNavigator";
@@ -29,11 +30,22 @@ export type HomeStackParams = {
 };
 
 export default function TabNavigator() {
+  const getTabBarVisibility = (route: any) => {
+    const routeName = getFocusedRouteNameFromRoute(route);
+    const hideOnScreens = ["Laundry"];
+    return hideOnScreens.indexOf(routeName as string) <= -1;
+  };
+
   return (
     <RootStack.Navigator
       initialRouteName="HomeStack"
-      screenOptions={{ tabBarStyle: { height: 100, borderTopWidth: 0 } }}
-      
+      screenOptions={({ route }) => ({
+        tabBarStyle: {
+          height: 100,
+          borderTopWidth: 0,
+          display: getTabBarVisibility(route) ? "flex" : "none",
+        },
+      })}
     >
       <RootStack.Screen
         name="WashStack"
@@ -49,7 +61,6 @@ export default function TabNavigator() {
             />
           ),
         }}
-        
       />
       <RootStack.Screen
         name="ChatStack"
@@ -114,4 +125,3 @@ export default function TabNavigator() {
     </RootStack.Navigator>
   );
 }
-

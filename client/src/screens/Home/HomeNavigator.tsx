@@ -50,7 +50,7 @@ export const HomeScreenStack = ({ navigation }: any) => {
       <HomeStack.Screen
         name="Laundry"
         component={Laundry}
-        options={({ route }) => ({ title: route.params.option.toUpperCase() })}
+        options={({ route }) => ({ title: route.params.option.toUpperCase(), })}
       />
     </HomeStack.Navigator>
   );
