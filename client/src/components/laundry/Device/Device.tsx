@@ -3,7 +3,11 @@ import { YStack, Text, XStack, Stack, Button, Image } from "tamagui";
 import { WashingDevice } from "../../../interfaces";
 import * as styles from "./Device.styles";
 import Ionicons from "react-native-vector-icons/Ionicons";
-//chatbubble-outline
+import {Dimensions} from 'react-native';
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
 const Device = ({
   id,
   laundry_id,
@@ -29,7 +33,7 @@ const Device = ({
   };
 
   return (
-    <YStack w="100%" h="100%" alignItems="center">
+    <YStack w="100%" h={windowHeight} alignItems="center" >
       <XStack w="100%" justifyContent="center" space={8} alignItems="center">
         <Stack bg={`${getStatus()[1]}`} w={10} h={10} borderRadius={100} />
         <Text fontFamily="InterBold" color={`${getStatus()[1]}`}>
@@ -77,6 +81,11 @@ const Device = ({
         height={400}
         width={300}
       />
+      <YStack w="100%" paddingHorizontal={36} mt={28} justifyContent="center" space={9}>
+        <Button {...styles.textButton} bg="#0055EE" w="100%">RESERVE</Button>
+        <Button {...styles.textButton} color="black" bg="#E7E7E9" w="100%"  >USE NOW</Button>
+        <Button {...styles.textButton} bg="#060606" w="100%">SEND NOTIFICATION!</Button>
+      </YStack>
     </YStack>
   );
 };
