@@ -40,7 +40,7 @@ model dorm {
   id          Int       @id @default(autoincrement())
   student     student[]
   dorm_number String
-  floor       Int
+  dorm_floor  Int
   building_id Int
   building    building  @relation(fields: [building_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
@@ -66,20 +66,20 @@ model laundry {
   id             Int              @id @default(autoincrement())
   building_id    Int
   building       building         @relation(fields: [building_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  floor          Int
+  laundry_floor  Int
   washing_device washing_device[]
 }
 
 model washing_device {
-  id         Int     @id @default(autoincrement())
-  name       String
-  status     Boolean
-  opened     Boolean
-  laundry_id Int
-  laundry    laundry @relation(fields: [laundry_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  type       device
-  student_id Int
-  student    student @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id          Int     @id @default(autoincrement())
+  device_name String
+  status      Boolean
+  opened      Boolean
+  laundry_id  Int
+  laundry     laundry @relation(fields: [laundry_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  type        device
+  student_id  Int
+  student     student @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model smart_plug {

@@ -15,3 +15,5 @@ export interface TasmotaPayload {
     };
   };
 }
+
+export type DeviceType = "washing machine" | "tumble dryer"

@@ -9,7 +9,6 @@ import { RootStackParams } from "../navigation/TabNavigator";
 const WashCard: React.FC<{ title: string; imagePath: string, type: WashingOption }> = (props) => {
 
   const navigation = useNavigation<NativeStackNavigationProp<HomeStackParams>>();
- const tabNavigator = useNavigation<NativeStackNavigationProp<RootStackParams>>();
  
   
   return (

@@ -1,11 +1,13 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React from "react";
+import React, {useEffect} from "react";
 import { FlatList } from "react-native";
 import { YStack } from "tamagui";
 import { WashingDevice } from "../../interfaces";
 import { HomeStackParams } from "../../screens/Home/HomeNavigator";
 import Device from "./Device/Device";
 import {Dimensions} from 'react-native';
+import axios from "axios";
+import { useDevices } from "../../api/washingDevice/getAllDevices/useDevices";
 
 const windowHeight = Dimensions.get('window').height;
 
@@ -33,6 +35,10 @@ const DATA: WashingDevice[] = [
 ];
 
 const Laundry = ({ route }: Props) => {
+
+  const {data} = useDevices(route.params.option)
+  
+
   return (
     <YStack bg="white" w="100%">
       <FlatList
