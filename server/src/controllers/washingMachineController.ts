@@ -32,7 +32,8 @@ export const getLaundryDevices = async (req: Request, res: Response) => {
         WHERE ${convertedDeviceType}::device = type
         GROUP BY washing_device.id, student.first_name, student.last_name, student.dorm_id, dorm.dorm_number, dorm.dorm_floor, laundry.laundry_floor, dorm.id
     `;
-
+  console.log(laundryData);
+  
   res.send(convertKeysArray(laundryData));
 };
 

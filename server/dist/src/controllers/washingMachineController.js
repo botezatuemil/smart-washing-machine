@@ -26,6 +26,7 @@ const getLaundryDevices = (req, res) => __awaiter(void 0, void 0, void 0, functi
         WHERE ${convertedDeviceType}::device = type
         GROUP BY washing_device.id, student.first_name, student.last_name, student.dorm_id, dorm.dorm_number, dorm.dorm_floor, laundry.laundry_floor, dorm.id
     `;
+    console.log(laundryData);
     res.send((0, ConvertKeys_1.convertKeysArray)(laundryData));
 });
 exports.getLaundryDevices = getLaundryDevices;
