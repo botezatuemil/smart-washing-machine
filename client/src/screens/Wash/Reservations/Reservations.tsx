@@ -52,7 +52,7 @@ const Reservations = () => {
       >
         {selectElements.map((select) => (
           <YStack w="100%" mt={28} space={4} key={select.key}>
-            <Text {...styles.label}>Select Laundry</Text>
+            <Text {...styles.label}>{select.label}</Text>
             <Controller
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
