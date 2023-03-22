@@ -22,7 +22,7 @@ type Laundry = {
 export const getLaundryDevices = async (req: Request, res: Response) => {
   const { option } = req.body;
   const convertedDeviceType = convertTypes(option);
-
+  debugger
   const laundryData: Laundry[] = await prisma.$queryRaw<Laundry[]>`
         SELECT washing_device.id, device_name as washing_device_name, status, opened, laundry_id, type, student_id, first_name, last_name, dorm_id, dorm_number,
         dorm_floor, laundry_floor, dorm.id FROM washing_device
@@ -32,8 +32,7 @@ export const getLaundryDevices = async (req: Request, res: Response) => {
         WHERE ${convertedDeviceType}::device = type
         GROUP BY washing_device.id, student.first_name, student.last_name, student.dorm_id, dorm.dorm_number, dorm.dorm_floor, laundry.laundry_floor, dorm.id
     `;
-  console.log(laundryData);
-  
+
   res.send(convertKeysArray(laundryData));
 };
 

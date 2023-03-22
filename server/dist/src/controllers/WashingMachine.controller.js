@@ -17,6 +17,7 @@ const prisma = new client_1.PrismaClient();
 const getLaundryDevices = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { option } = req.body;
     const convertedDeviceType = (0, ConvertTypes_1.convertTypes)(option);
+    debugger;
     const laundryData = yield prisma.$queryRaw `
         SELECT washing_device.id, device_name as washing_device_name, status, opened, laundry_id, type, student_id, first_name, last_name, dorm_id, dorm_number,
         dorm_floor, laundry_floor, dorm.id FROM washing_device

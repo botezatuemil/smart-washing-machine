@@ -4,11 +4,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const studentController_1 = require("../controllers/studentController");
-const authController_1 = require("../controllers/authController");
-const washingMachineController_1 = require("../controllers/washingMachineController");
+const Student_controller_1 = require("../controllers/Student.controller");
+const Auth_controller_1 = require("../controllers/Auth.controller");
+const WashingMachine_controller_1 = require("../controllers/WashingMachine.controller");
 const router = express_1.default.Router();
-router.get('/getStudents', studentController_1.getStudents);
-router.post('/login', authController_1.login);
-router.post('/getLaundryDevices', washingMachineController_1.getLaundryDevices);
+router.get('/getStudents', Student_controller_1.getStudents);
+router.post('/login', Auth_controller_1.login);
+router.post('/getLaundryDevices', WashingMachine_controller_1.getLaundryDevices);
 exports.default = router;

@@ -12,15 +12,14 @@ import {
 } from "tamagui";
 import * as styles from "./Auth.styles";
 import { useForm, Controller } from "react-hook-form";
-import { FormLogin,  LoginRequestType } from "./Auth.const";
+import { FormLogin, LoginRequestType } from "./Auth.const";
 import { TouchableOpacity } from "react-native";
 import { useLogin } from "../../api/login/useLogin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 
 
-
-const Auth = ({navigation} : any) => {
+const Auth = ({ navigation }: any) => {
   const {
     handleSubmit,
     formState: { errors },
@@ -29,16 +28,16 @@ const Auth = ({navigation} : any) => {
 
   const onError = (error: unknown) => {
     const message = (error as { message?: string }).message;
-      Toast.show({
-        type: "error",
-        text1: message
-      })
+    Toast.show({
+      type: "error",
+      text1: message,
+    });
   };
 
-  const onSuccess = async(data: string) => {
+  const onSuccess = async (data: string) => {
     try {
       await AsyncStorage.setItem("token", data);
-      navigation.navigate('Tabs')
+      navigation.navigate("Tabs");
     } catch (error) {
       console.log(error);
     }

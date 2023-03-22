@@ -32,12 +32,14 @@ const animations = createAnimations({
   quick: {
     type: "spring",
 
-    damping: 20,
+    // damping: 20,
 
-    mass: 1.2,
+    mass: 0.05,
 
     stiffness: 250,
+    
   },
+  
 });
 const headingFont = createInterFont({
 	size: {

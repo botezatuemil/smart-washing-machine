@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import Wash from "../Wash/Wash";
+import { Wash } from "./Tabs/WashTabs";
+
 
 export type WashStackParams = {
   Wash: undefined;

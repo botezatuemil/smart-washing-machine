@@ -1,7 +1,7 @@
 import express from "express";
-import { getStudents } from "../controllers/studentController";
-import { login } from "../controllers/authController";
-import { getLaundryDevices } from "../controllers/washingMachineController";
+import { getStudents } from "../controllers/Student.controller";
+import { login } from "../controllers/Auth.controller";
+import { getLaundryDevices } from "../controllers/WashingMachine.controller";
 const router = express.Router();
 
 router.get('/getStudents', getStudents);
