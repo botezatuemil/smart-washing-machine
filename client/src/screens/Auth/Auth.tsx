@@ -42,7 +42,7 @@ const Auth = ({ navigation }: any) => {
     try {
       await AsyncStorage.setItem("token", data);
       toggleLogin(true);
-      navigation.navigate("Tabs");
+      // navigation.navigate("Tabs");
     } catch (error) {
       console.log(error);
     }

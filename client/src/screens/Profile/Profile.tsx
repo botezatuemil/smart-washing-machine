@@ -13,14 +13,12 @@ const Profile = () => {
 
   const [status, setStatus] = useState<string>("");
   const [socketMessage, setSocketMessage] = useState<string>();
-  const navigation = useNavigation<NativeStackNavigationProp<DrawerStackParams>>();
   const {toggleLogin} = useLoginStore();
   
   const logout = async() => {
     try {
       await AsyncStorage.removeItem("token");
       toggleLogin(false);
-      navigation.navigate("Auth");
     } catch (error) {
       console.log(error);
     }

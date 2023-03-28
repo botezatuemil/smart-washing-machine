@@ -19,10 +19,8 @@ export type DrawerStackParams = {
 };
 
 const DrawerNavigation = () => {
-
-  // const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const {isLoggedIn, toggleLogin} = useLoginStore();
+  const { isLoggedIn, toggleLogin } = useLoginStore();
 
   const retrieveToken = async () => {
     const value = await AsyncStorage.getItem("token");
@@ -43,7 +41,7 @@ const DrawerNavigation = () => {
       initialRouteName="Auth"
       screenOptions={{ headerShown: false }}
     >
-      {!isLoggedIn && (
+      {!isLoggedIn ? (
         <DrawerStack.Screen
           name="Auth"
           component={Auth}
@@ -51,29 +49,31 @@ const DrawerNavigation = () => {
             drawerItemStyle: { height: 0 },
           }}
         />
+      ) : (
+        <>
+          <DrawerStack.Screen
+            name="Tabs"
+            component={TabNavigator}
+            options={{
+              drawerItemStyle: { height: 0 },
+            }}
+          />
+          <DrawerStack.Screen
+            name="Home"
+            component={Home}
+            options={{
+              drawerLabel: "Home",
+            }}
+          />
+          <DrawerStack.Screen
+            name="Profile"
+            component={Profile}
+            options={{
+              drawerLabel: "Profile",
+            }}
+          />
+        </>
       )}
-
-      <DrawerStack.Screen
-        name="Tabs"
-        component={TabNavigator}
-        options={{
-          drawerItemStyle: { height: 0 },
-        }}
-      />
-      <DrawerStack.Screen
-        name="Home"
-        component={Home}
-        options={{
-          drawerLabel: "Home",
-        }}
-      />
-      <DrawerStack.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          drawerLabel: "Profile",
-        }}
-      />
     </DrawerStack.Navigator>
   );
 };
