@@ -94,7 +94,7 @@ export default function TabNavigator() {
       />
       <RootStack.Screen
         name="ProfileStack"
-        component={ProfileScreenStack}
+        component={InboxScreenStack}
         options={{
           headerShown: false,
           tabBarShowLabel: false,
@@ -109,7 +109,7 @@ export default function TabNavigator() {
       />
       <RootStack.Screen
         name="InboxStack"
-        component={InboxScreenStack}
+        component={ProfileScreenStack}
         options={{
           headerShown: false,
           tabBarShowLabel: false,

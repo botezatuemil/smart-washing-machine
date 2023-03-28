@@ -14,6 +14,7 @@ export const login = async (userCredidentials: LoginRequestType) => {
     return data;
   } catch (error ) {
     const message = (error as AxiosError)?.response?.data as string;
+    console.log(message)
     throw new Error(message)
   }
  

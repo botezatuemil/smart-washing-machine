@@ -4,10 +4,24 @@ import io from "socket.io-client"
 import {PORT, IP} from "@env";
 import { Button, YStack } from 'tamagui'
 import * as styles from "./Profile.styles"
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+import { DrawerStackParams } from "../../navigation/DrawerNavigation";
 const Profile = () => {
 
   const [status, setStatus] = useState<string>("");
   const [socketMessage, setSocketMessage] = useState<string>();
+  const navigation = useNavigation<NativeStackNavigationProp<DrawerStackParams>>();
+
+  const logout = async() => {
+    try {
+      await AsyncStorage.removeItem("token");
+      navigation.navigate("Auth");
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   useEffect(() => {
     const socket = io(`http://${IP}:${PORT}`);
@@ -36,7 +50,7 @@ const Profile = () => {
     <YStack display="flex" w="100%" h="100%" ai="center">
       <Text>{status}</Text>
       <Text>{socketMessage}</Text>
-      <Button  {...styles.button}>Lorem ipsum</Button>
+      <Button  {...styles.button} onPress={logout}>Log out</Button>
     </YStack>
   );
 };

@@ -32,7 +32,6 @@ export const getPowerStatus = () => {
         client.on('message', (topic: string, payload: any) => {
             const tasmotaPayload : TasmotaPayload = JSON.parse(payload.toString());
             const content = tasmotaPayload//.StatusSNS.ENERGY.ApparentPower
-            // console.log('Received Message:', topic, content);
               
             const message = JSON.stringify(content) + "\n";
             // fs.writeFile('./src/files/09.03.2023.txt', message, {flag : "a+"}, (err : NodeJS.ErrnoException | null) => {
