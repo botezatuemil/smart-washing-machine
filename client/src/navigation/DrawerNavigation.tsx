@@ -6,6 +6,7 @@ import SplashScreen from "../components/Loading/SplashScreen";
 import Auth from "../screens/Auth/Auth";
 import Home from "../screens/Home/Home";
 import Profile from "../screens/Profile/Profile";
+import { useLoginStore } from "../store/LoginStore";
 import TabNavigator from "./TabNavigator";
 
 const DrawerStack = createDrawerNavigator<DrawerStackParams>();
@@ -19,13 +20,14 @@ export type DrawerStackParams = {
 
 const DrawerNavigation = () => {
 
-  const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
+  // const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const {isLoggedIn, toggleLogin} = useLoginStore();
 
   const retrieveToken = async () => {
     const value = await AsyncStorage.getItem("token");
     setIsLoading(false);
-    setLoggedIn(value === null ? false : true);
+    toggleLogin(value === null ? false : true);
   };
 
   useEffect(() => {

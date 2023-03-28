@@ -17,9 +17,13 @@ import { TouchableOpacity } from "react-native";
 import { useLogin } from "../../api/login/useLogin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
+import { useLoginStore } from "../../store/LoginStore";
 
 
 const Auth = ({ navigation }: any) => {
+
+  const {toggleLogin} = useLoginStore();
+
   const {
     handleSubmit,
     formState: { errors },
@@ -37,6 +41,7 @@ const Auth = ({ navigation }: any) => {
   const onSuccess = async (data: string) => {
     try {
       await AsyncStorage.setItem("token", data);
+      toggleLogin(true);
       navigation.navigate("Tabs");
     } catch (error) {
       console.log(error);

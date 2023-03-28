@@ -51,7 +51,8 @@
     "react-native-web": "^0.18.12",
     "react-query": "^3.39.3",
     "socket.io-client": "^4.6.1",
-    "tamagui": "^1.7.0"
+    "tamagui": "^1.7.0",
+    "zustand": "^4.3.6"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

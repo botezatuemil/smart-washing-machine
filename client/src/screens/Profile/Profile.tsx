@@ -8,15 +8,18 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { DrawerStackParams } from "../../navigation/DrawerNavigation";
+import { useLoginStore } from "../../store/LoginStore";
 const Profile = () => {
 
   const [status, setStatus] = useState<string>("");
   const [socketMessage, setSocketMessage] = useState<string>();
   const navigation = useNavigation<NativeStackNavigationProp<DrawerStackParams>>();
-
+  const {toggleLogin} = useLoginStore();
+  
   const logout = async() => {
     try {
       await AsyncStorage.removeItem("token");
+      toggleLogin(false);
       navigation.navigate("Auth");
     } catch (error) {
       console.log(error);
