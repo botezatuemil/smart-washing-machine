@@ -34,6 +34,7 @@ export const getLaundryDevices = async (req: Request, res: Response) => {
     `;
 
   res.send(convertKeysArray(laundryData));
+  
 };
 
 export const updateWashingMachineStatus = () => {};

@@ -1,17 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { YStack, XStack, Button, Form, Input, Stack } from "tamagui";
 import { Text } from "tamagui";
 import * as styles from "./Reservation.styles";
 import { useForm, Controller } from "react-hook-form";
-import SelectInput from "../../../components/laundry/common/SelectInput";
+import SelectInput from "../../../components/common/SelectInput/SelectInput";
 import { FormReservation } from "./Reservation.const";
 import { SelectInputElements, SelectType } from "./Reservation.const";
+import { Pressable } from "react-native";
+import DateTimePickerSelect from "../../../components/common/DateTimePicker/DateTimePicker";
+import SuccessfulReservation from "../../../components/common/Modal/DialogSuccesfullReservation/SuccessfulReservation";
+import ModalOverlay from "../../../components/common/Modal/ModalLayout/ModalOverlay";
+import TimePicker from "../../../components/common/Modal/TimePicker/TimePicker";
 
 const selectElements: SelectInputElements[] = [
   { key: "laundry", label: "Select Laundry" },
   { key: "washingMachine", label: "Pick a washing machine" },
-  { key: "startHour", label: "Pick the start hour" },
-  { key: "endHour", label: "Pick the end hour" },
+  { key: "date", label: "Choose an available date" },
+  { key: "timeSlot", label: "Pick an available time slot" },
+  { key: "time", label: "Choose the start hour and end hour" },
 ];
 
 const Reservations = () => {
@@ -28,19 +34,103 @@ const Reservations = () => {
     setFocusColor({ dry: "#0055EE", wash: "#8C90A2" });
   };
 
+  const [firstDate, _] = useState<string>(new Date().toDateString());
+  const [openDate, setOpenDate] = useState<boolean>(false);
+  const [openAlert, setOpenAlert] = useState<boolean>(false);
+  const [openTime, setOpenTime] = useState<boolean>(false);
+
   const {
     handleSubmit,
     formState: { errors },
     control,
     watch,
+    getValues,
+    setValue,
   } = useForm<FormReservation>();
 
-  const renderReservationForm = () => {
-    const onSubmit = (data: FormReservation) => {
-   
-    };
+  const handleOpenSelect = (key: SelectType) => {};
+  const closeOpenDate = () => {
+    setOpenDate(false);
+  };
+  const onOpenDate = () => {
+    setOpenDate(true);
+  };
 
-    const handleOpenSelect = (key: SelectType) => {
+  const onOpenTime = () => {
+    setOpenTime(true);
+  };
+
+  const closeTime = () => {
+    setOpenTime(false);
+  };
+
+  const onOpenAlert = () => {
+    setOpenAlert(true);
+  };
+
+  const closeAlertModal = () => {
+    setOpenAlert(false);
+  };
+
+  const renderInputElements = (
+    key: SelectType,
+    onChange: () => void,
+    value: string | Date
+  ): React.ReactElement => {
+    switch (key) {
+      case "date":
+        const { date } = getValues();
+        return (
+          <>
+            <Pressable onPress={onOpenDate}>
+              <Input
+                value={date ? date.toDateString() : firstDate}
+                editable={false}
+              />
+            </Pressable>
+            <DateTimePickerSelect
+              isShowing={openDate}
+              closeModal={closeOpenDate}
+              onChangeDate={(selectedDate: any) =>
+                setValue("date", selectedDate)
+              }
+            />
+          </>
+        );
+      case "time":
+        return (
+          <>
+            <Pressable onPress={onOpenTime}>
+              <Input
+                value={date ? date.toDateString() : firstDate}
+                editable={false}
+              />
+            </Pressable>
+            <TimePicker
+              isOpen={openTime}
+              closeModal={closeTime}
+              onCancel={closeTime}
+              onSave={closeTime}
+            />
+          </>
+        );
+      default:
+        return (
+          <SelectInput
+            onChange={onChange}
+            value={value as string}
+            onOpen={() => handleOpenSelect(key)}
+          />
+        );
+    }
+  };
+
+  const renderReservationForm = useMemo(() => {
+    const onSubmit = (data: FormReservation) => {
+      // console.log(watch("date"));
+      // openTime();
+      onOpenAlert();
+      console.log(watch("date"));
     };
 
     return (
@@ -55,22 +145,15 @@ const Reservations = () => {
             <Text {...styles.label}>{select.label}</Text>
             <Controller
               control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <SelectInput
-                  onChange={onChange}
-                  value={value}
-                  onOpen={() => handleOpenSelect(select.key)}
-                />
-              )}
+              render={({ field: { onChange, onBlur, value } }) =>
+                renderInputElements(select.key, onChange, value)
+              }
               name={select.key}
             />
           </YStack>
         ))}
+
         <YStack alignSelf="flex-end" w="100%" mt="auto" space={20}>
-          <Text {...styles.label}>
-          To ensure the validity of a reservation, it is essential to scan the NFC when the designated time period begins. 
-          Failure to validate within the first 5 minutes of the reservation will result in automatic cancellation.
-          </Text>
           <Form.Trigger asChild>
             <Button backgroundColor="#0055EE">
               <Text {...styles.text} color="white">
@@ -81,10 +164,10 @@ const Reservations = () => {
         </YStack>
       </Form>
     );
-  };
+  }, [openDate, openTime]);
 
   return (
-    <YStack w="100%" h="100%">
+    <YStack w="100%" h="100%" overflow="visible">
       <XStack
         w="100%"
         justifyContent="space-between"
@@ -112,7 +195,13 @@ const Reservations = () => {
           Dry
         </Button>
       </XStack>
-      {renderReservationForm()}
+      {renderReservationForm}
+      <SuccessfulReservation
+        isOpen={openAlert}
+        closeModal={closeAlertModal}
+        onSave={closeAlertModal}
+        onCancel={closeAlertModal}
+      />
     </YStack>
   );
 };

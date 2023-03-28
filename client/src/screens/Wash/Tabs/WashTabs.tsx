@@ -151,7 +151,7 @@ export const Wash = () => {
 
           <Tabs.Trigger value="tab1" onInteraction={handleOnInteraction}>
             <SizableText {...styles.tabText} color={activeColor.new}>
-              Add New
+              Reserve
             </SizableText>
           </Tabs.Trigger>
           <Tabs.Trigger value="tab2" onInteraction={handleOnInteraction}>

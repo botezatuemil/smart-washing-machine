@@ -9,12 +9,12 @@ LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreAllLogs();
 
 export const getAllDevices = async (option: WashingOption) => {
-  console.log(option)
   try {
     const {data} = await axios.post(url, {option});
     return data;
   } catch (error) {
     const message = (error as AxiosError)?.response?.data as string;
+    console.log(message)
     throw new Error(message)
   }
 };

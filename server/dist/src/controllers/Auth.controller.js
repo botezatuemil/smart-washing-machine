@@ -20,7 +20,6 @@ const prisma = new client_1.PrismaClient();
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
-        console.log(email);
         const result = yield prisma.$queryRaw `SELECT * FROM student WHERE email = ${email}`;
         if (result.length === 0) {
             res.status(401).json("Invalid credentials!");

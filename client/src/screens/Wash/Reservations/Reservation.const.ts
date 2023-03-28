@@ -3,8 +3,9 @@ export type FormReservation = ReservationResponseType & ReservationRequestType;
 export type ReservationRequestType = {
   laundry: string;
   washingMachine: string;
-  startHour: string;
-  endHour: string;
+  date: Date;
+  timeSlot: string;
+  time: Date
 };
 
 export type ReservationResponseType = {
@@ -16,4 +17,4 @@ export type SelectInputElements = {
   key: SelectType;
 };
 
-export type SelectType = "laundry" | "washingMachine" | "startHour" | "endHour";
+export type SelectType = "laundry" | "washingMachine" | "date" | "timeSlot" | "time";
