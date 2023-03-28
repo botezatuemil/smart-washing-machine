@@ -9,7 +9,8 @@ import { SelectInputElements, SelectType } from "./Reservation.const";
 import { Pressable } from "react-native";
 import DateTimePickerSelect from "../../../components/common/DateTimePicker/DateTimePicker";
 import SuccessfulReservation from "../../../components/common/Modal/DialogSuccesfullReservation/SuccessfulReservation";
-import ModalOverlay from "../../../components/common/Modal/ModalOverlay";
+import ModalOverlay from "../../../components/common/Modal/ModalLayout/ModalOverlay";
+import TimePicker from "../../../components/common/Modal/TimePicker/TimePicker";
 
 const selectElements: SelectInputElements[] = [
   { key: "laundry", label: "Select Laundry" },
@@ -34,8 +35,9 @@ const Reservations = () => {
   };
 
   const [firstDate, _] = useState<string>(new Date().toDateString());
-  const [onOpenDate, setOnOpenDate] = useState<boolean>(false);
-  const [onOpenAlert, setOnOpenAlert] = useState<boolean>(false);
+  const [openDate, setOpenDate] = useState<boolean>(false);
+  const [openAlert, setOpenAlert] = useState<boolean>(false);
+  const [openTime, setOpenTime] = useState<boolean>(false);
 
   const {
     handleSubmit,
@@ -46,91 +48,90 @@ const Reservations = () => {
     setValue,
   } = useForm<FormReservation>();
 
-
   const handleOpenSelect = (key: SelectType) => {};
   const closeOpenDate = () => {
-    setOnOpenDate(false);
+    setOpenDate(false);
   };
-  const openDate = () => {
-    setOnOpenDate(true);
+  const onOpenDate = () => {
+    setOpenDate(true);
   };
-  
-  
 
-  // const openTime = () => {
-  //   setOnOpenTime(true);
-  // }
+  const onOpenTime = () => {
+    setOpenTime(true);
+  };
 
-  const openAlert = () => {
-    setOnOpenAlert(true);
+  const closeTime = () => {
+    setOpenTime(false);
+  };
+
+  const onOpenAlert = () => {
+    setOpenAlert(true);
   };
 
   const closeAlertModal = () => {
-    setOnOpenAlert(false);
+    setOpenAlert(false);
   };
 
-  const renderInputElements = 
-   (
-      key: SelectType,
-      onChange: () => void,
-      value: string | Date
-    ): React.ReactElement => {
-
-      switch (key) {
-        case "date":
-          const { date } = getValues();
-          return (
-            <>
-              <Pressable onPress={openDate}>
-                <Input
-                  value={date ? date.toDateString() : firstDate}
-                  editable={false}
-                />
-              </Pressable>
-              <DateTimePickerSelect
-                isShowing={onOpenDate}
-                closeModal={closeOpenDate}
-                onChangeDate={(selectedDate: any) =>
-                  setValue("date", selectedDate)
-                }
+  const renderInputElements = (
+    key: SelectType,
+    onChange: () => void,
+    value: string | Date
+  ): React.ReactElement => {
+    switch (key) {
+      case "date":
+        const { date } = getValues();
+        return (
+          <>
+            <Pressable onPress={onOpenDate}>
+              <Input
+                value={date ? date.toDateString() : firstDate}
+                editable={false}
               />
-            </>
-          );
-        case "time":
-          return (
-            <>
-              <Pressable onPress={openAlert}>
-                <Input
-                  value={date ? date.toDateString() : firstDate}
-                  editable={false}
-                />
-              </Pressable>
-
-              {/* <SuccessfulReservation /> */}
-              {/* isOpen={onOpenAlert} closeModal={closeAlertModal} */}
-            </>
-          );
-        default:
-          return (
-            <SelectInput
-              onChange={onChange}
-              value={value as string}
-              onOpen={() => handleOpenSelect(key)}
+            </Pressable>
+            <DateTimePickerSelect
+              isShowing={openDate}
+              closeModal={closeOpenDate}
+              onChangeDate={(selectedDate: any) =>
+                setValue("date", selectedDate)
+              }
             />
-          );
-      }
+          </>
+        );
+      case "time":
+        return (
+          <>
+            <Pressable onPress={onOpenTime}>
+              <Input
+                value={date ? date.toDateString() : firstDate}
+                editable={false}
+              />
+            </Pressable>
+            <TimePicker
+              isOpen={openTime}
+              closeModal={closeTime}
+              onCancel={closeTime}
+              onSave={closeTime}
+            />
+          </>
+        );
+      default:
+        return (
+          <SelectInput
+            onChange={onChange}
+            value={value as string}
+            onOpen={() => handleOpenSelect(key)}
+          />
+        );
     }
-    
+  };
 
   const renderReservationForm = useMemo(() => {
     const onSubmit = (data: FormReservation) => {
       // console.log(watch("date"));
       // openTime();
-      openAlert();
+      onOpenAlert();
       console.log(watch("date"));
     };
-
-    console.log("rendered")
 
     return (
       <Form
@@ -163,10 +164,10 @@ const Reservations = () => {
         </YStack>
       </Form>
     );
-  }, [onOpenDate]);
+  }, [openDate, openTime]);
 
   return (
-    <YStack w="100%" h="100%" overflow="visible" >
+    <YStack w="100%" h="100%" overflow="visible">
       <XStack
         w="100%"
         justifyContent="space-between"
@@ -195,9 +196,12 @@ const Reservations = () => {
         </Button>
       </XStack>
       {renderReservationForm}
-      <ModalOverlay isOpen={onOpenAlert} closeModal={closeAlertModal}>
-        <Text>asdf</Text>
-      </ModalOverlay>
+      <SuccessfulReservation
+        isOpen={openAlert}
+        closeModal={closeAlertModal}
+        onSave={closeAlertModal}
+        onCancel={closeAlertModal}
+      />
     </YStack>
   );
 };

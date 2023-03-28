@@ -5,6 +5,10 @@ import * as styles from "./Device.styles";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Dimensions } from "react-native";
 import { Laundry } from "../../../api/washingDevice/getAllDevices/types";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+import { WashStackParams } from "../../../screens/Wash/WashNavigator";
+import { RootStackParams } from "../../../navigation/TabNavigator";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -25,6 +29,9 @@ const Device = ({
   type,
   imagePath
 }: Laundry & {type : WashingOption} & {imagePath  : string} ) => {
+
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParams>>();
+  
   const getStatus = () => {
     if (status && opened) {
       return ["FREE", "#50BF6F"];
@@ -97,7 +104,7 @@ const Device = ({
         justifyContent="center"
         space={9}
       >
-        <Button {...styles.textButton} bg="#0055EE" w="100%">
+        <Button {...styles.textButton} bg="#0055EE" w="100%" onPress={() => navigation.navigate("WashStack")} >
           RESERVE
         </Button>
         <Button {...styles.textButton} color="black" bg="#E7E7E9" w="100%">
