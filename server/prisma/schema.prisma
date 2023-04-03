@@ -22,6 +22,7 @@ model student {
   address             address          @relation(fields: [address_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   dorm                dorm             @relation(fields: [dorm_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   washing_device      washing_device[]
+  reservation         reservation[]
 }
 
 model address {
@@ -68,18 +69,21 @@ model laundry {
   building       building         @relation(fields: [building_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   laundry_floor  Int
   washing_device washing_device[]
+  reservation    reservation[]
+  laundry_name   String
 }
 
 model washing_device {
-  id          Int     @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   device_name String
   status      Boolean
   opened      Boolean
   laundry_id  Int
-  laundry     laundry @relation(fields: [laundry_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  laundry     laundry       @relation(fields: [laundry_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   type        device
   student_id  Int
-  student     student @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  student     student       @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  reservation reservation[]
 }
 
 model smart_plug {
@@ -110,6 +114,20 @@ model admin {
   email      String
   address_id Int
   address    address @relation(fields: [address_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model reservation {
+  id                Int            @id @default(autoincrement())
+  laundry_id        Int
+  laudry            laundry        @relation(fields: [laundry_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  washing_device_id Int
+  washing_device    washing_device @relation(fields: [washing_device_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  reservation_date  DateTime
+  start_hour        DateTime
+  end_hour          DateTime
+  scheduled_early   Boolean
+  student_id        Int
+  student           student        @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model maintenance {

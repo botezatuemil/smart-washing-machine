@@ -4,13 +4,13 @@ import { Text } from "tamagui";
 import * as styles from "./Reservation.styles";
 import { useForm, Controller } from "react-hook-form";
 import SelectInput from "../../../components/common/SelectInput/SelectInput";
-import { FormReservation } from "./Reservation.const";
+import { FormReservation, Item, LaundryType } from "./Reservation.const";
 import { SelectInputElements, SelectType } from "./Reservation.const";
 import { Pressable } from "react-native";
 import DateTimePickerSelect from "../../../components/common/DateTimePicker/DateTimePicker";
 import SuccessfulReservation from "../../../components/common/Modal/DialogSuccesfullReservation/SuccessfulReservation";
-import ModalOverlay from "../../../components/common/Modal/ModalLayout/ModalOverlay";
 import TimePicker from "../../../components/common/Modal/TimePicker/TimePicker";
+import { useLaundries } from "../../../api/laundry/useLaundry";
 
 const selectElements: SelectInputElements[] = [
   { key: "laundry", label: "Select Laundry" },
@@ -38,6 +38,7 @@ const Reservations = () => {
   const [openDate, setOpenDate] = useState<boolean>(false);
   const [openAlert, setOpenAlert] = useState<boolean>(false);
   const [openTime, setOpenTime] = useState<boolean>(false);
+  const [items, setItems] = useState<Item>();
 
   const {
     handleSubmit,
@@ -48,7 +49,47 @@ const Reservations = () => {
     setValue,
   } = useForm<FormReservation>();
 
-  const handleOpenSelect = (key: SelectType) => {};
+
+  const {data: laundries, refetch, isLoading: isLoadingLaundries} = useLaundries(); 
+
+  const handleOpenSelect =  (key: SelectType) => {
+    switch (key) {
+      case "washingMachine":
+        
+        // setItems({
+        //   title: "Available Laundries",
+        //   values: [
+        //     { name: "Laundry 1" },
+        //     { name: "Laundry 2" },
+        //     { name: "Laundry 3" },
+        //     { name: "Laundry 4" },
+        //     { name: "Laundry 5" },
+        //     { name: "Laundry 6" },
+        //   ],
+        // });
+        break;
+      case "laundry":
+        refetch();
+        const values = laundries?.map(laundry => ({obj: {...laundry}, name: laundry.laundryName + " / floor " + laundry.laundryFloor }))
+        setItems({
+          title: "Available Laundries",
+          values,
+        });
+        
+        break;
+      case "timeSlot":
+        // setItems({
+        //   title: "Choose time slot",
+        //   values: [
+        //     { name: "09:00 - 12:00" },
+        //     { name: "14:00 - 15:00" },
+        //     { name: "16:00 - 18:00" },
+        //     { name: "20:00 - 22:00" },
+        //   ],
+        // });
+    }
+  };
+
   const closeOpenDate = () => {
     setOpenDate(false);
   };
@@ -75,7 +116,7 @@ const Reservations = () => {
   const renderInputElements = (
     key: SelectType,
     onChange: () => void,
-    value: string | Date
+    value: string | Date | LaundryType
   ): React.ReactElement => {
     switch (key) {
       case "date":
@@ -102,7 +143,7 @@ const Reservations = () => {
           <>
             <Pressable onPress={onOpenTime}>
               <Input
-                value={date ? date.toDateString() : firstDate}
+                value={value as string}
                 editable={false}
               />
             </Pressable>
@@ -111,6 +152,7 @@ const Reservations = () => {
               closeModal={closeTime}
               onCancel={closeTime}
               onSave={closeTime}
+              onChange={onChange}
             />
           </>
         );
@@ -118,19 +160,18 @@ const Reservations = () => {
         return (
           <SelectInput
             onChange={onChange}
-            value={value as string}
             onOpen={() => handleOpenSelect(key)}
+            items={items?.values}
+            title={items?.title}
           />
-        );
+        )
     }
   };
 
   const renderReservationForm = useMemo(() => {
     const onSubmit = (data: FormReservation) => {
-      // console.log(watch("date"));
-      // openTime();
       onOpenAlert();
-      console.log(watch("date"));
+      console.log("submit", watch("laundry"));
     };
 
     return (
@@ -164,7 +205,7 @@ const Reservations = () => {
         </YStack>
       </Form>
     );
-  }, [openDate, openTime]);
+  }, [openDate, openTime, isLoadingLaundries, items]);
 
   return (
     <YStack w="100%" h="100%" overflow="visible">

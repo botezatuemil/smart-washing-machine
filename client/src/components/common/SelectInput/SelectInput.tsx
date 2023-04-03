@@ -4,19 +4,18 @@ import { Adapt, Select, Sheet, YStack } from "tamagui";
 import { LinearGradient } from "tamagui/linear-gradient";
 import EntypoIcon from "react-native-vector-icons/Entypo";
 import Feather from "react-native-vector-icons/Feather";
-import * as styles from "./SelectInput.styles"
 
-
-type SelectProps = {
-  value : string,
+type SelectProps<T> = {
+  value ?: string,
   onChange: (newValue : string) => void
   onOpen: () => void
+  items: T[] | undefined
+  title: string | undefined
 }
 
-const SelectInput = ({onChange, value, onOpen} : SelectProps) => {
-
+const SelectInput = <T extends {name: string, obj: any} >({onChange, value, onOpen, items, title} : SelectProps<T>) => {
   return (
-    <Select id="food" value={value} onValueChange={onChange} onOpenChange={onOpen}>
+    <Select id="food"  onValueChange={onChange} onOpenChange={onOpen}>
       <Select.Trigger
         w="100%"
         iconAfter={<EntypoIcon name="chevron-small-down" size={25} />}
@@ -58,13 +57,13 @@ const SelectInput = ({onChange, value, onOpen} : SelectProps) => {
 
         <Select.Viewport minWidth={200}>
           <Select.Group space="$0">
-            <Select.Label>Fruits</Select.Label>
-            {items.map((item, i) => {
+            <Select.Label>{title}</Select.Label>
+            {items && items.map((item, i) => {
               return (
                 <Select.Item
                   index={i}
                   key={item.name}
-                  value={item.name.toLowerCase()}
+                  value={item.obj}
                   w="100%"
                 >
                   <Select.ItemText>{item.name}</Select.ItemText>
@@ -102,27 +101,4 @@ const SelectInput = ({onChange, value, onOpen} : SelectProps) => {
 
 export default SelectInput;
 
-const items = [
-  { name: "Apple" },
-  { name: "Pear" },
-  { name: "Blackberry" },
-  { name: "Peach" },
-  { name: "Apricot" },
-  { name: "Melon" },
-  { name: "Honeydew" },
-  { name: "Starfruit" },
-  { name: "Blueberry" },
-  { name: "Rasberry" },
-  { name: "Strawberry" },
-  { name: "Mango" },
-  { name: "Pineapple" },
-  { name: "Lime" },
-  { name: "Lemon" },
-  { name: "Coconut" },
-  { name: "Guava" },
-  { name: "Papaya" },
-  { name: "Orange" },
-  { name: "Grape" },
-  { name: "Jackfruit" },
-  { name: "Durian" },
-];
+

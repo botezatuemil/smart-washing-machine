@@ -1,11 +1,13 @@
+import React from "react";
+
 export type FormReservation = ReservationResponseType & ReservationRequestType;
 
 export type ReservationRequestType = {
-  laundry: string;
+  laundry: LaundryType;
   washingMachine: string;
   date: Date;
   timeSlot: string;
-  time: Date
+  time: Date;
 };
 
 export type ReservationResponseType = {
@@ -17,4 +19,21 @@ export type SelectInputElements = {
   key: SelectType;
 };
 
-export type SelectType = "laundry" | "washingMachine" | "date" | "timeSlot" | "time";
+export type SelectType =
+  | "laundry"
+  | "washingMachine"
+  | "date"
+  | "timeSlot"
+  | "time";
+
+export type Item = {
+  values: { name: string; obj: any }[] | undefined;
+  title: string;
+};
+
+export type LaundryType = {
+  id: React.Key;
+  laundryName: string;
+  laundryFloor: number;
+  buildingId: number;
+};

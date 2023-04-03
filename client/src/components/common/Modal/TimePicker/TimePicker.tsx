@@ -1,13 +1,15 @@
 import ModalOverlay from "../ModalLayout/ModalOverlay";
 import { Text, YStack, XStack, Input } from "tamagui";
-import { TextInput } from "react-native";
+import { NativeSyntheticEvent, TextInput, TextInputChangeEventData } from "react-native";
 import * as styles from "./TimePicker.styles";
+import { useState } from "react";
 
 type TimePickerProp = {
   isOpen: boolean;
   closeModal: () => void;
   onSave: () => void;
   onCancel: () => void;
+  onChange: (timestamp :string ) => void;
 };
 
 const TimePicker = ({
@@ -15,13 +17,29 @@ const TimePicker = ({
   closeModal,
   onSave,
   onCancel,
+  onChange
 }: TimePickerProp) => {
+
+  const [firstHour, setFirstHour] = useState<string>("");
+  const [firstMinute, setFirstMinute]= useState<string>("");
+  const [lastHour, setLastHour] = useState<string>("");
+  const [lastMinute, setLastMinute] = useState<string>("");
+
+
+  const onSaveInput = () => {
+    const start = firstHour + ":" + firstMinute;
+    const end = lastHour + ":" + lastMinute;
+    const timestamp = start + " - " + end;
+    onChange(timestamp);
+    onSave();
+  }
+  
   return (
     <ModalOverlay
       isOpen={isOpen}
       closeModal={closeModal}
       title={"Time Duration"}
-      onSave={onSave}
+      onSave={onSaveInput}
       onCancel={onCancel}
       saveTitle={"Save"}
       cancelTitle={"Cancel"}
@@ -38,6 +56,7 @@ const TimePicker = ({
                 multiline={false}
                 keyboardType="number-pad"
                 textAlign="center"
+                onChange={(e : NativeSyntheticEvent<TextInputChangeEventData>) => setFirstHour(e.nativeEvent.text)}
               />
               <Text {...styles.labelTime}>Hour</Text>
             </YStack>
@@ -50,6 +69,7 @@ const TimePicker = ({
                 multiline={false}
                 keyboardType="number-pad"
                 textAlign="center"
+                onChange={(e : NativeSyntheticEvent<TextInputChangeEventData>) => setFirstMinute(e.nativeEvent.text)}
               />
               <Text {...styles.labelTime}>Minute</Text>
             </YStack>
@@ -66,6 +86,7 @@ const TimePicker = ({
                 multiline={false}
                 keyboardType="number-pad"
                 textAlign="center"
+                onChange={(e : NativeSyntheticEvent<TextInputChangeEventData>) => setLastHour(e.nativeEvent.text)}
               />
               <Text {...styles.labelTime}>Hour</Text>
             </YStack>
@@ -78,6 +99,7 @@ const TimePicker = ({
                 multiline={false}
                 keyboardType="number-pad"
                 textAlign="center"
+                onChange={(e : NativeSyntheticEvent<TextInputChangeEventData>) => setLastMinute(e.nativeEvent.text)}
               />
               <Text {...styles.labelTime}>Minute</Text>
             </YStack>
