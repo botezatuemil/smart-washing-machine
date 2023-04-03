@@ -13,4 +13,5 @@ router.get('/getStudents', Student_controller_1.getStudents);
 router.post('/login', Auth_controller_1.login);
 router.post('/getLaundryDevices', WashingMachine_controller_1.getLaundryDevices);
 router.get('/getLaundries', Laundry_controller_1.getLaundries);
+router.post('/getDevicesSelect', WashingMachine_controller_1.getDevicesSelect);
 exports.default = router;

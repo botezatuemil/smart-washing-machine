@@ -11,8 +11,8 @@ export type WashingDevice = {
   status: boolean
   opened: boolean
   laundry_id: number
-  type: device
+  type: DeviceType
   student_id: number
 }
 
-export type device = "WASHING_MACHINE" | "TUMBLE_DRYER"
+export type DeviceType = "WASHING_MACHINE" | "TUMBLE_DRYER"

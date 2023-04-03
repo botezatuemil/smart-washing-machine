@@ -22,7 +22,6 @@ type Laundry = {
 export const getLaundryDevices = async (req: Request, res: Response) => {
   const { option } = req.body;
   const convertedDeviceType = convertTypes(option);
-  debugger
   const laundryData: Laundry[] = await prisma.$queryRaw<Laundry[]>`
         SELECT washing_device.id, device_name as washing_device_name, status, opened, laundry_id, type, student_id, first_name, last_name, dorm_id, dorm_number,
         dorm_floor, laundry_floor, dorm.id FROM washing_device
@@ -34,7 +33,20 @@ export const getLaundryDevices = async (req: Request, res: Response) => {
     `;
 
   res.send(convertKeysArray(laundryData));
-  
+};
+
+export const getDevicesSelect = async (req: Request, res: Response) => {
+  try {
+    const {option} = req.body;
+    const convertedDeviceType = convertTypes(option);
+    const washing_device = await prisma.$queryRaw<washing_device[]>`SELECT * from washing_device where washing_device.type = ${convertedDeviceType}::device`;
+    console.log('====================================');
+    console.log(washing_device);
+    console.log('====================================');
+    res.send(convertKeysArray(washing_device));
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const updateWashingMachineStatus = () => {};

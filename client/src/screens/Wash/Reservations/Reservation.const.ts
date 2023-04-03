@@ -3,7 +3,7 @@ import React from "react";
 export type FormReservation = ReservationResponseType & ReservationRequestType;
 
 export type ReservationRequestType = {
-  laundry: LaundryType;
+  laundry: string;
   washingMachine: string;
   date: Date;
   timeSlot: string;

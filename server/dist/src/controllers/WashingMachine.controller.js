@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateWashingMachineStatus = exports.getLaundryDevices = void 0;
+exports.updateWashingMachineStatus = exports.getDevicesSelect = exports.getLaundryDevices = void 0;
 const client_1 = require("@prisma/client");
 const ConvertKeys_1 = require("../utils/ConvertKeys");
 const ConvertTypes_1 = require("../utils/ConvertTypes");
@@ -17,7 +17,6 @@ const prisma = new client_1.PrismaClient();
 const getLaundryDevices = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { option } = req.body;
     const convertedDeviceType = (0, ConvertTypes_1.convertTypes)(option);
-    debugger;
     const laundryData = yield prisma.$queryRaw `
         SELECT washing_device.id, device_name as washing_device_name, status, opened, laundry_id, type, student_id, first_name, last_name, dorm_id, dorm_number,
         dorm_floor, laundry_floor, dorm.id FROM washing_device
@@ -30,5 +29,20 @@ const getLaundryDevices = (req, res) => __awaiter(void 0, void 0, void 0, functi
     res.send((0, ConvertKeys_1.convertKeysArray)(laundryData));
 });
 exports.getLaundryDevices = getLaundryDevices;
+const getDevicesSelect = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { option } = req.body;
+        const convertedDeviceType = (0, ConvertTypes_1.convertTypes)(option);
+        const washing_device = yield prisma.$queryRaw `SELECT * from washing_device where washing_device.type = ${convertedDeviceType}::device`;
+        console.log('====================================');
+        console.log(washing_device);
+        console.log('====================================');
+        res.send((0, ConvertKeys_1.convertKeysArray)(washing_device));
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.getDevicesSelect = getDevicesSelect;
 const updateWashingMachineStatus = () => { };
 exports.updateWashingMachineStatus = updateWashingMachineStatus;
