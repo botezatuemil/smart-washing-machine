@@ -7,7 +7,7 @@ import Feather from "react-native-vector-icons/Feather";
 
 type SelectProps<T> = {
   value ?: string,
-  onChange: (newValue : string) => void
+  onChange: (newValue : string ) => void
   onOpen: () => void
   items: T[] | undefined
   title: string | undefined

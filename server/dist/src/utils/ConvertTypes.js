@@ -9,3 +9,4 @@ const convertTypes = (deviceType) => {
     return client_1.device.TUMBLE_DRYER;
 };
 exports.convertTypes = convertTypes;
+//# sourceMappingURL=ConvertTypes.js.map

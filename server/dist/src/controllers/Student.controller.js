@@ -23,3 +23,4 @@ const getStudents = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getStudents = getStudents;
+//# sourceMappingURL=Student.controller.js.map

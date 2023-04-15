@@ -1,22 +1,19 @@
 import { IP, PORT } from "@env";
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { LoginRequestType } from "../../screens/Auth/Auth.const";
 import { LogBox } from "react-native";
-const url = `http://${IP}:${PORT}/login`;
+const url = `http://${IP}:${PORT}/getAvailableHours`;
 
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 LogBox.ignoreAllLogs();//Ignore all log notifications
 
-export const login = async (userCredidentials: LoginRequestType) => {
-
+export const getAvailableHours = async (day: Date) => {
   try {
-    const {data} = await axios.post(url, userCredidentials);
-    console.log("data", data)
+    const {data} = await axios.post(url, {day});
+    console.log(data);
     return data;
-  } catch (error ) {
+  } catch (error) {
     const message = (error as AxiosError)?.response?.data as string;
     console.log(message)
-    throw new Error(message)
   }
  
 };

@@ -26,6 +26,7 @@ const getLaundryDevices = (req, res) => __awaiter(void 0, void 0, void 0, functi
         WHERE ${convertedDeviceType}::device = type
         GROUP BY washing_device.id, student.first_name, student.last_name, student.dorm_id, dorm.dorm_number, dorm.dorm_floor, laundry.laundry_floor, dorm.id
     `;
+    console.log(laundryData);
     res.send((0, ConvertKeys_1.convertKeysArray)(laundryData));
 });
 exports.getLaundryDevices = getLaundryDevices;
@@ -34,9 +35,6 @@ const getDevicesSelect = (req, res) => __awaiter(void 0, void 0, void 0, functio
         const { option } = req.body;
         const convertedDeviceType = (0, ConvertTypes_1.convertTypes)(option);
         const washing_device = yield prisma.$queryRaw `SELECT * from washing_device where washing_device.type = ${convertedDeviceType}::device`;
-        console.log('====================================');
-        console.log(washing_device);
-        console.log('====================================');
         res.send((0, ConvertKeys_1.convertKeysArray)(washing_device));
     }
     catch (error) {
@@ -46,3 +44,4 @@ const getDevicesSelect = (req, res) => __awaiter(void 0, void 0, void 0, functio
 exports.getDevicesSelect = getDevicesSelect;
 const updateWashingMachineStatus = () => { };
 exports.updateWashingMachineStatus = updateWashingMachineStatus;
+//# sourceMappingURL=WashingMachine.controller.js.map

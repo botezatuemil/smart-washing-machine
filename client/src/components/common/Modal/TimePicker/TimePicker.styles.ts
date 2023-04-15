@@ -19,3 +19,9 @@ export const labelTime : TextProps = {
    color :"#8C90A2",
    fontSize :10,
 }
+
+export const errors : TextProps = {
+  color: "#FF0000",
+  fontFamily : "InterSemi",
+  fontSize: 10
+}

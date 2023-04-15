@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Launch Server",
+      "skipFiles": ["<node_internals>/**"],
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "program": "${workspaceFolder}/server/src/index.ts",
+      "outFiles": ["${workspaceFolder}/server/dist/**/*.js"],
+      "runtimeArgs": ["--require=ts-node/register"],
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/server/**",
+        "!**/node_modules/**"
+      ]
+    }
+  ]
+}

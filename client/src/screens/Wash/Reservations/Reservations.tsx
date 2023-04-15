@@ -12,7 +12,8 @@ import SuccessfulReservation from "../../../components/common/Modal/DialogSucces
 import TimePicker from "../../../components/common/Modal/TimePicker/TimePicker";
 import { useLaundries } from "../../../api/laundry/useLaundry";
 import { useDevicesSelect } from "../../../api/washingDevice/getDevicesSelect/useDevicesSelect";
-import {  DeviceType, WashingOption } from "../../../interfaces";
+import { DeviceType, HourInterval, WashingOption } from "../../../interfaces";
+import { useAvailableHours } from "../../../api/reservation/reservationHours/useAvailableHours";
 
 const selectElements: SelectInputElements[] = [
   { key: "laundry", label: "Select Laundry" },
@@ -30,20 +31,20 @@ const Reservations = () => {
 
   const onSelectedWashing = () => {
     setFocusColor({ wash: "#0055EE", dry: "#8C90A2" });
-    setOptionDevice("washing machine")
+    setOptionDevice("washing machine");
   };
 
   const onSelectedDrying = () => {
     setFocusColor({ dry: "#0055EE", wash: "#8C90A2" });
-    setOptionDevice("tumble dryer")
+    setOptionDevice("tumble dryer");
   };
 
   const [firstDate, _] = useState<string>(new Date().toDateString());
   const [openDate, setOpenDate] = useState<boolean>(false);
   const [openAlert, setOpenAlert] = useState<boolean>(false);
   const [openTime, setOpenTime] = useState<boolean>(false);
-  const [items, setItems] = useState<Item>();
-  const [optionDevice, setOptionDevice] = useState<WashingOption>("washing machine");
+  const [optionDevice, setOptionDevice] =
+    useState<WashingOption>("washing machine");
 
   const {
     handleSubmit,
@@ -54,42 +55,11 @@ const Reservations = () => {
     setValue,
   } = useForm<FormReservation>();
 
-
-  const {data: laundries, refetch: refetchLaundry, isLoading: isLoadingLaundries} = useLaundries(); 
-  const {data : devices, refetch: refetchDevice ,isLoading: isLoadingDevices} = useDevicesSelect(optionDevice);
-  
-
-  const handleOpenSelect =  (key: SelectType) => {
-    switch (key) {
-      case "washingMachine":
-        refetchDevice();
-        const valuesDevice = devices?.map(laundry => ({obj: {...laundry}, name: laundry.deviceName }))
-        setItems({
-          title: "Available Devices",
-          values: valuesDevice,
-        });
-        break;
-      case "laundry":
-        refetchLaundry();
-        const valuesLaundry = laundries?.map(laundry => ({obj: {...laundry}, name: laundry.laundryName + " / floor " + laundry.laundryFloor }))
-        setItems({
-          title: "Available Laundries",
-          values: valuesLaundry,
-        });
-        
-        break;
-      case "timeSlot":
-        // setItems({
-        //   title: "Choose time slot",
-        //   values: [
-        //     { name: "09:00 - 12:00" },
-        //     { name: "14:00 - 15:00" },
-        //     { name: "16:00 - 18:00" },
-        //     { name: "20:00 - 22:00" },
-        //   ],
-        // });
-    }
-  };
+  const { items: laundries, refetch: refetchLaundry } = useLaundries();
+  const { items: devices, refetch: refetchDevice } =
+    useDevicesSelect(optionDevice);
+  const { items: availableHours, refetch: refetchAvailableHours } =
+    useAvailableHours(watch("date"));
 
   const closeOpenDate = () => {
     setOpenDate(false);
@@ -117,7 +87,7 @@ const Reservations = () => {
   const renderInputElements = (
     key: SelectType,
     onChange: () => void,
-    value: string | Date | LaundryType
+    value: string | Date | LaundryType | HourInterval
   ): React.ReactElement => {
     switch (key) {
       case "date":
@@ -140,40 +110,57 @@ const Reservations = () => {
           </>
         );
       case "time":
+        const { timeSlot } = getValues();
         return (
           <>
             <Pressable onPress={onOpenTime}>
-              <Input
-                value={value as string}
-                editable={false}
-              />
+              <Input value={value as string} editable={false} />
             </Pressable>
             <TimePicker
+              day={watch("date")}
               isOpen={openTime}
               closeModal={closeTime}
               onCancel={closeTime}
               onSave={closeTime}
-              onChange={onChange}
+              onChange={(time) => setValue("time", time)}
+              selectedInterval={timeSlot}
             />
           </>
+        );
+      case "laundry":
+        return (
+          <SelectInput
+            onChange={onChange}
+            onOpen={refetchLaundry}
+            items={laundries?.values}
+            title={laundries?.title}
+          />
+        );
+      case "washingMachine":
+        return (
+          <SelectInput
+            onChange={onChange}
+            onOpen={refetchDevice}
+            items={devices?.values}
+            title={devices?.title}
+          />
         );
       default:
         return (
           <SelectInput
             onChange={onChange}
-            onOpen={() => handleOpenSelect(key)}
-            items={items?.values}
-            title={items?.title}
+            onOpen={refetchAvailableHours}
+            items={availableHours?.values}
+            title={availableHours?.title}
           />
-        )
+        );
     }
   };
 
-  const renderReservationForm = useMemo(() => {
+  const renderReservationForm = () => {
     const onSubmit = (data: FormReservation) => {
       onOpenAlert();
-      console.log("submit", watch("laundry"));
-      console.log("submit", watch("washingMachine"));
+      console.log("submit", watch("time"));
     };
 
     return (
@@ -207,7 +194,7 @@ const Reservations = () => {
         </YStack>
       </Form>
     );
-  }, [openDate, openTime, items, isLoadingLaundries, isLoadingDevices, optionDevice]);
+  };
 
   return (
     <YStack w="100%" h="100%" overflow="visible">
@@ -238,7 +225,7 @@ const Reservations = () => {
           Dry
         </Button>
       </XStack>
-      {renderReservationForm}
+      {renderReservationForm()}
       <SuccessfulReservation
         isOpen={openAlert}
         closeModal={closeAlertModal}

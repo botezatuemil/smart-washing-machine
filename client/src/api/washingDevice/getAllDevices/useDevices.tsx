@@ -5,10 +5,10 @@ import { Laundry } from "./types";
 
 export const useDevices = (
   option: WashingOption,
-  onSuccess?: (data: string) => void,
-  onError?: (error: unknown) => void
+
 ) => {
   return useQuery<Laundry[]>(["devices", option], () => getAllDevices(option), {
+    // enabled: true,
     onSuccess : () => console.log("success"),
     onError : () => console.log("error"),
   });

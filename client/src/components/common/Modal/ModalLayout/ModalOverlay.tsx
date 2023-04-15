@@ -12,6 +12,7 @@ type ModalOverlayProp = {
   cancelTitle: string;
   onSave: () => void;
   onCancel: () => void;
+  isDisabled? : boolean
 };
 const ModalOverlay = ({
   isOpen,
@@ -22,11 +23,12 @@ const ModalOverlay = ({
   cancelTitle,
   onSave,
   onCancel,
+  isDisabled
 }: ModalOverlayProp) => {
   return (
     <Stack>
-      <Modal isVisible={isOpen}>
-        <YStack bg="white" borderRadius={12} padding={20}>
+      <Modal  isVisible={isOpen}>
+        <YStack  bg="white" borderRadius={12} padding={20}>
           <XStack alignItems="center" justifyContent="space-between">
             <Text {...styles.text}>{title}</Text>
             <AntIcon name="close" size={20} onPress={closeModal} />
@@ -36,7 +38,7 @@ const ModalOverlay = ({
             <Separator/>
           <XStack alignSelf="flex-end" marginTop={20} space={10}>
             <Button fontFamily="InterSemi" w={100} onPress={onCancel}>{cancelTitle}</Button>
-            <Button fontFamily="InterSemi" backgroundColor="#0055EE" color="white" w={100} onPress={onSave}>{saveTitle}</Button>
+            <Button disabled={isDisabled} fontFamily="InterSemi" backgroundColor="#0055EE" color="white" w={100} onPress={onSave}>{saveTitle}</Button>
           </XStack>
           </YStack>
         </YStack>

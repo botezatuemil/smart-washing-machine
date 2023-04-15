@@ -6,8 +6,8 @@ export type ReservationRequestType = {
   laundry: string;
   washingMachine: string;
   date: Date;
+  time: string;
   timeSlot: string;
-  time: Date;
 };
 
 export type ReservationResponseType = {
