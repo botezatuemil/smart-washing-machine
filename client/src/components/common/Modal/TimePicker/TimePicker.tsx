@@ -37,6 +37,7 @@ const TimePicker = ({
   const [errorsFirstDate, setErrorsFirstDate] = useState<boolean>(false);
   const [errorsLastDate, setErrorsLastDate] = useState<string>();
 
+
   const onSaveInput = () => {
     if (!errorsFirstDate && !errorsLastDate) {
       const value = startTime.format("HH:mm") + "-" + endTime.format("HH:mm");

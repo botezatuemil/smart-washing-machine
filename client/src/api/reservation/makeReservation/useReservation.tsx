@@ -5,14 +5,14 @@ import { ReservationRequestType } from "../../../screens/Wash/Reservations/Reser
 import { addReservation } from "./endpoints";
 
 export const useReservation = (
-  onSuccess?: (data: string) => void,
+  onSuccess: (data: ReservationType) => void,
   onError?: (error: unknown) => void
 ) => {
   return useMutation(
     "reservation",
     async (input: Omit<ReservationType, "id">) => await addReservation(input),
     {
-      onSuccess : () => console.log("Success making a reservation"),
+      onSuccess,
       onError : () => console.log("Error on making a reservation"),
     }
   );

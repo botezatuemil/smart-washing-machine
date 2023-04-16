@@ -1,7 +1,7 @@
 import { PrismaClient, reservation } from "@prisma/client";
 import { Request, Response } from "express";
 import moment from "moment";
-import { parseKeys } from "../utils/ConvertKeys";
+import { convertKeys, parseKeys } from "../utils/ConvertKeys";
 
 const prisma = new PrismaClient();
 
@@ -23,7 +23,7 @@ export const getAvailableHours = async (req: Request, res: Response) => {
       reservation[]
     >`SELECT * from reservation where reservation.reservation_date::DATE = ${sqlDate}::DATE order by reservation.start_hour`;
 
-    
+    console.log(reservations)
     const availableHourRanges = []
     let currentHour = moment(option.day).set({h: MIN_HOUR, m: 0, s: 0}).utcOffset(0)
     let maxHour = moment(option.day).set({h: MAX_HOUR, m: 0, s: 0}).utcOffset(0);
@@ -40,6 +40,8 @@ export const getAvailableHours = async (req: Request, res: Response) => {
       availableHourRanges.push({ startHour: currentHour, endHour: maxHour })
     }
 
+    console.log(availableHourRanges)
+
     res.send({ reserve: availableHourRanges})
   } catch (error) {
     console.log(error);
@@ -52,8 +54,9 @@ export const addReservation = async(req: Request, res: Response) => {
   // get the keys from camel case to snake case to keep consistency across frontend / backend
   const parsedReservation = parseKeys(reservation) as Omit<reservation, "id">;
   try {
-    const data = await prisma.reservation.create({data: parsedReservation})
-    res.send({data})
+    const addedReservation : reservation = await prisma.reservation.create({data: parsedReservation})
+    const convertedReservation = convertKeys(addedReservation)
+    res.send({convertedReservation})
   } catch (error) {
     console.log(error)
   }

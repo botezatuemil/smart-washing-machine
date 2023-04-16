@@ -28,6 +28,7 @@ const getAvailableHours = (req, res) => __awaiter(void 0, void 0, void 0, functi
             .replace("T", " ");
         console.log(option.day);
         const reservations = yield prisma.$queryRaw `SELECT * from reservation where reservation.reservation_date::DATE = ${sqlDate}::DATE order by reservation.start_hour`;
+        console.log(reservations);
         const availableHourRanges = [];
         let currentHour = (0, moment_1.default)(option.day).set({ h: MIN_HOUR, m: 0, s: 0 }).utcOffset(0);
         let maxHour = (0, moment_1.default)(option.day).set({ h: MAX_HOUR, m: 0, s: 0 }).utcOffset(0);
@@ -41,6 +42,7 @@ const getAvailableHours = (req, res) => __awaiter(void 0, void 0, void 0, functi
         if (maxHour.valueOf() - currentHour.valueOf() >= 20 * 60 * 1000) {
             availableHourRanges.push({ startHour: currentHour, endHour: maxHour });
         }
+        console.log(availableHourRanges);
         res.send({ reserve: availableHourRanges });
     }
     catch (error) {
@@ -53,8 +55,9 @@ const addReservation = (req, res) => __awaiter(void 0, void 0, void 0, function*
     // get the keys from camel case to snake case to keep consistency across frontend / backend
     const parsedReservation = (0, ConvertKeys_1.parseKeys)(reservation);
     try {
-        const data = yield prisma.reservation.create({ data: parsedReservation });
-        res.send({ data });
+        const addedReservation = yield prisma.reservation.create({ data: parsedReservation });
+        const convertedReservation = (0, ConvertKeys_1.convertKeys)(addedReservation);
+        res.send({ convertedReservation });
     }
     catch (error) {
         console.log(error);

@@ -23,9 +23,18 @@ const SuccessfulReservation = ({
   data
 }: SuccessReservationProp) => {
 
-  const addReservation = useReservation();
+
+  const onSuccess = (data : ReservationType) => {
+    console.log(data)
+  }
+
+  const addReservation = useReservation(onSuccess);
   const [isActive, setIsActive] = useState<boolean>(false);
+
+  
   const {id} = useUserStore();
+
+ 
 
   const onMakeReservation = () => {
     // get needed reservation data from the data
@@ -36,16 +45,18 @@ const SuccessfulReservation = ({
 
     //split by start hour and end hour
     const hours =  interval!.split("-");
+    console.log(moment(date).utc().set({h: parseInt(hours[0].split(":")[0]), m: parseInt(hours[0].split(":")[1])}),)
 
     // convert start hour and end hour back to moment type
+   
     const reservation : Omit<ReservationType, "id"> = {
       studentId: id,
       laundryId: laundry.id,
       reservationDate: moment(date),
       scheduledEarly: isActive,
       washingDeviceId: device.id,
-      startHour: moment().utc().set({h: parseInt(hours[0].split(":")[0]), m: parseInt(hours[0].split(":")[1])}),
-      endHour : moment().utc().set({h: parseInt(hours[1].split(":")[0]), m: parseInt(hours[1].split(":")[1])}),
+      startHour: moment(date).utc().set({h: parseInt(hours[0].split(":")[0]), m: parseInt(hours[0].split(":")[1])}),
+      endHour : moment(date).utc().set({h: parseInt(hours[1].split(":")[0]), m: parseInt(hours[1].split(":")[1])}),
     }
     addReservation.mutate(reservation)
     closeModal();
