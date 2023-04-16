@@ -39,14 +39,13 @@ const TimePicker = ({
 
   const onSaveInput = () => {
     if (!errorsFirstDate && !errorsLastDate) {
-      console.log("save");
       const value = startTime.format("HH:mm") + "-" + endTime.format("HH:mm");
-      console.log(value);
       onChange(value);
       onSave();
     }
   };
 
+  // for start hour check if is lower than the end hour from the selected interval
   const validateFirstDate = (currentHour: moment.Moment) => {
     const parsedInterval = JSON.parse(
       JSON.stringify(selectedInterval)
@@ -59,6 +58,10 @@ const TimePicker = ({
       setErrorsFirstDate(false);
     }
   };
+
+  // for end hour check if it's higher than the first hour
+  // check if it's lower than the end interval
+  // check if it's no more than 3 hours apart from the first hour
 
   const validateLastDate = (currentHour: moment.Moment) => {
     const parsedInterval = JSON.parse(

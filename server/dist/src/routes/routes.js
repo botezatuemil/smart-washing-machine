@@ -16,5 +16,6 @@ router.post('/getLaundryDevices', WashingMachine_controller_1.getLaundryDevices)
 router.get('/getLaundries', Laundry_controller_1.getLaundries);
 router.post('/getDevicesSelect', WashingMachine_controller_1.getDevicesSelect);
 router.post('/getAvailableHours', Reservation_controller_1.getAvailableHours);
+router.post('/addReservation', Reservation_controller_1.addReservation);
 exports.default = router;
 //# sourceMappingURL=routes.js.map

@@ -16,7 +16,6 @@ const prisma = new client_1.PrismaClient();
 const getLaundries = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const laundries = yield prisma.$queryRaw `SELECT * from laundry`;
-        console.log(laundries);
         res.send((0, ConvertKeys_1.convertKeysArray)(laundries));
     }
     catch (error) {

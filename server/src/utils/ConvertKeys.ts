@@ -9,3 +9,7 @@ export const convertKeysArray = (arrayObjects : any[]) => {
         return _.mapKeys(object, (value, key) => _.camelCase(key));
     })
 }
+
+export const parseKeys = (object : any) => {
+    return _.mapKeys(object, (value, key) => _.snakeCase(key));
+}

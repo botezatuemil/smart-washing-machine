@@ -9,8 +9,13 @@ import {
   SizeTokens,
 } from "tamagui";
 
-const SwitchWithLabel = () => {
-  const [isActive, setIsActive] = useState<boolean>(false);
+type SwitchType = {
+  isActive: boolean;
+  setIsActive: (value : boolean) => void;
+}
+
+const SwitchWithLabel = ({isActive, setIsActive} : SwitchType) => {
+  
 
   return (
     <XStack w={200} ai="center" space="$4" alignItems="center" pt={10}>

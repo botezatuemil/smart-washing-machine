@@ -15,7 +15,6 @@ const prisma = new client_1.PrismaClient();
 const getStudents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const students = yield prisma.$queryRaw `SELECT * FROM student`;
-        console.log(students);
         res.send(JSON.stringify(students));
     }
     catch (error) {

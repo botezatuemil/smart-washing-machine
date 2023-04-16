@@ -14,7 +14,6 @@ export const login = async (req: Request, res: Response) => {
   try {
    
     const { email, password }: AuthResponse = req.body; 
-    console.log(email)
     const result: student[] =
       await prisma.$queryRaw`SELECT * FROM student WHERE email = ${email}`;
 

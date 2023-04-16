@@ -4,7 +4,7 @@ import { Text } from "tamagui";
 import * as styles from "./Reservation.styles";
 import { useForm, Controller } from "react-hook-form";
 import SelectInput from "../../../components/common/SelectInput/SelectInput";
-import { FormReservation, Item, LaundryType } from "./Reservation.const";
+import { FormReservation, Item, LaundryType, ReservationRequestType } from "./Reservation.const";
 import { SelectInputElements, SelectType } from "./Reservation.const";
 import { Pressable } from "react-native";
 import DateTimePickerSelect from "../../../components/common/DateTimePicker/DateTimePicker";
@@ -43,6 +43,7 @@ const Reservations = () => {
   const [openDate, setOpenDate] = useState<boolean>(false);
   const [openAlert, setOpenAlert] = useState<boolean>(false);
   const [openTime, setOpenTime] = useState<boolean>(false);
+  const [formData, setFormData] = useState<ReservationRequestType | undefined>();
   const [optionDevice, setOptionDevice] =
     useState<WashingOption>("washing machine");
 
@@ -83,6 +84,7 @@ const Reservations = () => {
   const closeAlertModal = () => {
     setOpenAlert(false);
   };
+
 
   const renderInputElements = (
     key: SelectType,
@@ -160,7 +162,8 @@ const Reservations = () => {
   const renderReservationForm = () => {
     const onSubmit = (data: FormReservation) => {
       onOpenAlert();
-      console.log("submit", watch("time"));
+      setFormData(data)
+      // console.log("submit", data.date);
     };
 
     return (
@@ -227,9 +230,9 @@ const Reservations = () => {
       </XStack>
       {renderReservationForm()}
       <SuccessfulReservation
+        data={formData}
         isOpen={openAlert}
         closeModal={closeAlertModal}
-        onSave={closeAlertModal}
         onCancel={closeAlertModal}
       />
     </YStack>

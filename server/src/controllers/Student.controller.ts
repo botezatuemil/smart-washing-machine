@@ -13,7 +13,6 @@ export const getStudents = async (req: Request, res: Response) => {
     const students: Student[] = await prisma.$queryRaw<
       Student[]
     >`SELECT * FROM student`;
-    console.log(students);
     res.send(JSON.stringify(students));
   } catch (error) {
     console.log(error);

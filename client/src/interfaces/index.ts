@@ -27,3 +27,14 @@ export type HourInterval = {
   startHour: moment.Moment
   endHour: moment.Moment;
 };
+
+export type ReservationType = {
+  id : React.Key;
+  laundryId : React.Key;
+  washingDeviceId:  React.Key;
+  reservationDate : moment.Moment;
+  startHour : moment.Moment;
+  endHour : moment.Moment;
+  scheduledEarly: boolean;
+  studentId : number;
+}
