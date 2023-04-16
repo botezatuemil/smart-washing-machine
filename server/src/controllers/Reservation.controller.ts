@@ -23,7 +23,6 @@ export const getAvailableHours = async (req: Request, res: Response) => {
       reservation[]
     >`SELECT * from reservation where reservation.reservation_date::DATE = ${sqlDate}::DATE order by reservation.start_hour`;
 
-    console.log(reservations)
     const availableHourRanges = []
     let currentHour = moment(option.day).set({h: MIN_HOUR, m: 0, s: 0}).utcOffset(0)
     let maxHour = moment(option.day).set({h: MAX_HOUR, m: 0, s: 0}).utcOffset(0);
@@ -40,8 +39,6 @@ export const getAvailableHours = async (req: Request, res: Response) => {
       availableHourRanges.push({ startHour: currentHour, endHour: maxHour })
     }
 
-    console.log(availableHourRanges)
-
     res.send({ reserve: availableHourRanges})
   } catch (error) {
     console.log(error);
@@ -55,8 +52,17 @@ export const addReservation = async(req: Request, res: Response) => {
   const parsedReservation = parseKeys(reservation) as Omit<reservation, "id">;
   try {
     const addedReservation : reservation = await prisma.reservation.create({data: parsedReservation})
-    const convertedReservation = convertKeys(addedReservation)
-    res.send({convertedReservation})
+   
+    const reservationStore : unknown[]  = await prisma.$queryRaw`SELECT laundry.laundry_name, laundry.laundry_floor, reservation.*,
+    washing_device.device_name, washing_device.type FROM reservation 
+    INNER JOIN laundry on  laundry.id = ${addedReservation.laundry_id}
+    INNER JOIN washing_device on  washing_device.id = ${addedReservation.washing_device_id}
+    WHERE reservation.id = ${addedReservation.id}`
+
+    const convertedReservation = convertKeys(reservationStore[0])
+    console.log(convertedReservation)
+
+    res.send(convertedReservation)
   } catch (error) {
     console.log(error)
   }

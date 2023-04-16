@@ -8,6 +8,7 @@ import { HourInterval, ReservationType } from "../../../../interfaces";
 import { WashingDevice } from "../../../../api/washingDevice/getDevicesSelect/types";
 import moment from "moment";
 import { useUserStore } from "../../../../store/UserStore";
+import { ReservationStore, useReservationStore } from "../../../../store/ReservationStore";
 
 type SuccessReservationProp = {
   isOpen: boolean;
@@ -23,17 +24,15 @@ const SuccessfulReservation = ({
   data
 }: SuccessReservationProp) => {
 
-
-  const onSuccess = (data : ReservationType) => {
-    console.log(data)
+  const { addReservationStore } = useReservationStore();
+  const onSuccess = (data : ReservationStore) => {
+    addReservationStore(data)
   }
 
   const addReservation = useReservation(onSuccess);
   const [isActive, setIsActive] = useState<boolean>(false);
-
   
   const {id} = useUserStore();
-
  
 
   const onMakeReservation = () => {
@@ -45,7 +44,6 @@ const SuccessfulReservation = ({
 
     //split by start hour and end hour
     const hours =  interval!.split("-");
-    console.log(moment(date).utc().set({h: parseInt(hours[0].split(":")[0]), m: parseInt(hours[0].split(":")[1])}),)
 
     // convert start hour and end hour back to moment type
    

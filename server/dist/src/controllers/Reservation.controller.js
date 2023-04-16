@@ -28,7 +28,6 @@ const getAvailableHours = (req, res) => __awaiter(void 0, void 0, void 0, functi
             .replace("T", " ");
         console.log(option.day);
         const reservations = yield prisma.$queryRaw `SELECT * from reservation where reservation.reservation_date::DATE = ${sqlDate}::DATE order by reservation.start_hour`;
-        console.log(reservations);
         const availableHourRanges = [];
         let currentHour = (0, moment_1.default)(option.day).set({ h: MIN_HOUR, m: 0, s: 0 }).utcOffset(0);
         let maxHour = (0, moment_1.default)(option.day).set({ h: MAX_HOUR, m: 0, s: 0 }).utcOffset(0);
@@ -42,7 +41,6 @@ const getAvailableHours = (req, res) => __awaiter(void 0, void 0, void 0, functi
         if (maxHour.valueOf() - currentHour.valueOf() >= 20 * 60 * 1000) {
             availableHourRanges.push({ startHour: currentHour, endHour: maxHour });
         }
-        console.log(availableHourRanges);
         res.send({ reserve: availableHourRanges });
     }
     catch (error) {
@@ -56,8 +54,14 @@ const addReservation = (req, res) => __awaiter(void 0, void 0, void 0, function*
     const parsedReservation = (0, ConvertKeys_1.parseKeys)(reservation);
     try {
         const addedReservation = yield prisma.reservation.create({ data: parsedReservation });
-        const convertedReservation = (0, ConvertKeys_1.convertKeys)(addedReservation);
-        res.send({ convertedReservation });
+        const reservationStore = yield prisma.$queryRaw `SELECT laundry.laundry_name, laundry.laundry_floor, reservation.*,
+    washing_device.device_name, washing_device.type FROM reservation 
+    INNER JOIN laundry on  laundry.id = ${addedReservation.laundry_id}
+    INNER JOIN washing_device on  washing_device.id = ${addedReservation.washing_device_id}
+    WHERE reservation.id = ${addedReservation.id}`;
+        const convertedReservation = (0, ConvertKeys_1.convertKeys)(reservationStore[0]);
+        console.log(convertedReservation);
+        res.send(convertedReservation);
     }
     catch (error) {
         console.log(error);

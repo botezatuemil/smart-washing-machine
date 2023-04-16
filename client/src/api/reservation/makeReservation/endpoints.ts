@@ -10,7 +10,7 @@ LogBox.ignoreAllLogs();//Ignore all log notifications
 export const addReservation = async (reservation : Omit<ReservationType, "id">) => {
   try {
     const {data} = await axios.post(url, {reservation});
-    console.log(data);
+    // console.log(data);
     return data;
   } catch (error) {
     const message = (error as AxiosError)?.response?.data as string;

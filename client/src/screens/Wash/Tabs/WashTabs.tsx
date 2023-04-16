@@ -173,7 +173,7 @@ export const Wash = () => {
         exitVariant={exitVariant}
       >
         <AnimatedYStack key={currentTab} x={0} o={1} f={1} animation="quick">
-          <Tabs.Content value={currentTab} forceMount f={1} jc="center">
+          <Tabs.Content value={currentTab} forceMount f={1} >
             {renderByTab()}
           </Tabs.Content>
         </AnimatedYStack>
