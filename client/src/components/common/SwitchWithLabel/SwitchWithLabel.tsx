@@ -30,6 +30,7 @@ const SwitchWithLabel = ({isActive, setIsActive} : SwitchType) => {
         borderWidth={1}
         borderColor={`${isActive ? "white" : "#e0dede"}`}
         onCheckedChange={() => setIsActive(!isActive)}
+        checked={isActive}
       >
         <Switch.Thumb bg="black" animation="bouncy" />
       </Switch>
