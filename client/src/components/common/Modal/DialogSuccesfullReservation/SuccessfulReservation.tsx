@@ -7,6 +7,7 @@ import { useReservation } from "../../../../api/reservation/makeReservation/useR
 import { HourInterval, ReservationType } from "../../../../interfaces";
 import { WashingDevice } from "../../../../api/washingDevice/getDevicesSelect/types";
 import moment from "moment";
+import { useUserStore } from "../../../../store/UserStore";
 
 type SuccessReservationProp = {
   isOpen: boolean;
@@ -24,6 +25,7 @@ const SuccessfulReservation = ({
 
   const addReservation = useReservation();
   const [isActive, setIsActive] = useState<boolean>(false);
+  const {id} = useUserStore();
 
   const onMakeReservation = () => {
     // get needed reservation data from the data
@@ -37,7 +39,7 @@ const SuccessfulReservation = ({
 
     // convert start hour and end hour back to moment type
     const reservation : Omit<ReservationType, "id"> = {
-      studentId: 1,
+      studentId: id,
       laundryId: laundry.id,
       reservationDate: moment(date),
       scheduledEarly: isActive,

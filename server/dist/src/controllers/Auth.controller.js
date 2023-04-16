@@ -31,9 +31,6 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 first_name: result[0].first_name,
                 last_name: result[0].last_name,
             }, process.env.TOKEN_KEY);
-            console.log('====================================');
-            console.log(token);
-            console.log('====================================');
             res.send(JSON.stringify(token));
         }
         else {

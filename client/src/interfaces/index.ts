@@ -36,5 +36,5 @@ export type ReservationType = {
   startHour : moment.Moment;
   endHour : moment.Moment;
   scheduledEarly: boolean;
-  studentId : number;
+  studentId : React.Key;
 }

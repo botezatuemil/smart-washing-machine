@@ -30,9 +30,7 @@ export const login = async (req: Request, res: Response) => {
         },
         process.env.TOKEN_KEY as string
       );
-      console.log('====================================');
-      console.log(token);
-      console.log('====================================');
+     
       res.send(JSON.stringify(token));
     } else {
       console.log("Password does not match");
