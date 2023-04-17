@@ -1,7 +1,7 @@
 import { PrismaClient, reservation } from "@prisma/client";
 import { Request, Response } from "express";
 import moment from "moment";
-import { convertKeys, parseKeys } from "../utils/ConvertKeys";
+import { convertKeys, convertKeysArray, parseKeys } from "../utils/ConvertKeys";
 
 const prisma = new PrismaClient();
 
@@ -63,6 +63,22 @@ export const addReservation = async(req: Request, res: Response) => {
     console.log(convertedReservation)
 
     res.send(convertedReservation)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const getHistory = async (req: Request, res: Response) => {
+  const {id} = req.body;
+  try {
+    const reservationStore : unknown[]  = await prisma.$queryRaw`SELECT laundry.laundry_name, laundry.laundry_floor, reservation.*,
+    washing_device.device_name, washing_device.type FROM reservation
+    INNER JOIN laundry on  laundry.id = reservation.laundry_id
+    INNER JOIN washing_device on  washing_device.id = reservation.washing_device_id
+    WHERE reservation.student_id = ${id}`;
+    console.log(convertKeysArray(reservationStore))
+    res.send(convertKeysArray(reservationStore));
+    
   } catch (error) {
     console.log(error)
   }

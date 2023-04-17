@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addReservation = exports.getAvailableHours = void 0;
+exports.getHistory = exports.addReservation = exports.getAvailableHours = void 0;
 const client_1 = require("@prisma/client");
 const moment_1 = __importDefault(require("moment"));
 const ConvertKeys_1 = require("../utils/ConvertKeys");
@@ -68,4 +68,20 @@ const addReservation = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.addReservation = addReservation;
+const getHistory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.body;
+    try {
+        const reservationStore = yield prisma.$queryRaw `SELECT laundry.laundry_name, laundry.laundry_floor, reservation.*,
+    washing_device.device_name, washing_device.type FROM reservation
+    INNER JOIN laundry on  laundry.id = reservation.laundry_id
+    INNER JOIN washing_device on  washing_device.id = reservation.washing_device_id
+    WHERE reservation.student_id = ${id}`;
+        console.log((0, ConvertKeys_1.convertKeysArray)(reservationStore));
+        res.send((0, ConvertKeys_1.convertKeysArray)(reservationStore));
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.getHistory = getHistory;
 //# sourceMappingURL=Reservation.controller.js.map

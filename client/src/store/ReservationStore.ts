@@ -15,13 +15,15 @@ export type ReservationStore = {
   studentId: React.Key;
   startHour: moment.Moment;
   endHour: moment.Moment;
-  date: moment.Moment;
+  reservationDate: moment.Moment;
 };
 
 type ReservationStoreType = {
   reservations: ReservationStore[];
   addReservationStore: (reservation: ReservationStore) => void;
   removeReservationStore: (id: React.Key) => void;
+  setReservations : (reservations : ReservationStore[]) => void;
+  sortedReservations : () => Map<string, ReservationStore[]>;
 };
 
 export const useReservationStore = create<ReservationStoreType>()(
@@ -37,5 +39,29 @@ export const useReservationStore = create<ReservationStoreType>()(
         ),
       });
     },
+    setReservations: (reservations : ReservationStore[]) => {
+      set({
+        reservations: reservations,
+      });
+    },
+    sortedReservations : () => {
+        const reservations = get().reservations;
+        let hashmap = new Map<string, ReservationStore[]>();
+
+        reservations.map(reservation => {
+            const date = moment(reservation.reservationDate).utc().format("L");
+            const prev = hashmap.get(date);
+           
+            if (prev) {
+                hashmap.set(date, [...prev, reservation]);
+            } else {
+                hashmap.set(date, [reservation]);
+            }
+        })
+
+       
+
+        return hashmap
+    }
   })
 );

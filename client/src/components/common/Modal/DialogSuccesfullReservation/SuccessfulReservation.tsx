@@ -57,7 +57,7 @@ const SuccessfulReservation = ({
       endHour : moment(date).utc().set({h: parseInt(hours[1].split(":")[0]), m: parseInt(hours[1].split(":")[1])}),
     }
     addReservation.mutate(reservation)
-    closeModal();
+    closeModal()
   }
 
   return (
