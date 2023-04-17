@@ -12,74 +12,97 @@ export const getAvailableHours = async (req: Request, res: Response) => {
   try {
     const option: { day: Date } = req.body;
 
-    const sqlDate =  moment(option.day)
+    const sqlDate = moment(option.day)
       .toISOString()
       .slice(0, 19)
-      .replace("T", " ")
+      .replace("T", " ");
 
-      console.log(option.day);
+    console.log(option.day);
 
     const reservations = await prisma.$queryRaw<
       reservation[]
     >`SELECT * from reservation where reservation.reservation_date::DATE = ${sqlDate}::DATE order by reservation.start_hour`;
 
-    const availableHourRanges = []
-    let currentHour = moment(option.day).set({h: MIN_HOUR, m: 0, s: 0}).utcOffset(0)
-    let maxHour = moment(option.day).set({h: MAX_HOUR, m: 0, s: 0}).utcOffset(0);
-    
+    const availableHourRanges = [];
+    let currentHour = moment(option.day)
+      .set({ h: MIN_HOUR, m: 0, s: 0 })
+      .utcOffset(0);
+    let maxHour = moment(option.day)
+      .set({ h: MAX_HOUR, m: 0, s: 0 })
+      .utcOffset(0);
+
     reservations.forEach((interval) => {
-      if (interval.start_hour.getTime() - currentHour.valueOf() >= 20 * 60 * 1000) {
-        availableHourRanges.push({ startHour: currentHour, endHour: moment(interval.start_hour).utcOffset(0)});
+      if (
+        interval.start_hour.getTime() - currentHour.valueOf() >=
+        20 * 60 * 1000
+      ) {
+        availableHourRanges.push({
+          startHour: currentHour,
+          endHour: moment(interval.start_hour).utcOffset(0),
+        });
       }
       currentHour = moment(interval.end_hour).utcOffset(0);
     });
-   
-     // Check if there's an available range between the last interval's endHour and the maxHour
+
+    // Check if there's an available range between the last interval's endHour and the maxHour
     if (maxHour.valueOf() - currentHour.valueOf() >= 20 * 60 * 1000) {
-      availableHourRanges.push({ startHour: currentHour, endHour: maxHour })
+      availableHourRanges.push({ startHour: currentHour, endHour: maxHour });
     }
 
-    res.send({ reserve: availableHourRanges})
+    res.send({ reserve: availableHourRanges });
   } catch (error) {
     console.log(error);
   }
 };
 
-export const addReservation = async(req: Request, res: Response) => {
-  const {reservation} = req.body
+export const addReservation = async (req: Request, res: Response) => {
+  const { reservation } = req.body;
 
   // get the keys from camel case to snake case to keep consistency across frontend / backend
   const parsedReservation = parseKeys(reservation) as Omit<reservation, "id">;
   try {
-    const addedReservation : reservation = await prisma.reservation.create({data: parsedReservation})
-   
-    const reservationStore : unknown[]  = await prisma.$queryRaw`SELECT laundry.laundry_name, laundry.laundry_floor, reservation.*,
+    const addedReservation: reservation = await prisma.reservation.create({
+      data: parsedReservation,
+    });
+
+    const reservationStore: unknown[] =
+      await prisma.$queryRaw`SELECT laundry.laundry_name, laundry.laundry_floor, reservation.*,
     washing_device.device_name, washing_device.type FROM reservation 
     INNER JOIN laundry on  laundry.id = ${addedReservation.laundry_id}
     INNER JOIN washing_device on  washing_device.id = ${addedReservation.washing_device_id}
-    WHERE reservation.id = ${addedReservation.id}`
+    WHERE reservation.id = ${addedReservation.id}`;
 
-    const convertedReservation = convertKeys(reservationStore[0])
-    console.log(convertedReservation)
+    const convertedReservation = convertKeys(reservationStore[0]);
+    console.log(convertedReservation);
 
-    res.send(convertedReservation)
+    res.send(convertedReservation);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
 
 export const getHistory = async (req: Request, res: Response) => {
-  const {id} = req.body;
+  const { id } = req.body;
   try {
-    const reservationStore : unknown[]  = await prisma.$queryRaw`SELECT laundry.laundry_name, laundry.laundry_floor, reservation.*,
+    const reservationStore: unknown[] =
+      await prisma.$queryRaw`SELECT laundry.laundry_name, laundry.laundry_floor, reservation.*,
     washing_device.device_name, washing_device.type FROM reservation
     INNER JOIN laundry on  laundry.id = reservation.laundry_id
     INNER JOIN washing_device on  washing_device.id = reservation.washing_device_id
     WHERE reservation.student_id = ${id}`;
-    console.log(convertKeysArray(reservationStore))
+    console.log(convertKeysArray(reservationStore));
     res.send(convertKeysArray(reservationStore));
-    
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getIncomingReservation = async (req: Request, res: Response) => {
+  const user_id: number = res.locals.user_id;
+  try {
+    console.log(user_id);
+    res.send({user_id})
   } catch (error) {
     console.log(error)
   }
-}
+};

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getHistory = exports.addReservation = exports.getAvailableHours = void 0;
+exports.getIncomingReservation = exports.getHistory = exports.addReservation = exports.getAvailableHours = void 0;
 const client_1 = require("@prisma/client");
 const moment_1 = __importDefault(require("moment"));
 const ConvertKeys_1 = require("../utils/ConvertKeys");
@@ -29,11 +29,19 @@ const getAvailableHours = (req, res) => __awaiter(void 0, void 0, void 0, functi
         console.log(option.day);
         const reservations = yield prisma.$queryRaw `SELECT * from reservation where reservation.reservation_date::DATE = ${sqlDate}::DATE order by reservation.start_hour`;
         const availableHourRanges = [];
-        let currentHour = (0, moment_1.default)(option.day).set({ h: MIN_HOUR, m: 0, s: 0 }).utcOffset(0);
-        let maxHour = (0, moment_1.default)(option.day).set({ h: MAX_HOUR, m: 0, s: 0 }).utcOffset(0);
+        let currentHour = (0, moment_1.default)(option.day)
+            .set({ h: MIN_HOUR, m: 0, s: 0 })
+            .utcOffset(0);
+        let maxHour = (0, moment_1.default)(option.day)
+            .set({ h: MAX_HOUR, m: 0, s: 0 })
+            .utcOffset(0);
         reservations.forEach((interval) => {
-            if (interval.start_hour.getTime() - currentHour.valueOf() >= 20 * 60 * 1000) {
-                availableHourRanges.push({ startHour: currentHour, endHour: (0, moment_1.default)(interval.start_hour).utcOffset(0) });
+            if (interval.start_hour.getTime() - currentHour.valueOf() >=
+                20 * 60 * 1000) {
+                availableHourRanges.push({
+                    startHour: currentHour,
+                    endHour: (0, moment_1.default)(interval.start_hour).utcOffset(0),
+                });
             }
             currentHour = (0, moment_1.default)(interval.end_hour).utcOffset(0);
         });
@@ -53,7 +61,9 @@ const addReservation = (req, res) => __awaiter(void 0, void 0, void 0, function*
     // get the keys from camel case to snake case to keep consistency across frontend / backend
     const parsedReservation = (0, ConvertKeys_1.parseKeys)(reservation);
     try {
-        const addedReservation = yield prisma.reservation.create({ data: parsedReservation });
+        const addedReservation = yield prisma.reservation.create({
+            data: parsedReservation,
+        });
         const reservationStore = yield prisma.$queryRaw `SELECT laundry.laundry_name, laundry.laundry_floor, reservation.*,
     washing_device.device_name, washing_device.type FROM reservation 
     INNER JOIN laundry on  laundry.id = ${addedReservation.laundry_id}
@@ -84,4 +94,15 @@ const getHistory = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getHistory = getHistory;
+const getIncomingReservation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user_id = res.locals.user_id;
+    try {
+        console.log(user_id);
+        res.send({ user_id });
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.getIncomingReservation = getIncomingReservation;
 //# sourceMappingURL=Reservation.controller.js.map

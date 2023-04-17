@@ -22,21 +22,7 @@ const History = () => {
 
   const { data } = useHistory(id);
   const hashmap = sortedReservations();
-
-  // console.log('====================================');
-  // console.log(data);
-  // console.log('====================================');
-
-  // hashmap.forEach((value, key) => {
-  //   console.log("key", key);
-  //   value.map((v) => {
-  //     console.log(v);
-  //   });
-  // });
-
-  // const myMap = new Map<string, { id: number }[]>();
-  // myMap.set('04/04/2023', [{id: 1}]);
-  // myMap.set('05/04/2023', [{id: 2}, {id: 3}]);
+ 
 
   return (
     <ScrollView
