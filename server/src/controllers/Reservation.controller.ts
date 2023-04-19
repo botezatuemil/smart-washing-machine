@@ -99,10 +99,20 @@ export const getHistory = async (req: Request, res: Response) => {
 
 export const getIncomingReservation = async (req: Request, res: Response) => {
   const user_id: number = res.locals.user_id;
+
+ 
   try {
-    console.log(user_id);
-    res.send({user_id})
+    const reservationStore: unknown[] =
+      await prisma.$queryRaw`SELECT laundry.laundry_name, laundry.laundry_floor, reservation.*,
+      washing_device.device_name, washing_device.type FROM reservation
+      INNER JOIN laundry on  laundry.id = reservation.laundry_id
+      INNER JOIN washing_device on  washing_device.id = reservation.washing_device_id
+      WHERE reservation.student_id = ${user_id} 
+      AND reservation.start_hour::timestamp >= (NOW() AT TIME ZONE 'Europe/Bucharest')
+      ORDER BY reservation.reservation_date DESC, reservation.start_hour ASC  LIMIT 1`;
+      console.log("recent", convertKeys(reservationStore))
+    res.send(convertKeys(reservationStore[0]));
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 };

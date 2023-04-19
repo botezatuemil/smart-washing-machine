@@ -8,7 +8,7 @@ import {getIncomingReservation} from "./endpoints"
 
 export const useIncomingReservation = (token: string) => {
   return useQuery<ReservationStore>("incomingReservation", async () => await getIncomingReservation(token), {
-    onSuccess : () => console.log("success incoming"),
-    onError : () => console.log("error incoming"),
+    onSuccess : (data) => console.log(data),
+    onError : () => console.log("error incoming"), 
   });
 };

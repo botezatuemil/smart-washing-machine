@@ -26,4 +26,4 @@ const verifyJWT = (req, res, next) => {
     }
 };
 exports.verifyJWT = verifyJWT;
-//# sourceMappingURL=auth.js.map
+//# sourceMappingURL=Auth.js.map
