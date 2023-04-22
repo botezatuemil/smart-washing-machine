@@ -9,10 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateWashingMachineStatus = exports.getDevicesSelect = exports.getLaundryDevices = void 0;
+exports.startWashing = exports.updateWashingMachineStatus = exports.getDevicesSelect = exports.getLaundryDevices = void 0;
 const client_1 = require("@prisma/client");
 const ConvertKeys_1 = require("../utils/ConvertKeys");
 const ConvertTypes_1 = require("../utils/ConvertTypes");
+const mqttServer_1 = require("../utils/mqttServer");
 const prisma = new client_1.PrismaClient();
 const getLaundryDevices = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { option } = req.body;
@@ -43,4 +44,17 @@ const getDevicesSelect = (req, res) => __awaiter(void 0, void 0, void 0, functio
 exports.getDevicesSelect = getDevicesSelect;
 const updateWashingMachineStatus = () => { };
 exports.updateWashingMachineStatus = updateWashingMachineStatus;
+const startWashing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.body;
+        const wash = yield prisma.$queryRaw `SELECT reservation.washing_device_id from reservation where reservation.id = ${id}`;
+        const updated = yield prisma.$queryRaw `UPDATE washing_device SET status = false where id = ${wash[0].washing_device_id}`;
+        (0, mqttServer_1.powerSmartPlug)("cmnd/tasmota/POWER", "on");
+        res.status(200).json("Washing machine unlocked successfully!");
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.startWashing = startWashing;
 //# sourceMappingURL=WashingMachine.controller.js.map

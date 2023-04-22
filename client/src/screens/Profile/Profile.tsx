@@ -26,7 +26,6 @@ const Profile = () => {
 
   useEffect(() => {
     const socket = io(`http://${IP}:${PORT}`);
-
     socket.on('connect', () => {
       console.log("connected");
       setStatus("connected")

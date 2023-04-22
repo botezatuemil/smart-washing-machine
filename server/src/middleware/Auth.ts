@@ -32,3 +32,20 @@ export const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
     }
   }
 };
+
+export const verifyQR = (req: Request, res: Response, next: NextFunction) => {
+  const token: string | string[] | undefined = req.headers["x-access-token"];
+  if (!token) {
+    res.send("Permission not authorized without scanning!");
+  } else {
+    try {
+      if (process.env.QR_KEY !== token) {
+        res.send("Failed to authenticate");
+      } else {
+        next();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};

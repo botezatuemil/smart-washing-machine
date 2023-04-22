@@ -25,7 +25,6 @@ const io = new Server(httpServer, {cors: {origin: "*"}});
 io.on('connection', async(socket) => {
   
   console.log('A user has connected!');
-
   const interval = setInterval(async () => {
     const data = await getPowerStatus();
     io.emit('washing_machine', data);
@@ -39,4 +38,5 @@ io.on('connection', async(socket) => {
   
 httpServer.listen(port, async() => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+ 
 });

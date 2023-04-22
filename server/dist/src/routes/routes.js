@@ -20,5 +20,6 @@ router.post('/getAvailableHours', Reservation_controller_1.getAvailableHours);
 router.post('/addReservation', Reservation_controller_1.addReservation);
 router.post('/getHistory', Reservation_controller_1.getHistory);
 router.get('/getIncomingReservation', Auth_1.verifyJWT, Reservation_controller_1.getIncomingReservation);
+router.post('/sendQR', Auth_1.verifyQR, WashingMachine_controller_1.startWashing);
 exports.default = router;
 //# sourceMappingURL=routes.js.map

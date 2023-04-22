@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPowerStatus = void 0;
+exports.powerSmartPlug = exports.getPowerStatus = void 0;
 const mqtt = require("mqtt");
 const fs = require('fs');
 const host = "localhost";
@@ -38,4 +38,13 @@ const getPowerStatus = () => {
     });
 };
 exports.getPowerStatus = getPowerStatus;
+const powerSmartPlug = (topic, payload) => {
+    client.publish(topic, payload, (error) => {
+        console.log(payload);
+        if (error) {
+            console.error(error);
+        }
+    });
+};
+exports.powerSmartPlug = powerSmartPlug;
 //# sourceMappingURL=mqttServer.js.map

@@ -116,7 +116,7 @@ const Reservations = () => {
         return (
           <>
             <Pressable onPress={onOpenTime}>
-              <Input value={value as string} editable={false} />
+              <Input placeholder="Select time" value={value as string} editable={false} />
             </Pressable>
             <TimePicker
               day={watch("date")}
@@ -132,6 +132,7 @@ const Reservations = () => {
       case "laundry":
         return (
           <SelectInput
+            placeholder="Choose a laundry"
             onChange={onChange}
             onOpen={refetchLaundry}
             items={laundries?.values}
@@ -141,6 +142,7 @@ const Reservations = () => {
       case "washingMachine":
         return (
           <SelectInput
+            placeholder="Available washing devices"
             onChange={onChange}
             onOpen={refetchDevice}
             items={devices?.values}
@@ -150,6 +152,7 @@ const Reservations = () => {
       default:
         return (
           <SelectInput
+            placeholder="Choose an available hour interval"
             onChange={onChange}
             onOpen={refetchAvailableHours}
             items={availableHours?.values}

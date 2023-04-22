@@ -11,17 +11,18 @@ type SelectProps<T> = {
   onOpen: () => void
   items: T[] | undefined
   title: string | undefined
+  placeholder: string
 }
 
-const SelectInput = <T extends {name: string, obj: any} >({onChange, value, onOpen, items, title} : SelectProps<T>) => {
+const SelectInput = <T extends {name: string, obj: any} >({placeholder, onChange, value, onOpen, items, title} : SelectProps<T>) => {
+  
   return (
-    <Select id="food"  onValueChange={onChange} onOpenChange={onOpen}>
+    <Select onValueChange={onChange} onOpenChange={onOpen}>
       <Select.Trigger
         w="100%"
         iconAfter={<EntypoIcon name="chevron-small-down" size={25} />}
-        
       >
-        <Select.Value placeholder="Something" />
+        <Select.Value placeholder={placeholder}/>
       </Select.Trigger>
 
       <Adapt when="sm" platform="touch">

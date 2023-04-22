@@ -2,6 +2,7 @@ import { device, PrismaClient, washing_device } from "@prisma/client";
 import { Request, Response } from "express";
 import { convertKeys, convertKeysArray } from "../utils/ConvertKeys";
 import { convertTypes } from "../utils/ConvertTypes";
+import { powerSmartPlug } from "../utils/mqttServer";
 const prisma = new PrismaClient();
 
 type Laundry = {
@@ -47,3 +48,15 @@ export const getDevicesSelect = async (req: Request, res: Response) => {
 };
 
 export const updateWashingMachineStatus = () => {};
+
+export const startWashing = async (req: Request, res: Response) => {
+  try {
+    const {id} = req.body;
+    const wash = await prisma.$queryRaw<{washing_device_id: number}[]>`SELECT reservation.washing_device_id from reservation where reservation.id = ${id}`
+    const updated = await prisma.$queryRaw`UPDATE washing_device SET status = false where id = ${wash[0].washing_device_id}`
+    powerSmartPlug("cmnd/tasmota/POWER", "on")
+    res.status(200).json("Washing machine unlocked successfully!");
+  } catch (error) {
+    console.log(error)
+  }
+}
