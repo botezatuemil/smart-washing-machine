@@ -30,36 +30,43 @@ const UserWash = () => {
 
   const sendQR = useQR(onSuccess);
 
+  const calculateCurrentTime = () => {
+    const now = moment();
+    const difference = -moment().toDate().getTimezoneOffset() / 60;
+    now.set({ h: now.hour() + difference });
+    return now;
+  };
+
+  const calculateDifference = (end: moment.Moment, now: moment.Moment) => {
+    const duration = moment.duration(end.diff(moment.utc(now))).asMinutes();
+    const hours = Math.floor(duration / 60);
+    const minutes = duration % 60;
+    return { duration, hours, minutes };
+  };
+
+  const formatTime = (hours: number, minutes: number) => {
+    return `${hours.toString().padStart(2, "0")}:${Math.round(minutes)
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
   const getTime = (deadline: moment.Moment | undefined) => {
     if (reservation) {
       const end = moment(deadline);
-      const now = moment();
-      const difference = -moment().toDate().getTimezoneOffset() / 60;
-      now.set({ h: now.hour() + difference });
+      const now = calculateCurrentTime();
 
-      const duration = moment.duration(end.diff(moment.utc(now))).asMinutes();
-      const hours = Math.floor(duration / 60);
-      const minutes = duration % 60;
-      let displayedTime = `${hours.toString().padStart(2, "0")}:${Math.round(
-        minutes
-      )
-        .toString()
-        .padStart(2, "0")}`;;
+      let { duration, hours, minutes } = calculateDifference(end, now);
+      let displayedTime = formatTime(hours, minutes);
 
       // only a window of 10 minutes to scan after that it cancels the reservation
       // duration <= 0 && duration >= -10
       if (duration >= 0 && !successStarting) {
-         displayedTime = `${-hours.toString().padStart(2, "0")}:${Math.round(
-          minutes
-        )
-          .toString()
-          .padStart(2, "0")}`;
-          setDeviceState("SCAN");
-       
+        displayedTime = formatTime(-hours, minutes);
+        setDeviceState("SCAN");
       } else if (duration >= 0 && successStarting) {
         setDeviceState("IN PROGRESS");
-      } else if (duration >=0) {
-        setDeviceState("IDLE")
+      } else if (duration >= 0) {
+        setDeviceState("IDLE");
       }
 
       setTime(displayedTime);
@@ -77,7 +84,9 @@ const UserWash = () => {
   };
 
   useEffect(() => {
-    const deadline = !successStarting ? reservation?.startHour : reservation?.endHour;
+    const deadline = !successStarting
+      ? reservation?.startHour
+      : reservation?.endHour;
     getTime(deadline);
     const interval = setInterval(() => getTime(deadline), 60000);
     getBarCodeScannerPermissions();
@@ -133,7 +142,7 @@ const UserWash = () => {
           )}
           <WashingMachineDoor label="Remaining Time" time={time} />
           <YStack h="30%" w="85%" justifyContent="flex-end">
-           <ButtonState onPress={scanQR} deviceState={deviceState}/>
+            <ButtonState onPress={scanQR} deviceState={deviceState} />
           </YStack>
         </YStack>
       ) : (
