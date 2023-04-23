@@ -8,6 +8,7 @@ import { ReservationStore } from "../../../store/ReservationStore";
 import * as styles from "./UserWash.styles";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { useQR } from "../../../api/authQR/useQR";
+import ButtonState from "../../../components/common/ButtonState";
 
 type WashingState = "IDLE" | "IN PROGRESS" | "FINISHED" | "SCAN" | "CANCELED";
 const opacity = "rgba(0, 0, 0, .6)";
@@ -15,13 +16,19 @@ const opacity = "rgba(0, 0, 0, .6)";
 const UserWash = () => {
   const { token } = useLoginStore();
   const { data: reservation } = useIncomingReservation(token);
+
   const [deviceState, setDeviceState] = useState<WashingState>("IDLE");
   const [time, setTime] = useState<string>("");
   const [openCamera, setOpenCamera] = useState<boolean>(false);
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const [scanned, setScanned] = useState<boolean>(false);
+  const [successStarting, setSuccessStarting] = useState<boolean>(false);
 
-  const sendQR = useQR();
+  const onSuccess = (data: string) => {
+    setSuccessStarting(true);
+  };
+
+  const sendQR = useQR(onSuccess);
 
   const getTime = (deadline: moment.Moment | undefined) => {
     if (reservation) {
@@ -33,22 +40,29 @@ const UserWash = () => {
       const duration = moment.duration(end.diff(moment.utc(now))).asMinutes();
       const hours = Math.floor(duration / 60);
       const minutes = duration % 60;
-      const formattedDiff = `${hours.toString().padStart(2, "0")}:${Math.round(
+      let displayedTime = `${hours.toString().padStart(2, "0")}:${Math.round(
         minutes
       )
         .toString()
-        .padStart(2, "0")}`;
-      setTime(formattedDiff);
+        .padStart(2, "0")}`;;
 
       // only a window of 10 minutes to scan after that it cancels the reservation
       // duration <= 0 && duration >= -10
-      if (duration >= 0) {
-        setDeviceState("SCAN");
-      } else if (duration > 0) {
-        setDeviceState("IDLE");
-      } else {
-        setDeviceState("CANCELED");
+      if (duration >= 0 && !successStarting) {
+         displayedTime = `${-hours.toString().padStart(2, "0")}:${Math.round(
+          minutes
+        )
+          .toString()
+          .padStart(2, "0")}`;
+          setDeviceState("SCAN");
+       
+      } else if (duration >= 0 && successStarting) {
+        setDeviceState("IN PROGRESS");
+      } else if (duration >=0) {
+        setDeviceState("IDLE")
       }
+
+      setTime(displayedTime);
     }
   };
 
@@ -63,12 +77,13 @@ const UserWash = () => {
   };
 
   useEffect(() => {
-    getTime(reservation?.startHour);
-    const interval = setInterval(() => getTime(reservation?.startHour), 60000);
+    const deadline = !successStarting ? reservation?.startHour : reservation?.endHour;
+    getTime(deadline);
+    const interval = setInterval(() => getTime(deadline), 60000);
     getBarCodeScannerPermissions();
 
     return () => clearInterval(interval);
-  }, [reservation]);
+  }, [reservation, successStarting]);
 
   const handleBarCodeScanned = ({ type, data }: any) => {
     if (data && reservation) {
@@ -118,17 +133,7 @@ const UserWash = () => {
           )}
           <WashingMachineDoor label="Remaining Time" time={time} />
           <YStack h="30%" w="85%" justifyContent="flex-end">
-            <Button
-              onPress={scanQR}
-              disabled={deviceState === "IDLE" && true}
-              backgroundColor={`${
-                deviceState === "SCAN" ? "#0055EE" : "#89aae8"
-              }`}
-            >
-              <Text fontFamily="InterSemi" color="white">
-                SCAN
-              </Text>
-            </Button>
+           <ButtonState onPress={scanQR} deviceState={deviceState}/>
           </YStack>
         </YStack>
       ) : (

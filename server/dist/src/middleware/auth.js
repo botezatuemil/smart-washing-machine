@@ -34,7 +34,7 @@ const verifyQR = (req, res, next) => {
     else {
         try {
             if (process.env.QR_KEY !== token) {
-                res.send("Failed to authenticate");
+                res.status(400).json("Failed to authenticate");
             }
             else {
                 next();

@@ -17,7 +17,7 @@ export const getAvailableHours = async (req: Request, res: Response) => {
       .slice(0, 19)
       .replace("T", " ");
 
-    console.log(option.day);
+    // console.log(option.day);
 
     const reservations = await prisma.$queryRaw<
       reservation[]
@@ -73,7 +73,7 @@ export const addReservation = async (req: Request, res: Response) => {
     WHERE reservation.id = ${addedReservation.id}`;
 
     const convertedReservation = convertKeys(reservationStore[0]);
-    console.log(convertedReservation);
+    // console.log(convertedReservation);
 
     res.send(convertedReservation);
   } catch (error) {
@@ -90,7 +90,7 @@ export const getHistory = async (req: Request, res: Response) => {
     INNER JOIN laundry on  laundry.id = reservation.laundry_id
     INNER JOIN washing_device on  washing_device.id = reservation.washing_device_id
     WHERE reservation.student_id = ${id}`;
-    console.log(convertKeysArray(reservationStore));
+    // console.log(convertKeysArray(reservationStore));
     res.send(convertKeysArray(reservationStore));
   } catch (error) {
     console.log(error);
@@ -110,7 +110,7 @@ export const getIncomingReservation = async (req: Request, res: Response) => {
       WHERE reservation.student_id = ${user_id} 
       AND reservation.start_hour::timestamp >= (NOW() AT TIME ZONE 'Europe/Bucharest')
       ORDER BY reservation.reservation_date DESC, reservation.start_hour ASC  LIMIT 1`;
-      console.log("recent", convertKeys(reservationStore))
+      // console.log("recent", convertKeys(reservationStore))
     res.send(convertKeys(reservationStore[0]));
   } catch (error) {
     console.log(error);

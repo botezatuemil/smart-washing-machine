@@ -26,7 +26,7 @@ const getAvailableHours = (req, res) => __awaiter(void 0, void 0, void 0, functi
             .toISOString()
             .slice(0, 19)
             .replace("T", " ");
-        console.log(option.day);
+        // console.log(option.day);
         const reservations = yield prisma.$queryRaw `SELECT * from reservation where reservation.reservation_date::DATE = ${sqlDate}::DATE order by reservation.start_hour`;
         const availableHourRanges = [];
         let currentHour = (0, moment_1.default)(option.day)
@@ -70,7 +70,7 @@ const addReservation = (req, res) => __awaiter(void 0, void 0, void 0, function*
     INNER JOIN washing_device on  washing_device.id = ${addedReservation.washing_device_id}
     WHERE reservation.id = ${addedReservation.id}`;
         const convertedReservation = (0, ConvertKeys_1.convertKeys)(reservationStore[0]);
-        console.log(convertedReservation);
+        // console.log(convertedReservation);
         res.send(convertedReservation);
     }
     catch (error) {
@@ -86,7 +86,7 @@ const getHistory = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     INNER JOIN laundry on  laundry.id = reservation.laundry_id
     INNER JOIN washing_device on  washing_device.id = reservation.washing_device_id
     WHERE reservation.student_id = ${id}`;
-        console.log((0, ConvertKeys_1.convertKeysArray)(reservationStore));
+        // console.log(convertKeysArray(reservationStore));
         res.send((0, ConvertKeys_1.convertKeysArray)(reservationStore));
     }
     catch (error) {
@@ -104,7 +104,7 @@ const getIncomingReservation = (req, res) => __awaiter(void 0, void 0, void 0, f
       WHERE reservation.student_id = ${user_id} 
       AND reservation.start_hour::timestamp >= (NOW() AT TIME ZONE 'Europe/Bucharest')
       ORDER BY reservation.reservation_date DESC, reservation.start_hour ASC  LIMIT 1`;
-        console.log("recent", (0, ConvertKeys_1.convertKeys)(reservationStore));
+        // console.log("recent", convertKeys(reservationStore))
         res.send((0, ConvertKeys_1.convertKeys)(reservationStore[0]));
     }
     catch (error) {
