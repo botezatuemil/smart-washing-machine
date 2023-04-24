@@ -11,7 +11,7 @@ export const login = async (userCredidentials: LoginRequestType) => {
 
   try {
     const {data} = await axios.post(url, userCredidentials);
-    console.log("data", data)
+    console.log(data);
     return data;
   } catch (error ) {
     const message = (error as AxiosError)?.response?.data as string;

@@ -18,7 +18,7 @@ export const sendQR = async (request: QRRequestType) => {
         },
       }
     );
-    console.log("data", data);
+    console.log(data)
     return data;
   } catch (error) {
     const message = (error as AxiosError)?.response?.data as string;

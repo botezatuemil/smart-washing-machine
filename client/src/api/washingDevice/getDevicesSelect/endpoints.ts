@@ -11,7 +11,7 @@ LogBox.ignoreAllLogs();
 export const getDevicesSelect = async (option: WashingOption) => {
   try {
     const {data} = await axios.post(url, {option});
-    console.log(data)
+    console.log("data", data);
     return data;
   } catch (error) {
     const message = (error as AxiosError)?.response?.data as string;

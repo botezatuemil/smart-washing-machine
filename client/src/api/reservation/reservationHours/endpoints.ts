@@ -9,11 +9,10 @@ LogBox.ignoreAllLogs();//Ignore all log notifications
 export const getAvailableHours = async (day: Date) => {
   try {
     const {data} = await axios.post(url, {day});
-    console.log(data);
+    console.log("data", data);
     return data;
   } catch (error) {
     const message = (error as AxiosError)?.response?.data as string;
     console.log(message)
   }
- 
 };

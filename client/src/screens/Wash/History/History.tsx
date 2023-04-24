@@ -22,7 +22,6 @@ const History = () => {
 
   const { data } = useHistory(id);
   const hashmap = sortedReservations();
- 
 
   return (
     <ScrollView

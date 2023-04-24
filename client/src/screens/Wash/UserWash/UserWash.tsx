@@ -9,23 +9,26 @@ import * as styles from "./UserWash.styles";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { useQR } from "../../../api/authQR/useQR";
 import ButtonState from "../../../components/common/ButtonState";
+import { useDeviceStatusStore } from "../../../store/DeviceStatus";
 
 type WashingState = "IDLE" | "IN PROGRESS" | "FINISHED" | "SCAN" | "CANCELED";
 const opacity = "rgba(0, 0, 0, .6)";
 
 const UserWash = () => {
   const { token } = useLoginStore();
-  const { data: reservation } = useIncomingReservation(token);
+  const { data: reservation, refetch } = useIncomingReservation(token);
+  const { status, setStatus } = useDeviceStatusStore();
 
   const [deviceState, setDeviceState] = useState<WashingState>("IDLE");
   const [time, setTime] = useState<string>("");
   const [openCamera, setOpenCamera] = useState<boolean>(false);
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const [scanned, setScanned] = useState<boolean>(false);
-  const [successStarting, setSuccessStarting] = useState<boolean>(false);
+ 
 
   const onSuccess = (data: string) => {
-    setSuccessStarting(true);
+    // setStatus(false);
+    refetch();
   };
 
   const sendQR = useQR(onSuccess);
@@ -60,10 +63,10 @@ const UserWash = () => {
 
       // only a window of 10 minutes to scan after that it cancels the reservation
       // duration <= 0 && duration >= -10
-      if (duration >= 0 && !successStarting) {
+      if (duration >= 0 && status) {
         displayedTime = formatTime(-hours, minutes);
         setDeviceState("SCAN");
-      } else if (duration >= 0 && successStarting) {
+      } else if (duration >= 0 && !status) {
         setDeviceState("IN PROGRESS");
       } else if (duration >= 0) {
         setDeviceState("IDLE");
@@ -84,7 +87,13 @@ const UserWash = () => {
   };
 
   useEffect(() => {
-    const deadline = !successStarting
+
+    if (reservation) {
+      setStatus(reservation.status)
+    }
+   
+
+    const deadline = reservation?.status 
       ? reservation?.startHour
       : reservation?.endHour;
     getTime(deadline);
@@ -92,7 +101,8 @@ const UserWash = () => {
     getBarCodeScannerPermissions();
 
     return () => clearInterval(interval);
-  }, [reservation, successStarting]);
+  }, [reservation, status]);
+
 
   const handleBarCodeScanned = ({ type, data }: any) => {
     if (data && reservation) {
