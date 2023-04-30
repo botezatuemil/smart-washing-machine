@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.startWashing = exports.updateWashingMachineStatus = exports.getDevicesSelect = exports.getLaundryDevices = void 0;
+exports.updateWashingMachineStatus = exports.startWashing = exports.getDevicesSelect = exports.getLaundryDevices = void 0;
 const client_1 = require("@prisma/client");
 const ConvertKeys_1 = require("../utils/ConvertKeys");
 const ConvertTypes_1 = require("../utils/ConvertTypes");
@@ -42,14 +42,12 @@ const getDevicesSelect = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.getDevicesSelect = getDevicesSelect;
-const updateWashingMachineStatus = () => { };
-exports.updateWashingMachineStatus = updateWashingMachineStatus;
 const startWashing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.body;
         const wash = yield prisma.$queryRaw `SELECT reservation.washing_device_id from reservation where reservation.id = ${id}`;
         const updated = yield prisma.$queryRaw `UPDATE washing_device SET status = false where id = ${wash[0].washing_device_id}`;
-        (0, mqttServer_1.powerSmartPlug)("cmnd/tasmota/POWER", "on");
+        (0, mqttServer_1.powerSmartPlug)("cmnd/tasmota_1/POWER", "on");
         res.status(200).json("Washing machine unlocked successfully!");
     }
     catch (error) {
@@ -57,4 +55,14 @@ const startWashing = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.startWashing = startWashing;
+const updateWashingMachineStatus = (smart_plug_id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const wash = yield prisma.$queryRaw `SELECT smart_plug.washing_device_id from smart_plug where smart_plug.id = ${smart_plug_id}`;
+        const updated = yield prisma.$queryRaw `UPDATE washing_device SET status = true where id = ${wash[0].washing_device_id}`;
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.updateWashingMachineStatus = updateWashingMachineStatus;
 //# sourceMappingURL=WashingMachine.controller.js.map

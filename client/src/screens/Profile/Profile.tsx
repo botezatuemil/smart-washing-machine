@@ -5,9 +5,6 @@ import {PORT, IP} from "@env";
 import { Button, YStack } from 'tamagui'
 import * as styles from "./Profile.styles"
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
-import { DrawerStackParams } from "../../navigation/DrawerNavigation";
 import { useLoginStore } from "../../store/LoginStore";
 const Profile = () => {
 
@@ -43,7 +40,7 @@ const Profile = () => {
     return () => {
       socket.disconnect();
     }
-  },[])
+  }, [])
 
 
   return (

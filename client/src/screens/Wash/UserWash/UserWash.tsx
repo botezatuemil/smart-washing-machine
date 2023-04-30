@@ -10,6 +10,8 @@ import { BarCodeScanner } from "expo-barcode-scanner";
 import { useQR } from "../../../api/authQR/useQR";
 import ButtonState from "../../../components/common/ButtonState";
 import { useDeviceStatusStore } from "../../../store/DeviceStatus";
+import { PORT, IP } from "@env";
+import io from "socket.io-client";
 
 type WashingState = "IDLE" | "IN PROGRESS" | "FINISHED" | "SCAN" | "CANCELED";
 const opacity = "rgba(0, 0, 0, .6)";
@@ -24,11 +26,11 @@ const UserWash = () => {
   const [openCamera, setOpenCamera] = useState<boolean>(false);
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const [scanned, setScanned] = useState<boolean>(false);
- 
 
   const onSuccess = (data: string) => {
     // setStatus(false);
     refetch();
+    startSocketConnection();
   };
 
   const sendQR = useQR(onSuccess);
@@ -87,22 +89,41 @@ const UserWash = () => {
   };
 
   useEffect(() => {
+    if (deviceState !== "FINISHED") {
+      if (reservation) {
+        setStatus(reservation.status);
+      }
+      const deadline = reservation?.status
+        ? reservation?.startHour
+        : reservation?.endHour;
+      getTime(deadline);
+      const interval = setInterval(() => getTime(deadline), 60000);
+      getBarCodeScannerPermissions();
 
-    if (reservation) {
-      setStatus(reservation.status)
+      return () => clearInterval(interval);
     }
-   
-
-    const deadline = reservation?.status 
-      ? reservation?.startHour
-      : reservation?.endHour;
-    getTime(deadline);
-    const interval = setInterval(() => getTime(deadline), 60000);
-    getBarCodeScannerPermissions();
-
-    return () => clearInterval(interval);
   }, [reservation, status]);
 
+
+  const startSocketConnection = () => {
+    const socket = io(`http://${IP}:${PORT}`);
+    socket.on("connect", () => {
+      console.log("connected");
+    });
+
+    socket.on("disconnect", (reason) => {
+      console.log("disconnected", reason);
+    });
+
+    socket.on("washing_machine", (msg : boolean) => {
+      console.log("Received message: ", msg);
+      if (msg) {
+        setDeviceState("FINISHED");
+      }
+    });
+
+   return socket
+  }
 
   const handleBarCodeScanned = ({ type, data }: any) => {
     if (data && reservation) {

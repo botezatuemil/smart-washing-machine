@@ -84,11 +84,15 @@ model washing_device {
   student_id  Int
   student     student       @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   reservation reservation[]
+  smart_plug  smart_plug?
 }
 
 model smart_plug {
-  id   Int    @id @default(autoincrement())
-  name String
+  id                Int            @id @default(autoincrement())
+  name              String
+  identifier        Int            @unique
+  washing_device_id Int            @unique
+  washing_device    washing_device @relation(fields: [washing_device_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model power_consumption {

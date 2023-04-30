@@ -28,6 +28,7 @@ const SuccessfulReservation = ({
   const onSuccess = (data : ReservationStore) => {
     addReservationStore(data)
   }
+  
 
   const addReservation = useReservation(onSuccess);
   const [isActive, setIsActive] = useState<boolean>(false);

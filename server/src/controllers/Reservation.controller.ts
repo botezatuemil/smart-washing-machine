@@ -59,6 +59,7 @@ export const addReservation = async (req: Request, res: Response) => {
   const { reservation } = req.body;
 
   // get the keys from camel case to snake case to keep consistency across frontend / backend
+
   const parsedReservation = parseKeys(reservation) as Omit<reservation, "id">;
   try {
     const addedReservation: reservation = await prisma.reservation.create({

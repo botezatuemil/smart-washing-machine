@@ -47,16 +47,23 @@ export const getDevicesSelect = async (req: Request, res: Response) => {
   }
 };
 
-export const updateWashingMachineStatus = () => {};
-
 export const startWashing = async (req: Request, res: Response) => {
   try {
     const {id} = req.body;
     const wash = await prisma.$queryRaw<{washing_device_id: number}[]>`SELECT reservation.washing_device_id from reservation where reservation.id = ${id}`
     const updated = await prisma.$queryRaw`UPDATE washing_device SET status = false where id = ${wash[0].washing_device_id}`
-    powerSmartPlug("cmnd/tasmota/POWER", "on")
+    powerSmartPlug("cmnd/tasmota_1/POWER", "on")
     res.status(200).json("Washing machine unlocked successfully!");
   } catch (error) {
     console.log(error)
   }
 }
+
+export const updateWashingMachineStatus = async (smart_plug_id: number) => {
+  try {
+    const wash = await prisma.$queryRaw<{washing_device_id: number}[]>`SELECT smart_plug.washing_device_id from smart_plug where smart_plug.id = ${smart_plug_id}`
+    const updated = await prisma.$queryRaw`UPDATE washing_device SET status = true where id = ${wash[0].washing_device_id}`
+  } catch (error) {
+    console.log(error)
+  }
+};

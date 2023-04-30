@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.powerSmartPlug = exports.getPowerStatus = void 0;
+const WashingMachine_controller_1 = require("../controllers/WashingMachine.controller");
 const mqtt = require("mqtt");
-const fs = require('fs');
+const fs = require("fs");
 const host = "localhost";
 const mqttPort = "1883";
 const clientId = `mqtt_${Math.random().toString(16).slice(3)}`;
@@ -13,18 +14,20 @@ const client = mqtt.connect(connectUrl, {
     connectTimeout: 4000,
     reconnectPeriod: 1000,
     username: process.env.mqtt_username,
-    password: process.env.mqtt_password
+    password: process.env.mqtt_password,
 });
-const topic = "stat/tasmota/STATUS8";
+const topic = "stat/+/STATUS8";
 client.on("connect", () => {
     console.log("Connected");
     client.subscribe([topic], () => {
         console.log(`Subscribe to topic '${topic}'`);
     });
 });
-const getPowerStatus = () => {
-    return new Promise(resolve => {
-        client.on('message', (topic, payload) => {
+const getPowerStatus = (energyConsumption, counter) => {
+    return new Promise((resolve) => {
+        client.on("message", (topic, payload) => {
+            const identifier = topic.split('/')[1];
+            const smart_plug_id = identifier.split('_')[1];
             const tasmotaPayload = JSON.parse(payload.toString());
             const content = tasmotaPayload; //.StatusSNS.ENERGY.ApparentPower
             const message = JSON.stringify(content) + "\n";
@@ -32,8 +35,19 @@ const getPowerStatus = () => {
             //     if (err) {
             //         console.log(err);
             //     }
-            // });
-            resolve(content.StatusSNS.ENERGY.ApparentPower);
+            // }); 
+            //  const energyConsumption = content.StatusSNS.ENERGY.ApparentPower;
+            console.log("power", energyConsumption);
+            console.log("index", counter);
+            // data comes at every 3 seconds from the smart plug, so we check if more than 20 power indexes are below 20W
+            // in a minute
+            if (counter >= 20 && energyConsumption <= 20) {
+                (0, WashingMachine_controller_1.updateWashingMachineStatus)(parseInt(smart_plug_id));
+                resolve(true);
+            }
+            else if (energyConsumption > 20) {
+                resolve(false);
+            }
         });
     });
 };
