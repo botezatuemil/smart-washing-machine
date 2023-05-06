@@ -18,16 +18,16 @@ import { useLogin } from "../../api/login/useLogin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import { useLoginStore } from "../../store/LoginStore";
-
+import supabase from "../../supabase/supabase.config";
 
 const Auth = ({ navigation }: any) => {
-
-  const {toggleLogin} = useLoginStore();
+  const { toggleLogin } = useLoginStore();
 
   const {
     handleSubmit,
     formState: { errors },
     control,
+    watch
   } = useForm<FormLogin>();
 
   const onError = (error: unknown) => {
@@ -37,11 +37,18 @@ const Auth = ({ navigation }: any) => {
       text1: message,
     });
   };
-
-  const onSuccess = async (data: string) => {
+   const onSuccess = async (data: string) => {
     try {
       await AsyncStorage.setItem("token", data);
       toggleLogin(true);
+      const email = watch("email");
+      const password = watch("password");
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
       // navigation.navigate("Tabs");
     } catch (error) {
       console.log(error);

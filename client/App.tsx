@@ -9,6 +9,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useColorScheme } from "react-native";
 import { QueryClient, QueryClientProvider } from "react-query";
 
+
 const RootStack = createNativeStackNavigator<RootStackParams>();
 
 export type RootStackParams = {
@@ -36,25 +37,23 @@ export default function App() {
         refetchOnMount: false,
         staleTime: Infinity,
       },
-      
     },
   });
-  
+
   return (
     <QueryClientProvider client={queryClient}>
-    <TamaguiProvider config={config}>
-      <Theme name={colorScheme === "dark" ? "dark" : "light"}>
-        <NavigationContainer>
-          <RootStack.Navigator
-            initialRouteName="Drawer"
-            screenOptions={{ headerShown: false }}
-          >
-            <RootStack.Screen name="Drawer" component={DrawerNavigation} />
-          </RootStack.Navigator>
-        </NavigationContainer>
-      </Theme>
-    </TamaguiProvider>
+      <TamaguiProvider config={config}>
+        <Theme name={colorScheme === "dark" ? "dark" : "light"}>
+          <NavigationContainer>
+            <RootStack.Navigator
+              initialRouteName="Drawer"
+              screenOptions={{ headerShown: false }}
+            >
+              <RootStack.Screen name="Drawer" component={DrawerNavigation} />
+            </RootStack.Navigator>
+          </NavigationContainer>
+        </Theme>
+      </TamaguiProvider>
     </QueryClientProvider>
   );
 }
-
