@@ -23,41 +23,17 @@ app.use("/", router);
 const httpServer = createServer(app);
 const io = new Server(httpServer, {cors: {origin: "*"}});
 
-io.on('connection', async(socket) => {
+// io.on('connection', async(socket) => {
   
-  console.log('A user has connected!');
+//   console.log('A user has connected!');
 
-  let i = 0;
-  let counter = 0;
-  let power : string[]
-  fs.readFile('./src/files/inputTest.txt','utf8', (err : NodeJS.ErrnoException | null, data: any) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    power = data.split(',');
-  });
+  
 
-  let isFinished = false; 
-  const interval = setInterval(async () => {
-    // const data = await getPowerStatus();
-    
-    if (!isFinished) {
-      isFinished = await getPowerStatus(parseInt(power[i+=1]), counter += 1) as boolean;
-      console.log("Finished")
-    } else {
-      // try counting again
-      counter = 0;
-    }
-    console.log(isFinished)
-    io.emit('washing_machine', isFinished);
-  }, 3000);
-
-  socket.on('disconnect', () => {
-    console.log('A user has disconnected.');
-    clearInterval(interval)
-  });
-})
+//   socket.on('disconnect', () => {
+//     console.log('A user has disconnected.');
+//     clearInterval(interval)
+//   });
+// })
   
 httpServer.listen(port, async() => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);

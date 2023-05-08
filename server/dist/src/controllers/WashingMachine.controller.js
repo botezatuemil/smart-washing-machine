@@ -14,6 +14,7 @@ const client_1 = require("@prisma/client");
 const ConvertKeys_1 = require("../utils/ConvertKeys");
 const ConvertTypes_1 = require("../utils/ConvertTypes");
 const mqttServer_1 = require("../utils/mqttServer");
+const fs = require("fs");
 const prisma = new client_1.PrismaClient();
 const getLaundryDevices = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { option } = req.body;
@@ -44,11 +45,41 @@ const getDevicesSelect = (req, res) => __awaiter(void 0, void 0, void 0, functio
 exports.getDevicesSelect = getDevicesSelect;
 const startWashing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id } = req.body;
+        const { id, expoPushToken } = req.body;
         const wash = yield prisma.$queryRaw `SELECT reservation.washing_device_id from reservation where reservation.id = ${id}`;
         const updated = yield prisma.$queryRaw `UPDATE washing_device SET status = false where id = ${wash[0].washing_device_id}`;
-        (0, mqttServer_1.powerSmartPlug)("cmnd/tasmota_1/POWER", "on");
+        const client = (0, mqttServer_1.connectToBroker)();
+        (0, mqttServer_1.powerSmartPlug)("cmnd/tasmota_1/POWER", "on", client);
         res.status(200).json("Washing machine unlocked successfully!");
+        (0, mqttServer_1.getPowerStatus)(expoPushToken, client, "stat/+/STATUS8");
+        // fs.readFile(
+        //   "./src/files/inputTest.txt",
+        //   "utf8",
+        //   (err: NodeJS.ErrnoException | null, data: any) => {
+        //     if (err) {
+        //       console.error(err);
+        //       return;
+        //     }
+        //     power = data.split(",");
+        //   }
+        // );
+        // console.log(isFinished)
+        // let isFinished = false;
+        // const interval = setInterval(async () => {
+        //   // const data = await getPowerStatus();
+        //   if (!isFinished) {
+        //     isFinished = (await getPowerStatus(
+        //       parseInt(power[(i += 1)]),
+        //       (counter += 1)
+        //     )) as boolean;
+        //     console.log("Finished");
+        //   } else {
+        //     // try counting again
+        //     counter = 0;
+        //   }
+        //   console.log(isFinished);
+        //   // io.emit("washing_machine", isFinished);
+        // }, 3000);
     }
     catch (error) {
         console.log(error);

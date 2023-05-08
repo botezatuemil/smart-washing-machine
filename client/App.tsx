@@ -8,8 +8,10 @@ import DrawerNavigation from "./src/navigation/DrawerNavigation";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useColorScheme } from "react-native";
 import { QueryClient, QueryClientProvider } from "react-query";
+import OneSignal from 'react-native-onesignal';
+import { PORT, IP, APP_ID } from "@env";
 
-
+// OneSignal.setAppId('f64a9f37-3f0c-4b04-bfc6-d59be8b425aa');
 const RootStack = createNativeStackNavigator<RootStackParams>();
 
 export type RootStackParams = {

@@ -11,6 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+      "extra": {
+        "oneSignalAppId": "f64a9f37-3f0c-4b04-bfc6-d59be8b425aa"
+      },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -18,17 +21,27 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.smart_laundry"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.smart_laundry"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["react-native-nfc-manager"]
+    "plugins": [
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "development"
+        }
+       
+      ]
+    ]
   }
 }

@@ -2,6 +2,7 @@ import { PrismaClient, reservation } from "@prisma/client";
 import { Request, Response } from "express";
 import moment from "moment";
 import { convertKeys, convertKeysArray, parseKeys } from "../utils/ConvertKeys";
+import { sendNotification } from "../utils/Notifications";
 
 const prisma = new PrismaClient();
 
@@ -101,7 +102,6 @@ export const getHistory = async (req: Request, res: Response) => {
 export const getIncomingReservation = async (req: Request, res: Response) => {
   const user_id: number = res.locals.user_id;
 
- 
   try {
     const reservationStore: unknown[] =
       await prisma.$queryRaw`SELECT laundry.laundry_name, laundry.laundry_floor,reservation.*,
@@ -111,7 +111,8 @@ export const getIncomingReservation = async (req: Request, res: Response) => {
       WHERE reservation.student_id = ${user_id} 
       AND reservation.start_hour::timestamp >= (NOW() AT TIME ZONE 'Europe/Bucharest')
       ORDER BY reservation.reservation_date DESC, reservation.start_hour ASC  LIMIT 1`;
-      // console.log("recent", convertKeys(reservationStore))
+    // console.log("recent", convertKeys(reservationStore))
+   
     res.send(convertKeys(reservationStore[0]));
   } catch (error) {
     console.log(error);

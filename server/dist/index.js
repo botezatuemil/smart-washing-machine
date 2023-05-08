@@ -19,7 +19,6 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const routes_1 = __importDefault(require("./src/routes/routes"));
 const socket_io_1 = require("socket.io");
 const http_1 = require("http");
-const mqttServer_1 = require("./src/utils/mqttServer");
 const fs = require("fs");
 // nodejs server
 dotenv_1.default.config();
@@ -30,37 +29,13 @@ const port = process.env.PORT;
 app.use("/", routes_1.default);
 const httpServer = (0, http_1.createServer)(app);
 const io = new socket_io_1.Server(httpServer, { cors: { origin: "*" } });
-io.on('connection', (socket) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('A user has connected!');
-    let i = 0;
-    let counter = 0;
-    let power;
-    fs.readFile('./src/files/inputTest.txt', 'utf8', (err, data) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        power = data.split(',');
-    });
-    let isFinished = false;
-    const interval = setInterval(() => __awaiter(void 0, void 0, void 0, function* () {
-        // const data = await getPowerStatus();
-        if (!isFinished) {
-            isFinished = (yield (0, mqttServer_1.getPowerStatus)(parseInt(power[i += 1]), counter += 1));
-            console.log("Finished");
-        }
-        else {
-            // try counting again
-            counter = 0;
-        }
-        console.log(isFinished);
-        io.emit('washing_machine', isFinished);
-    }), 3000);
-    socket.on('disconnect', () => {
-        console.log('A user has disconnected.');
-        clearInterval(interval);
-    });
-}));
+// io.on('connection', async(socket) => {
+//   console.log('A user has connected!');
+//   socket.on('disconnect', () => {
+//     console.log('A user has disconnected.');
+//     clearInterval(interval)
+//   });
+// })
 httpServer.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 }));

@@ -1,5 +1,5 @@
 import moment from "moment-timezone";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { YStack, Text, Stack, Button, XStack } from "tamagui";
 import { useIncomingReservation } from "../../../api/reservation/incomingReservation/useIncomingReservation";
 import WashingMachineDoor from "../../../components/WashingMachine/WashingMachineDoor";
@@ -10,8 +10,18 @@ import { BarCodeScanner } from "expo-barcode-scanner";
 import { useQR } from "../../../api/authQR/useQR";
 import ButtonState from "../../../components/common/ButtonState";
 import { useDeviceStatusStore } from "../../../store/DeviceStatus";
-import { PORT, IP } from "@env";
+import { PORT, IP, APP_ID } from "@env";
 import io from "socket.io-client";
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 type WashingState = "IDLE" | "IN PROGRESS" | "FINISHED" | "SCAN" | "CANCELED";
 const opacity = "rgba(0, 0, 0, .6)";
@@ -27,10 +37,64 @@ const UserWash = () => {
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const [scanned, setScanned] = useState<boolean>(false);
 
+  const [expoPushToken, setExpoPushToken] = useState<string>();
+  const [notification, setNotification] = useState< Notifications.Notification>();
+  const notificationListener = useRef<any>();
+  const responseListener = useRef<any>();
+
+  async function registerForPushNotificationsAsync() {
+    let token;
+    if (Device.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!');
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+    } else {
+      alert('Must use physical device for Push Notifications');
+    }
+  
+    // if (Platform.OS === 'android') {
+    //   Notifications.setNotificationChannelAsync('default', {
+    //     name: 'default',
+    //     importance: Notifications.AndroidImportance.MAX,
+    //     vibrationPattern: [0, 250, 250, 250],
+    //     lightColor: '#FF231F7C',
+    //   });
+    // }
+  
+    return token;
+  }
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
+    });
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
+    console.log(notification && notification.request.content.title)
+    console.log(notification && notification.request.content.body)
+    console.log(notification && JSON.stringify(notification.request.content.data))
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
+
+
   const onSuccess = (data: string) => {
-    // setStatus(false);
     refetch();
-    startSocketConnection();
   };
 
   const sendQR = useQR(onSuccess);
@@ -105,30 +169,30 @@ const UserWash = () => {
   }, [reservation, status]);
 
 
-  const startSocketConnection = () => {
-    const socket = io(`http://${IP}:${PORT}`);
-    socket.on("connect", () => {
-      console.log("connected");
-    });
+  // const startSocketConnection = () => {
+  //   const socket = io(`http://${IP}:${PORT}`);
+  //   socket.on("connect", () => {
+  //     console.log("connected");
+  //   });
 
-    socket.on("disconnect", (reason) => {
-      console.log("disconnected", reason);
-    });
+  //   socket.on("disconnect", (reason) => {
+  //     console.log("disconnected", reason);
+  //   });
 
-    socket.on("washing_machine", (msg : boolean) => {
-      console.log("Received message: ", msg);
-      if (msg) {
-        setDeviceState("FINISHED");
-      }
-    });
+  //   socket.on("washing_machine", (msg : boolean) => {
+  //     console.log("Received message: ", msg);
+  //     if (msg) {
+  //       setDeviceState("FINISHED");
+  //     }
+  //   });
 
-   return socket
-  }
+  //  return socket
+  // }
 
   const handleBarCodeScanned = ({ type, data }: any) => {
     if (data && reservation) {
       if (!scanned) {
-        sendQR.mutate({ token: data, reservationId: reservation.id });
+        sendQR.mutate({ token: data, reservationId: reservation.id, expoPushToken: expoPushToken });
         setScanned(true);
       }
       setTimeout(() => {
