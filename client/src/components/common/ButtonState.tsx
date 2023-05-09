@@ -3,7 +3,7 @@ import { Button, Text } from "tamagui";
 
 type ButtonStateType = {
   onPress: () => void;
-  deviceState: "IDLE" | "IN PROGRESS" | "SCAN" | "FINISHED" | "CANCELED";
+  deviceState: "IDLE" | "IN PROGRESS" | "SCAN" | "FINISHED" | "CANCELED" | "FREE";
 };
 const ButtonState = ({ onPress, deviceState }: ButtonStateType) => {
   const getText = () => {

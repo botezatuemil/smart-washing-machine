@@ -17,6 +17,7 @@ export type ReservationStore = {
   endHour: moment.Moment;
   reservationDate: moment.Moment;
   status: boolean;
+  opened: boolean;
 };
 
 type ReservationStoreType = {

@@ -14,7 +14,7 @@ export const getIncomingReservation = async (token: string) => {
         " x-access-token": token,
       },
     });
-    console.log("data", data);
+    // console.log("data", data);
     return data;
   } catch (error) {
     const message = (error as AxiosError)?.response?.data as string;

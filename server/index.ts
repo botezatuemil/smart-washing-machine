@@ -6,6 +6,8 @@ import router from "./src/routes/routes";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import { getPowerStatus } from "./src/utils/mqttServer";
+import "./jobs/backgroundTasks";
+
 const fs = require("fs");
 // nodejs server
 

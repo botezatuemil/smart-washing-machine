@@ -12,8 +12,9 @@ import ButtonState from "../../../components/common/ButtonState";
 import { useDeviceStatusStore } from "../../../store/DeviceStatus";
 import { PORT, IP, APP_ID } from "@env";
 import io from "socket.io-client";
-import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+import { useUserStore } from "../../../store/UserStore";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -23,81 +24,28 @@ Notifications.setNotificationHandler({
   }),
 });
 
-type WashingState = "IDLE" | "IN PROGRESS" | "FINISHED" | "SCAN" | "CANCELED";
+type WashingState = "FREE" | "IN PROGRESS" | "FINISHED" | "SCAN" | "CANCELED";
 const opacity = "rgba(0, 0, 0, .6)";
 
 const UserWash = () => {
   const { token } = useLoginStore();
+  const {id: user_id} = useUserStore();
   const { data: reservation, refetch } = useIncomingReservation(token);
-  const { status, setStatus } = useDeviceStatusStore();
+  // const { status, setStatus } = useDeviceStatusStore();
 
-  const [deviceState, setDeviceState] = useState<WashingState>("IDLE");
+  const [deviceState, setDeviceState] = useState<WashingState>("FREE");
   const [time, setTime] = useState<string>("");
   const [openCamera, setOpenCamera] = useState<boolean>(false);
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const [scanned, setScanned] = useState<boolean>(false);
 
   const [expoPushToken, setExpoPushToken] = useState<string>();
-  const [notification, setNotification] = useState< Notifications.Notification>();
+  const [notification, setNotification] =
+    useState<Notifications.Notification>();
   const notificationListener = useRef<any>();
   const responseListener = useRef<any>();
 
-  async function registerForPushNotificationsAsync() {
-    let token;
-    if (Device.isDevice) {
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== 'granted') {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== 'granted') {
-        alert('Failed to get push token for push notification!');
-        return;
-      }
-      token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(token);
-    } else {
-      alert('Must use physical device for Push Notifications');
-    }
-  
-    // if (Platform.OS === 'android') {
-    //   Notifications.setNotificationChannelAsync('default', {
-    //     name: 'default',
-    //     importance: Notifications.AndroidImportance.MAX,
-    //     vibrationPattern: [0, 250, 250, 250],
-    //     lightColor: '#FF231F7C',
-    //   });
-    // }
-  
-    return token;
-  }
-  useEffect(() => {
-    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      setNotification(notification);
-    });
-
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
-    });
-    console.log(notification && notification.request.content.title)
-    console.log(notification && notification.request.content.body)
-    console.log(notification && JSON.stringify(notification.request.content.data))
-
-    return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current);
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
-
-
-
-  const onSuccess = (data: string) => {
-    refetch();
-  };
-
-  const sendQR = useQR(onSuccess);
+  // console.log("reservation", reservation);
 
   const calculateCurrentTime = () => {
     const now = moment();
@@ -112,6 +60,83 @@ const UserWash = () => {
     const minutes = duration % 60;
     return { duration, hours, minutes };
   };
+
+  const setInitialTime = () => {
+    // set these times, only if i currently 
+    if (reservation && reservation.studentId === user_id) {
+      if (reservation.status && reservation.opened) {
+        return reservation.startHour;
+      } else if (reservation.status && !reservation.opened) {
+        return moment();
+      } else if (!reservation.status) {
+        return reservation.endHour;
+      }
+    }
+  };
+
+  async function registerForPushNotificationsAsync() {
+    let token;
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    // if (Platform.OS === 'android') {
+    //   Notifications.setNotificationChannelAsync('default', {
+    //     name: 'default',
+    //     importance: Notifications.AndroidImportance.MAX,
+    //     vibrationPattern: [0, 250, 250, 250],
+    //     lightColor: '#FF231F7C',
+    //   });
+    // }
+
+    return token;
+  }
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+    console.log(notification && notification.request.content.title);
+    console.log(notification && notification.request.content.body);
+    console.log(
+      notification && JSON.stringify(notification.request.content.data)
+    );
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
+  const onSuccess = (data: string) => {
+    refetch();
+  };
+
+  const sendQR = useQR(onSuccess);
 
   const formatTime = (hours: number, minutes: number) => {
     return `${hours.toString().padStart(2, "0")}:${Math.round(minutes)
@@ -129,13 +154,16 @@ const UserWash = () => {
 
       // only a window of 10 minutes to scan after that it cancels the reservation
       // duration <= 0 && duration >= -10
-      if (duration >= 0 && status) {
+      if (duration <= 0 && duration >= -2) {
         displayedTime = formatTime(-hours, minutes);
         setDeviceState("SCAN");
-      } else if (duration >= 0 && !status) {
-        setDeviceState("IN PROGRESS");
-      } else if (duration >= 0) {
-        setDeviceState("IDLE");
+        // it passed those 10 minutes and the washing machine is free (there is no one that left clothes or WM is not done)
+      } else if (duration < -10 && reservation.opened && reservation.status) {
+        // delete current reservation
+        refetch();
+      }  else if (duration < -10 && !reservation.opened || !reservation.status) {
+        // delay all reservations
+        refetch();
       }
 
       setTime(displayedTime);
@@ -153,46 +181,23 @@ const UserWash = () => {
   };
 
   useEffect(() => {
-    if (deviceState !== "FINISHED") {
-      if (reservation) {
-        setStatus(reservation.status);
-      }
-      const deadline = reservation?.status
-        ? reservation?.startHour
-        : reservation?.endHour;
-      getTime(deadline);
-      const interval = setInterval(() => getTime(deadline), 60000);
-      getBarCodeScannerPermissions();
+    const deadline = setInitialTime();
 
-      return () => clearInterval(interval);
-    }
-  }, [reservation, status]);
+    getTime(deadline);
+    const interval = setInterval(() => getTime(deadline), 60000);
+    getBarCodeScannerPermissions();
 
-
-  // const startSocketConnection = () => {
-  //   const socket = io(`http://${IP}:${PORT}`);
-  //   socket.on("connect", () => {
-  //     console.log("connected");
-  //   });
-
-  //   socket.on("disconnect", (reason) => {
-  //     console.log("disconnected", reason);
-  //   });
-
-  //   socket.on("washing_machine", (msg : boolean) => {
-  //     console.log("Received message: ", msg);
-  //     if (msg) {
-  //       setDeviceState("FINISHED");
-  //     }
-  //   });
-
-  //  return socket
-  // }
+    return () => clearInterval(interval);
+  }, [reservation]);
 
   const handleBarCodeScanned = ({ type, data }: any) => {
     if (data && reservation) {
       if (!scanned) {
-        sendQR.mutate({ token: data, reservationId: reservation.id, expoPushToken: expoPushToken });
+        sendQR.mutate({
+          token: data,
+          reservationId: reservation.id,
+          expoPushToken: expoPushToken,
+        });
         setScanned(true);
       }
       setTimeout(() => {

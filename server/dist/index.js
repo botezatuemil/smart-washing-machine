@@ -19,6 +19,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const routes_1 = __importDefault(require("./src/routes/routes"));
 const socket_io_1 = require("socket.io");
 const http_1 = require("http");
+require("./jobs/backgroundTasks");
 const fs = require("fs");
 // nodejs server
 dotenv_1.default.config();

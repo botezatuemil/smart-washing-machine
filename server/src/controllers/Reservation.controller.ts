@@ -7,7 +7,7 @@ import { sendNotification } from "../utils/Notifications";
 const prisma = new PrismaClient();
 
 const MIN_HOUR = 12;
-const MAX_HOUR = 25;
+const MAX_HOUR = 27;
 
 export const getAvailableHours = async (req: Request, res: Response) => {
   try {
@@ -105,14 +105,15 @@ export const getIncomingReservation = async (req: Request, res: Response) => {
   try {
     const reservationStore: unknown[] =
       await prisma.$queryRaw`SELECT laundry.laundry_name, laundry.laundry_floor,reservation.*,
-      washing_device.device_name, washing_device.type, washing_device.status FROM reservation
+      washing_device.device_name, washing_device.type, washing_device.status, washing_device.opened FROM reservation
       INNER JOIN laundry on  laundry.id = reservation.laundry_id
       INNER JOIN washing_device on  washing_device.id = reservation.washing_device_id
       WHERE reservation.student_id = ${user_id} 
-      AND reservation.start_hour::timestamp >= (NOW() AT TIME ZONE 'Europe/Bucharest')
+      AND reservation.start_hour::timestamp >= (NOW() AT TIME ZONE 'Europe/Bucharest') 
+      -- OR reservation.start_hour::timestamp >= (NOW() AT TIME ZONE 'Europe/Bucharest' - INTERVAL '10' MINUTE)
       ORDER BY reservation.reservation_date DESC, reservation.start_hour ASC  LIMIT 1`;
-    // console.log("recent", convertKeys(reservationStore))
-   
+    console.log("recent", convertKeys(reservationStore[0]))
+
     res.send(convertKeys(reservationStore[0]));
   } catch (error) {
     console.log(error);
