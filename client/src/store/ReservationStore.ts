@@ -13,6 +13,7 @@ export type ReservationStore = {
   deviceName: string;
   type: DeviceType;
   studentId: React.Key;
+  washingDeviceStudentId: React.Key;
   startHour: moment.Moment;
   endHour: moment.Moment;
   reservationDate: moment.Moment;

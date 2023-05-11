@@ -54,7 +54,7 @@ export const getDevicesSelect = async (req: Request, res: Response) => {
 
 export const startWashing = async (req: Request, res: Response) => {
   try {
-    const { id, expoPushToken } = req.body;
+    const { id, expoPushToken, user_id } = req.body;
     const wash = await prisma.$queryRaw<
       { washing_device_id: number }[]
     >`SELECT reservation.washing_device_id from reservation where reservation.id = ${id}`;

@@ -24,20 +24,24 @@ Notifications.setNotificationHandler({
   }),
 });
 
-type WashingState = "FREE" | "IN PROGRESS" | "FINISHED" | "SCAN" | "CANCELED";
+type WashingState = "IDLE" | "IN PROGRESS" | "FINISHED" | "SCAN" | "CANCELED";
 const opacity = "rgba(0, 0, 0, .6)";
 
 const UserWash = () => {
   const { token } = useLoginStore();
-  const {id: user_id} = useUserStore();
+  const { id: user_id } = useUserStore();
   const { data: reservation, refetch } = useIncomingReservation(token);
   // const { status, setStatus } = useDeviceStatusStore();
 
-  const [deviceState, setDeviceState] = useState<WashingState>("FREE");
+  const [deviceState, setDeviceState] = useState<WashingState>("IDLE");
   const [time, setTime] = useState<string>("");
   const [openCamera, setOpenCamera] = useState<boolean>(false);
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const [scanned, setScanned] = useState<boolean>(false);
+
+  const [startHour, setStartHour] = useState<moment.Moment>();
+  const [endHour, setEndHour] = useState<moment.Moment>();
+  
 
   const [expoPushToken, setExpoPushToken] = useState<string>();
   const [notification, setNotification] =
@@ -55,23 +59,36 @@ const UserWash = () => {
   };
 
   const calculateDifference = (end: moment.Moment, now: moment.Moment) => {
-    const duration = moment.duration(end.diff(moment.utc(now))).asMinutes();
-    const hours = Math.floor(duration / 60);
-    const minutes = duration % 60;
+    let duration = 0, hours = 0, minutes = 0;
+    if (reservation) {
+      if (reservation.endHour > now) {
+        duration = moment.duration(end.diff(moment.utc(now))).asMinutes();
+      } else if (reservation.endHour > calculateCurrentTime()) {
+        duration = moment
+          .duration(moment.utc(end).add("minutes", 10).diff(moment.utc(now)))
+          .asMinutes();
+      } else {
+        duration = moment.duration(end.diff(moment.utc(end))).asMinutes();
+      }
+      hours = Math.floor(duration / 60);
+      minutes = duration % 60;
+    }
     return { duration, hours, minutes };
   };
 
   const setInitialTime = () => {
-    // set these times, only if i currently 
-    if (reservation && reservation.studentId === user_id) {
-      if (reservation.status && reservation.opened) {
-        return reservation.startHour;
-      } else if (reservation.status && !reservation.opened) {
-        return moment();
-      } else if (!reservation.status) {
-        return reservation.endHour;
+    // set these times, only if i currently
+
+    if (reservation)
+      if (reservation.washingDeviceStudentId === user_id) {
+        // console.log("res", reservation.washingDeviceStudentId);
+        if (!reservation.status && reservation.endHour > calculateCurrentTime()) {
+          return reservation.endHour;
+        } else {
+          return calculateCurrentTime()
+        }
       }
-    }
+    return reservation?.startHour;
   };
 
   async function registerForPushNotificationsAsync() {
@@ -151,21 +168,19 @@ const UserWash = () => {
 
       let { duration, hours, minutes } = calculateDifference(end, now);
       let displayedTime = formatTime(hours, minutes);
-
+      displayedTime = formatTime(hours, minutes);
+     
       // only a window of 10 minutes to scan after that it cancels the reservation
       // duration <= 0 && duration >= -10
-      if (duration <= 0 && duration >= -2) {
-        displayedTime = formatTime(-hours, minutes);
+      if (reservation.startHour < now && duration <= 10 && reservation.status && reservation.opened) {
         setDeviceState("SCAN");
         // it passed those 10 minutes and the washing machine is free (there is no one that left clothes or WM is not done)
-      } else if (duration < -10 && reservation.opened && reservation.status) {
-        // delete current reservation
-        refetch();
-      }  else if (duration < -10 && !reservation.opened || !reservation.status) {
-        // delay all reservations
-        refetch();
-      }
-
+      } else if (reservation.startHour < now && !reservation.status && reservation.washingDeviceStudentId === user_id) {
+        setDeviceState("IN PROGRESS");
+       
+      } else if (moment(reservation.endHour) < now && reservation.status) {
+        setDeviceState("FINISHED");
+      } 
       setTime(displayedTime);
     }
   };
@@ -182,13 +197,13 @@ const UserWash = () => {
 
   useEffect(() => {
     const deadline = setInitialTime();
-
+    console.log(deadline);
     getTime(deadline);
-    const interval = setInterval(() => getTime(deadline), 60000);
+    const interval = setInterval(() => getTime(deadline), 1000);
     getBarCodeScannerPermissions();
 
     return () => clearInterval(interval);
-  }, [reservation]);
+  }, [reservation, deviceState]);
 
   const handleBarCodeScanned = ({ type, data }: any) => {
     if (data && reservation) {
@@ -197,6 +212,7 @@ const UserWash = () => {
           token: data,
           reservationId: reservation.id,
           expoPushToken: expoPushToken,
+          user_id: user_id,
         });
         setScanned(true);
       }
@@ -234,16 +250,19 @@ const UserWash = () => {
                   {deviceState}
                 </Text>
               </Stack>
+              <WashingMachineDoor label="Remaining Time" time={time} />
+              <YStack h="30%" w="85%" justifyContent="flex-end">
+                <ButtonState onPress={scanQR} deviceState={deviceState} />
+              </YStack>
             </>
           ) : (
-            <Text {...styles.headerText} mt={27}>
-              No reservation incoming
-            </Text>
+            <YStack w="100%" h="100%" ai="center" jc="center">
+              <Text {...styles.headerText} mt={27}>
+                No reservation incoming
+              </Text>
+              <Text {...styles.text}>Please make a reservation first</Text>
+            </YStack>
           )}
-          <WashingMachineDoor label="Remaining Time" time={time} />
-          <YStack h="30%" w="85%" justifyContent="flex-end">
-            <ButtonState onPress={scanQR} deviceState={deviceState} />
-          </YStack>
         </YStack>
       ) : (
         <BarCodeScanner

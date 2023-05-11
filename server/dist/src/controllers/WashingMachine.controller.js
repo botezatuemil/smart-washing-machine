@@ -45,7 +45,7 @@ const getDevicesSelect = (req, res) => __awaiter(void 0, void 0, void 0, functio
 exports.getDevicesSelect = getDevicesSelect;
 const startWashing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id, expoPushToken } = req.body;
+        const { id, expoPushToken, user_id } = req.body;
         const wash = yield prisma.$queryRaw `SELECT reservation.washing_device_id from reservation where reservation.id = ${id}`;
         const updated = yield prisma.$queryRaw `UPDATE washing_device SET status = false where id = ${wash[0].washing_device_id}`;
         const client = (0, mqttServer_1.connectToBroker)();
