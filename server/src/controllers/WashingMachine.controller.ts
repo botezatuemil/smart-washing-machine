@@ -55,6 +55,7 @@ export const getDevicesSelect = async (req: Request, res: Response) => {
 export const startWashing = async (req: Request, res: Response) => {
   try {
     const { id, expoPushToken, user_id } = req.body;
+    console.log(user_id);
     const wash = await prisma.$queryRaw<
       { washing_device_id: number }[]
     >`SELECT reservation.washing_device_id from reservation where reservation.id = ${id}`;
@@ -63,7 +64,7 @@ export const startWashing = async (req: Request, res: Response) => {
     const client = connectToBroker();
     powerSmartPlug("cmnd/tasmota_1/POWER", "on", client);
     res.status(200).json("Washing machine unlocked successfully!");
-    getPowerStatus(expoPushToken, client, "stat/+/STATUS8");
+    getPowerStatus(expoPushToken, client, "stat/+/STATUS8", user_id);
     // fs.readFile(
     //   "./src/files/inputTest.txt",
     //   "utf8",

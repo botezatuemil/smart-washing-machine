@@ -39,7 +39,7 @@ exports.connectToBroker = connectToBroker;
 //     }
 //   });
 // }
-const getPowerStatus = (expoPushToken, client, topic) => {
+const getPowerStatus = (expoPushToken, client, topic, user_id) => {
     client.subscribe([topic], () => {
         console.log(`Subscribe to topic '${topic}'`);
         client.on("message", (topic, payload) => {
@@ -68,11 +68,11 @@ const getPowerStatus = (expoPushToken, client, topic) => {
                 }
                 // if it passed a whole minute between the current time and the earlier saved time, do that
                 if (timestamp.valueOf() - thresholdStartTime.valueOf() >= 10 * 1000) {
-                    (0, exports.powerSmartPlug)(`cmnd/tasmota_${smart_plug_id}/POWER`, "off", client);
+                    // powerSmartPlug(`cmnd/tasmota_${smart_plug_id}/POWER`, "off", client);
                     (0, WashingMachine_controller_1.updateWashingMachineStatus)(parseInt(smart_plug_id));
                     const message = {
                         body: "Your machine has finished washing!",
-                        data: { withSome: "data" },
+                        data: { withSome: user_id.toString() }
                     };
                     (0, Notifications_1.sendNotification)(expoPushToken, message);
                     // unsubscribeFromTopic(`stat/tasmota_${smart_plug_id}/STATUS8`);

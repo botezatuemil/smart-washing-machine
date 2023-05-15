@@ -15,7 +15,7 @@ import ProfileScreenStack from "../screens/Profile/ProfileNavigator";
 import ChatScreenStack from "../screens/Chat/ChatNavigator";
 import InboxScreenStack from "../screens/Inbox/InboxNavigator";
 
-const RootStack = createBottomTabNavigator<RootStackParams>();
+export const RootStack = createBottomTabNavigator<RootStackParams>();
 
 export type RootStackParams = {
   HomeStack: undefined;

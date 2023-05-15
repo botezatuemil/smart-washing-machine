@@ -11,7 +11,7 @@ export const sendQR = async (request: QRRequestType) => {
   try {
     const { data } = await axios.post(
       url,
-      {id: request.reservationId, expoPushToken: request.expoPushToken},
+      {id: request.reservationId, expoPushToken: request.expoPushToken, user_id: request.user_id},
       {
         headers: {
           "x-access-token": request.token,

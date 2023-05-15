@@ -15,6 +15,10 @@ import io from "socket.io-client";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { useUserStore } from "../../../store/UserStore";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParams } from "../../../navigation/TabNavigator";
+import {useNavigation} from  "@react-navigation/native";
+
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -24,24 +28,19 @@ Notifications.setNotificationHandler({
   }),
 });
 
-type WashingState = "IDLE" | "IN PROGRESS" | "FINISHED" | "SCAN" | "CANCELED";
+type WashingState = "IDLE" | "IN PROGRESS" | "FINISHED" | "SCAN" | "CANCELED" | "CONTINUE?" | "CONTINUE?";
 const opacity = "rgba(0, 0, 0, .6)";
 
 const UserWash = () => {
   const { token } = useLoginStore();
   const { id: user_id } = useUserStore();
   const { data: reservation, refetch } = useIncomingReservation(token);
-  // const { status, setStatus } = useDeviceStatusStore();
 
   const [deviceState, setDeviceState] = useState<WashingState>("IDLE");
   const [time, setTime] = useState<string>("");
   const [openCamera, setOpenCamera] = useState<boolean>(false);
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const [scanned, setScanned] = useState<boolean>(false);
-
-  const [startHour, setStartHour] = useState<moment.Moment>();
-  const [endHour, setEndHour] = useState<moment.Moment>();
-  
 
   const [expoPushToken, setExpoPushToken] = useState<string>();
   const [notification, setNotification] =
@@ -50,45 +49,13 @@ const UserWash = () => {
   const responseListener = useRef<any>();
 
   // console.log("reservation", reservation);
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParams>>();
 
   const calculateCurrentTime = () => {
     const now = moment();
     const difference = -moment().toDate().getTimezoneOffset() / 60;
     now.set({ h: now.hour() + difference });
     return now;
-  };
-
-  const calculateDifference = (end: moment.Moment, now: moment.Moment) => {
-    let duration = 0, hours = 0, minutes = 0;
-    if (reservation) {
-      if (reservation.endHour > now) {
-        duration = moment.duration(end.diff(moment.utc(now))).asMinutes();
-      } else if (reservation.endHour > calculateCurrentTime()) {
-        duration = moment
-          .duration(moment.utc(end).add("minutes", 10).diff(moment.utc(now)))
-          .asMinutes();
-      } else {
-        duration = moment.duration(end.diff(moment.utc(end))).asMinutes();
-      }
-      hours = Math.floor(duration / 60);
-      minutes = duration % 60;
-    }
-    return { duration, hours, minutes };
-  };
-
-  const setInitialTime = () => {
-    // set these times, only if i currently
-
-    if (reservation)
-      if (reservation.washingDeviceStudentId === user_id) {
-        // console.log("res", reservation.washingDeviceStudentId);
-        if (!reservation.status && reservation.endHour > calculateCurrentTime()) {
-          return reservation.endHour;
-        } else {
-          return calculateCurrentTime()
-        }
-      }
-    return reservation?.startHour;
   };
 
   async function registerForPushNotificationsAsync() {
@@ -129,17 +96,32 @@ const UserWash = () => {
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
         setNotification(notification);
+
+        if (notification) {
+          refetch();
+        }
       });
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
+        console.log(response); 
+       
+          if (response) {
+            const receivedNotification  = response.notification.request.content.data
+            if (parseInt(receivedNotification.withSome as string) === user_id) {
+              console.log("navigate to current screen")
+              navigation.navigate("WashStack");
+            } else {
+              console.log("navigate la mama naibi")
+              // navigation.navigate("Laundry", {option: props.type})
+            }
+          }
       });
-    console.log(notification && notification.request.content.title);
-    console.log(notification && notification.request.content.body);
-    console.log(
-      notification && JSON.stringify(notification.request.content.data)
-    );
+
+    //   console.log(notification && notification.request.content.title);
+    // console.log(notification && notification.request.content.body);
+    
+    
 
     return () => {
       Notifications.removeNotificationSubscription(
@@ -161,26 +143,40 @@ const UserWash = () => {
       .padStart(2, "0")}`;
   };
 
-  const getTime = (deadline: moment.Moment | undefined) => {
+  const getTime = () => {
     if (reservation) {
-      const end = moment(deadline);
       const now = calculateCurrentTime();
 
-      let { duration, hours, minutes } = calculateDifference(end, now);
-      let displayedTime = formatTime(hours, minutes);
-      displayedTime = formatTime(hours, minutes);
+      let duration = 0;
+      const timePassedSinceReservation =  moment
+      .duration(moment(reservation.startHour).add("minutes", 10).diff(now))
+      .asMinutes();
      
       // only a window of 10 minutes to scan after that it cancels the reservation
-      // duration <= 0 && duration >= -10
-      if (reservation.startHour < now && duration <= 10 && reservation.status && reservation.opened) {
+      if (moment(reservation.startHour) < now && timePassedSinceReservation >= 0 && reservation.status && reservation.opened) {
         setDeviceState("SCAN");
+        duration = timePassedSinceReservation;
+
         // it passed those 10 minutes and the washing machine is free (there is no one that left clothes or WM is not done)
-      } else if (reservation.startHour < now && !reservation.status && reservation.washingDeviceStudentId === user_id) {
+      } else if (moment(reservation.startHour) < now && !reservation.status && reservation.washingDeviceStudentId === user_id) {
         setDeviceState("IN PROGRESS");
-       
+        duration = moment.duration(moment(reservation.endHour).diff(now)).asMinutes();
+
+        // the wm machine is done, you did not take the clothes (meaning you did not finish), the end reservation hour did not passed and is your reservation
+        // you can continue to wash (you have more time left)
+      } else if (reservation.status && !reservation.opened && moment(reservation.endHour) > now && reservation.washingDeviceStudentId === user_id) {
+        setDeviceState("CONTINUE?");
+        duration = moment.duration(moment(reservation.endHour).diff(now)).asMinutes();
+
+        // you take your clothes (you quit your reservation earlier than the end hour)
       } else if (moment(reservation.endHour) < now && reservation.status) {
         setDeviceState("FINISHED");
+        duration = moment.duration(now.diff(now)).asMinutes();
       } 
+
+      const hours = Math.floor(duration / 60);
+      const minutes = duration % 60;
+      const displayedTime = formatTime(hours, minutes);
       setTime(displayedTime);
     }
   };
@@ -196,10 +192,8 @@ const UserWash = () => {
   };
 
   useEffect(() => {
-    const deadline = setInitialTime();
-    console.log(deadline);
-    getTime(deadline);
-    const interval = setInterval(() => getTime(deadline), 1000);
+    getTime();
+    const interval = setInterval(() => getTime(), 1000);
     getBarCodeScannerPermissions();
 
     return () => clearInterval(interval);
