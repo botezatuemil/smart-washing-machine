@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendNotification = void 0;
+exports.sendNotificationList = exports.sendNotification = void 0;
 const expo_server_sdk_1 = require("expo-server-sdk");
 const sendNotification = (expoPushToken, message) => {
     const expo = new expo_server_sdk_1.Expo({ accessToken: process.env.ACCESS_TOKEN });
@@ -32,4 +32,34 @@ const sendNotification = (expoPushToken, message) => {
     }))();
 };
 exports.sendNotification = sendNotification;
+const sendNotificationList = (tokens, device) => {
+    const expo = new expo_server_sdk_1.Expo({ accessToken: process.env.ACCESS_TOKEN });
+    let messages = [];
+    for (let { notification_token, id } of tokens) {
+        if (!expo_server_sdk_1.Expo.isExpoPushToken(notification_token)) {
+            console.error(`Push token ${notification_token} is not a valid Expo push token`);
+            continue;
+        }
+        messages.push({
+            to: notification_token,
+            body: device === "WASHING_MACHINE" ? 'A new washing machine is available!' : 'A new dryer is available',
+            data: { id: id, type: device },
+        });
+    }
+    let chunks = expo.chunkPushNotifications(messages);
+    let tickets = [];
+    (() => __awaiter(void 0, void 0, void 0, function* () {
+        for (let chunk of chunks) {
+            try {
+                let ticketChunk = yield expo.sendPushNotificationsAsync(chunk);
+                console.log(ticketChunk);
+                tickets.push(...ticketChunk);
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }
+    }))();
+};
+exports.sendNotificationList = sendNotificationList;
 //# sourceMappingURL=Notifications.js.map

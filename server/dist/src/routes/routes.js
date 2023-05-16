@@ -21,5 +21,7 @@ router.post('/addReservation', Reservation_controller_1.addReservation);
 router.post('/getHistory', Reservation_controller_1.getHistory);
 router.get('/getIncomingReservation', Auth_1.verifyJWT, Reservation_controller_1.getIncomingReservation);
 router.post('/sendQR', Auth_1.verifyQR, WashingMachine_controller_1.startWashing);
+router.post('/addExpoToken', Auth_1.verifyJWT, Student_controller_1.addExpoToken);
+router.post('/endReservation', Auth_1.verifyJWT, Reservation_controller_1.endReservation);
 exports.default = router;
 //# sourceMappingURL=routes.js.map

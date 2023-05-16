@@ -19,8 +19,9 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const prisma = new client_1.PrismaClient();
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email, password } = req.body;
+        const { email, password, expoToken } = req.body;
         const result = yield prisma.$queryRaw `SELECT * FROM student WHERE email = ${email}`;
+        yield prisma.$queryRaw `UPDATE student set notification_token = ${expoToken} where email = ${email}`;
         if (result.length === 0) {
             res.status(401).json("Invalid credentials!");
             return;
@@ -30,6 +31,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 user_id: result[0].id,
                 first_name: result[0].first_name,
                 last_name: result[0].last_name,
+                expo_token: result[0].notification_token,
             }, process.env.TOKEN_KEY);
             res.send(JSON.stringify(token));
         }

@@ -1,5 +1,6 @@
 import React from "react";
 import { Button, Text, YStack } from "tamagui";
+import { useEndReservation } from "../../api/reservation/endReservation/useEndReservation";
 
 type ButtonStateType = {
   onPress: () => void;
@@ -9,9 +10,14 @@ type ButtonStateType = {
     | "SCAN"
     | "FINISHED"
     | "CANCELED"
-    | "CONTINUE?";
+    | "CONTINUE?",
+  reservationId: React.Key;
+  token: string;
+  refetch: () => void;
 };
-const ButtonState = ({ onPress, deviceState }: ButtonStateType) => {
+const ButtonState = ({ onPress, deviceState, reservationId, token, refetch }: ButtonStateType) => {
+
+  const endReservation = useEndReservation();
   const getText = () => {
     if (deviceState === "IDLE" || deviceState === "SCAN") {
       return "SCAN";
@@ -25,9 +31,10 @@ const ButtonState = ({ onPress, deviceState }: ButtonStateType) => {
     }
   };
 
-  const onHandlePress = () => {
-    if (deviceState === "FINISHED") {
-      // delete reservation, also send open = true to washing device
+  const onHandlePress = async() => {
+    if (deviceState === "FINISHED" || deviceState === "CONTINUE?") {
+      endReservation.mutate({reservationId, token})
+      refetch();
       return;
     }
     onPress();

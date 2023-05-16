@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 // delete if the reservation has not been scanned
 // delete if the end hour is lower than the now, but only if the user has taken his clothes (opened = true)
 
-cron.schedule("* * * * *", async () => {
+cron.schedule("* * * * *", async () => {   
   try {
     const reservations = await prisma.$queryRaw<
       reservation[]

@@ -1,37 +1,69 @@
-import { useEffect } from "react";
-import { YStack, Text } from "tamagui";
+import { useEffect, useRef } from "react";
+import { YStack } from "tamagui";
 import WashCard from "../../components/WashCard";
-import { useUserStore } from "../../store/UserStore";
-import jwt_decode from "jwt-decode";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useLoginStore } from "../../store/LoginStore";
+
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParams } from "../../navigation/TabNavigator";
+import * as Notifications from "expo-notifications";
+import { HomeStackParams } from "./HomeNavigator";
+import useAuthToken from "../../hooks/useAuthToken";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 const Home = () => {
-  const { setFirstName, setId, setLastName } = useUserStore();
-  const {setToken} = useLoginStore()
+  const { id, expoToken, getAuthToken } = useAuthToken();
+  const notificationListener = useRef<any>();
+  const responseListener = useRef<any>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParams>>();
+  const navigationOtherUsers =
+    useNavigation<NativeStackNavigationProp<HomeStackParams>>();
 
-  const getAuthToken = async() => {
-    try {
-      const token: string | null = await AsyncStorage.getItem("token");
-
-      if (token) {
-        const decodedToken: {
-          user_id: number;
-          first_name: string;
-          last_name: string;
-        } = jwt_decode(token);
-        setToken(token);
-        setFirstName(decodedToken.first_name);
-        setId(decodedToken.user_id);
-        setLastName(decodedToken.last_name);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
   useEffect(() => {
     getAuthToken();
   }, []);
+
+  useEffect(() => {
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        console.log("not", notification);
+        if (notification) {
+        }
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        if (response) {
+          const receivedNotification =
+            response.notification.request.content.data;
+          console.log("notif", response.notification.request.content.data);
+          console.log("id notif", id);
+          if (parseInt(receivedNotification.id as string) === id) {
+            navigation.navigate("WashStack");
+          } else {
+            navigationOtherUsers.navigate("Laundry", {
+              option:
+                receivedNotification.type === "WASHING_MACHINE"
+                  ? "washing machine"
+                  : "tumble dryer",
+            });
+          }
+        }
+      });
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, [expoToken]);
 
   return (
     <YStack

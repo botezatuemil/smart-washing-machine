@@ -8,15 +8,16 @@ const prisma = new PrismaClient();
 interface AuthResponse {
   email: string;
   password: string;
+  expoToken: string;
 }
 
 export const login = async (req: Request, res: Response) => {
   try {
-   
-    const { email, password }: AuthResponse = req.body; 
+    const { email, password, expoToken }: AuthResponse = req.body;
     const result: student[] =
       await prisma.$queryRaw`SELECT * FROM student WHERE email = ${email}`;
 
+    await prisma.$queryRaw`UPDATE student set notification_token = ${expoToken} where email = ${email}`;
     if (result.length === 0) {
       res.status(401).json("Invalid credentials!");
       return;
@@ -27,10 +28,10 @@ export const login = async (req: Request, res: Response) => {
           user_id: result[0].id,
           first_name: result[0].first_name,
           last_name: result[0].last_name,
+          expo_token: result[0].notification_token,
         },
         process.env.TOKEN_KEY as string
       );
-     
       res.send(JSON.stringify(token));
     } else {
       console.log("Password does not match");

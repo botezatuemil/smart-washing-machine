@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getStudents = void 0;
+exports.addExpoToken = exports.getStudents = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const getStudents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -22,4 +22,15 @@ const getStudents = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getStudents = getStudents;
+const addExpoToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { expoToken } = req.body;
+    const user_id = res.locals.user_id;
+    console.log("token", expoToken);
+    console.log("user", user_id);
+    try {
+    }
+    catch (error) {
+    }
+});
+exports.addExpoToken = addExpoToken;
 //# sourceMappingURL=Student.controller.js.map

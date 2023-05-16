@@ -9,8 +9,7 @@ import { RootStackParams } from "../navigation/TabNavigator";
 const WashCard: React.FC<{ title: string; imagePath: string, type: WashingOption }> = (props) => {
 
   const navigation = useNavigation<NativeStackNavigationProp<HomeStackParams>>();
- 
-  
+
   return (
     <YStack
       marginVertical={20}

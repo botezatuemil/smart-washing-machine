@@ -39,7 +39,7 @@ exports.connectToBroker = connectToBroker;
 //     }
 //   });
 // }
-const getPowerStatus = (expoPushToken, client, topic, user_id) => {
+const getPowerStatus = (expoPushToken, client, topic, user_id, device) => {
     client.subscribe([topic], () => {
         console.log(`Subscribe to topic '${topic}'`);
         client.on("message", (topic, payload) => {
@@ -71,8 +71,10 @@ const getPowerStatus = (expoPushToken, client, topic, user_id) => {
                     // powerSmartPlug(`cmnd/tasmota_${smart_plug_id}/POWER`, "off", client);
                     (0, WashingMachine_controller_1.updateWashingMachineStatus)(parseInt(smart_plug_id));
                     const message = {
-                        body: "Your machine has finished washing!",
-                        data: { withSome: user_id.toString() }
+                        body: device === "WASHING_MACHINE"
+                            ? "Your machine has finished washing!"
+                            : "Your dryer has finished!",
+                        data: { id: user_id.toString(), type: device },
                     };
                     (0, Notifications_1.sendNotification)(expoPushToken, message);
                     // unsubscribeFromTopic(`stat/tasmota_${smart_plug_id}/STATUS8`);

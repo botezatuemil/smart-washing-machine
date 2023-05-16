@@ -1,8 +1,12 @@
-import { PrismaClient, reservation } from "@prisma/client";
+import { device, PrismaClient, reservation } from "@prisma/client";
 import { Request, Response } from "express";
 import moment from "moment";
 import { convertKeys, convertKeysArray, parseKeys } from "../utils/ConvertKeys";
-import { sendNotification } from "../utils/Notifications";
+import {
+  ExpoTokenList,
+  sendNotification,
+  sendNotificationList,
+} from "../utils/Notifications";
 
 const prisma = new PrismaClient();
 
@@ -111,9 +115,39 @@ export const getIncomingReservation = async (req: Request, res: Response) => {
       WHERE reservation.student_id = ${user_id} 
       -- AND reservation.start_hour::timestamp >= (NOW() AT TIME ZONE 'Europe/Bucharest' - INTERVAL '10' MINUTE)
       ORDER BY reservation.reservation_date DESC, reservation.start_hour ASC  LIMIT 1`;
-      // console.log("recent", convertKeys(reservationStore[0]))
+    // console.log("recent", convertKeys(reservationStore[0]))
 
     res.send(convertKeys(reservationStore[0]));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const endReservation = async (req: Request, res: Response) => {
+  const { reservationId } = req.body;
+  const user_id: number = res.locals.user_id;
+
+  try {
+    await prisma.$queryRaw`UPDATE washing_device set opened = true from reservation
+    where reservation.washing_device_id = washing_device.id
+    and reservation.id = ${reservationId}`;
+
+    const tokens = await prisma.$queryRaw<
+      ExpoTokenList[]
+    >`SELECT student.notification_token, student.id from student where 
+    student.id <> ${user_id}`;
+
+    const newTokens = tokens.map((({id, notification_token}) => ({id: user_id, notification_token})));
+
+    console.log(newTokens);
+    const wash = await prisma.$queryRaw<
+    { washing_device_id: number }[]
+  >`SELECT reservation.washing_device_id from reservation where reservation.id = ${reservationId}`;
+    const device = await prisma.$queryRaw<
+      { type: device }[]
+    >`SELECT washing_device.type from washing_device where washing_device.id = ${wash[0].washing_device_id}`;
+    
+    sendNotificationList(newTokens, device[0].type);
   } catch (error) {
     console.log(error);
   }

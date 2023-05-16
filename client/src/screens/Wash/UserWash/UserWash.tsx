@@ -12,28 +12,26 @@ import ButtonState from "../../../components/common/ButtonState";
 import { useDeviceStatusStore } from "../../../store/DeviceStatus";
 import { PORT, IP, APP_ID } from "@env";
 import io from "socket.io-client";
-import * as Device from "expo-device";
-import * as Notifications from "expo-notifications";
+import { useIsFocused } from "@react-navigation/native";
+
 import { useUserStore } from "../../../store/UserStore";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParams } from "../../../navigation/TabNavigator";
-import {useNavigation} from  "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
-
-type WashingState = "IDLE" | "IN PROGRESS" | "FINISHED" | "SCAN" | "CANCELED" | "CONTINUE?" | "CONTINUE?";
+type WashingState =
+  | "IDLE"
+  | "IN PROGRESS"
+  | "FINISHED"
+  | "SCAN"
+  | "CANCELED"
+  | "CONTINUE?"
+  | "CONTINUE?";
 const opacity = "rgba(0, 0, 0, .6)";
 
 const UserWash = () => {
   const { token } = useLoginStore();
-  const { id: user_id } = useUserStore();
+  const { id: user_id, expoToken } = useUserStore();
   const { data: reservation, refetch } = useIncomingReservation(token);
 
   const [deviceState, setDeviceState] = useState<WashingState>("IDLE");
@@ -41,15 +39,7 @@ const UserWash = () => {
   const [openCamera, setOpenCamera] = useState<boolean>(false);
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const [scanned, setScanned] = useState<boolean>(false);
-
-  const [expoPushToken, setExpoPushToken] = useState<string>();
-  const [notification, setNotification] =
-    useState<Notifications.Notification>();
-  const notificationListener = useRef<any>();
-  const responseListener = useRef<any>();
-
-  // console.log("reservation", reservation);
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParams>>();
+  const isFocused = useIsFocused();
 
   const calculateCurrentTime = () => {
     const now = moment();
@@ -57,79 +47,6 @@ const UserWash = () => {
     now.set({ h: now.hour() + difference });
     return now;
   };
-
-  async function registerForPushNotificationsAsync() {
-    let token;
-    if (Device.isDevice) {
-      const { status: existingStatus } =
-        await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== "granted") {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== "granted") {
-        alert("Failed to get push token for push notification!");
-        return;
-      }
-      token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(token);
-    } else {
-      alert("Must use physical device for Push Notifications");
-    }
-
-    // if (Platform.OS === 'android') {
-    //   Notifications.setNotificationChannelAsync('default', {
-    //     name: 'default',
-    //     importance: Notifications.AndroidImportance.MAX,
-    //     vibrationPattern: [0, 250, 250, 250],
-    //     lightColor: '#FF231F7C',
-    //   });
-    // }
-
-    return token;
-  }
-  useEffect(() => {
-    registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken(token)
-    );
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-
-        if (notification) {
-          refetch();
-        }
-      });
-
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response); 
-       
-          if (response) {
-            const receivedNotification  = response.notification.request.content.data
-            if (parseInt(receivedNotification.withSome as string) === user_id) {
-              console.log("navigate to current screen")
-              navigation.navigate("WashStack");
-            } else {
-              console.log("navigate la mama naibi")
-              // navigation.navigate("Laundry", {option: props.type})
-            }
-          }
-      });
-
-    //   console.log(notification && notification.request.content.title);
-    // console.log(notification && notification.request.content.body);
-    
-    
-
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
 
   const onSuccess = (data: string) => {
     refetch();
@@ -146,33 +63,51 @@ const UserWash = () => {
   const getTime = () => {
     if (reservation) {
       const now = calculateCurrentTime();
-
+    
       let duration = 0;
-      const timePassedSinceReservation =  moment
-      .duration(moment(reservation.startHour).add("minutes", 10).diff(now))
-      .asMinutes();
-     
+      const timePassedSinceReservation = moment
+        .duration(moment(reservation.startHour).add("minutes", 10).diff(now))
+        .asMinutes();
+
       // only a window of 10 minutes to scan after that it cancels the reservation
-      if (moment(reservation.startHour) < now && timePassedSinceReservation >= 0 && reservation.status && reservation.opened) {
+      if (
+        moment(reservation.startHour) < now &&
+        timePassedSinceReservation >= 0 &&
+        reservation.status &&
+        reservation.opened
+      ) {
         setDeviceState("SCAN");
         duration = timePassedSinceReservation;
 
         // it passed those 10 minutes and the washing machine is free (there is no one that left clothes or WM is not done)
-      } else if (moment(reservation.startHour) < now && !reservation.status && reservation.washingDeviceStudentId === user_id) {
+      } else if (
+        moment(reservation.startHour) < now &&
+        !reservation.status &&
+        reservation.studentId === user_id
+      ) {
         setDeviceState("IN PROGRESS");
-        duration = moment.duration(moment(reservation.endHour).diff(now)).asMinutes();
+        duration = moment
+          .duration(moment(reservation.endHour).diff(now))
+          .asMinutes();
 
         // the wm machine is done, you did not take the clothes (meaning you did not finish), the end reservation hour did not passed and is your reservation
         // you can continue to wash (you have more time left)
-      } else if (reservation.status && !reservation.opened && moment(reservation.endHour) > now && reservation.washingDeviceStudentId === user_id) {
+      } else if (
+        reservation.status &&
+        !reservation.opened &&
+        moment(reservation.endHour) > now &&
+        reservation.studentId === user_id
+      ) {
         setDeviceState("CONTINUE?");
-        duration = moment.duration(moment(reservation.endHour).diff(now)).asMinutes();
+        duration = moment
+          .duration(moment(reservation.endHour).diff(now))
+          .asMinutes();
 
         // you take your clothes (you quit your reservation earlier than the end hour)
       } else if (moment(reservation.endHour) < now && reservation.status) {
         setDeviceState("FINISHED");
         duration = moment.duration(now.diff(now)).asMinutes();
-      } 
+      }
 
       const hours = Math.floor(duration / 60);
       const minutes = duration % 60;
@@ -197,7 +132,17 @@ const UserWash = () => {
     getBarCodeScannerPermissions();
 
     return () => clearInterval(interval);
-  }, [reservation, deviceState]);
+  }, [reservation]);
+
+  useEffect(() => {
+    refetch();
+  }, []);
+
+  useEffect(() => {
+    if (isFocused) {
+      refetch();
+    }
+  }, [isFocused]);
 
   const handleBarCodeScanned = ({ type, data }: any) => {
     if (data && reservation) {
@@ -205,7 +150,7 @@ const UserWash = () => {
         sendQR.mutate({
           token: data,
           reservationId: reservation.id,
-          expoPushToken: expoPushToken,
+          expoPushToken: expoToken,
           user_id: user_id,
         });
         setScanned(true);
@@ -246,7 +191,13 @@ const UserWash = () => {
               </Stack>
               <WashingMachineDoor label="Remaining Time" time={time} />
               <YStack h="30%" w="85%" justifyContent="flex-end">
-                <ButtonState onPress={scanQR} deviceState={deviceState} />
+                <ButtonState
+                  reservationId={reservation.id}
+                  refetch={refetch}
+                  token={token}
+                  onPress={scanQR}
+                  deviceState={deviceState}
+                />
               </YStack>
             </>
           ) : (

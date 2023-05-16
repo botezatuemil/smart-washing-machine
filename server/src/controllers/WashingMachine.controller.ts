@@ -59,12 +59,15 @@ export const startWashing = async (req: Request, res: Response) => {
     const wash = await prisma.$queryRaw<
       { washing_device_id: number }[]
     >`SELECT reservation.washing_device_id from reservation where reservation.id = ${id}`;
+
+    const device = await prisma.$queryRaw<{type: device}[]>`SELECT washing_device.type from washing_device where washing_device.id = ${wash[0].washing_device_id}`
     const updated =
       await prisma.$queryRaw`UPDATE washing_device SET status = false where id = ${wash[0].washing_device_id}`;
-    const client = connectToBroker();
+      console.log(device[0].type)
+      const client = connectToBroker();
     powerSmartPlug("cmnd/tasmota_1/POWER", "on", client);
     res.status(200).json("Washing machine unlocked successfully!");
-    getPowerStatus(expoPushToken, client, "stat/+/STATUS8", user_id);
+    getPowerStatus(expoPushToken, client, "stat/+/STATUS8", user_id, device[0].type);
     // fs.readFile(
     //   "./src/files/inputTest.txt",
     //   "utf8",

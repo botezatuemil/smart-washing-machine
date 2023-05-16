@@ -12,10 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getIncomingReservation = exports.getHistory = exports.addReservation = exports.getAvailableHours = void 0;
+exports.endReservation = exports.getIncomingReservation = exports.getHistory = exports.addReservation = exports.getAvailableHours = void 0;
 const client_1 = require("@prisma/client");
 const moment_1 = __importDefault(require("moment"));
 const ConvertKeys_1 = require("../utils/ConvertKeys");
+const Notifications_1 = require("../utils/Notifications");
 const prisma = new client_1.PrismaClient();
 const MIN_HOUR = 12;
 const MAX_HOUR = 27;
@@ -112,4 +113,24 @@ const getIncomingReservation = (req, res) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.getIncomingReservation = getIncomingReservation;
+const endReservation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { reservationId } = req.body;
+    const user_id = res.locals.user_id;
+    try {
+        yield prisma.$queryRaw `UPDATE washing_device set opened = true from reservation
+    where reservation.washing_device_id = washing_device.id
+    and reservation.id = ${reservationId}`;
+        const tokens = yield prisma.$queryRaw `SELECT student.notification_token, student.id from student where 
+    student.id <> ${user_id}`;
+        const newTokens = tokens.map((({ id, notification_token }) => ({ id: user_id, notification_token })));
+        console.log(newTokens);
+        const wash = yield prisma.$queryRaw `SELECT reservation.washing_device_id from reservation where reservation.id = ${reservationId}`;
+        const device = yield prisma.$queryRaw `SELECT washing_device.type from washing_device where washing_device.id = ${wash[0].washing_device_id}`;
+        (0, Notifications_1.sendNotificationList)(newTokens, device[0].type);
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.endReservation = endReservation;
 //# sourceMappingURL=Reservation.controller.js.map

@@ -1,8 +1,8 @@
 import moment from "moment";
 import { updateWashingMachineStatus } from "../controllers/WashingMachine.controller";
 import { TasmotaPayload } from "../interfaces/index.interface";
-import { sendNotification } from "./Notifications";
-
+import { ExpoTokenList, sendNotification, sendNotificationList } from "./Notifications";
+import { device } from "@prisma/client";
 const mqtt = require("mqtt");
 const fs = require("fs");
 
@@ -28,13 +28,13 @@ export const connectToBroker = () => {
     password: process.env.mqtt_password,
   });
 
-  return client
-}
+  return client;
+};
 
 // export const subscribeToTopic = (topic: string) => {
 //   client.on("connect", () => {
 //     console.log("Connected");
-    
+
 //   });
 // }
 
@@ -51,54 +51,64 @@ export const connectToBroker = () => {
 //   });
 // }
 
-export const getPowerStatus = (expoPushToken: string, client: any, topic: string, user_id: number) => {
+export const getPowerStatus = (
+  expoPushToken: string,
+  client: any,
+  topic: string,
+  user_id: number,
+  device: device
+) => {
   client.subscribe([topic], () => {
     console.log(`Subscribe to topic '${topic}'`);
     client.on("message", (topic: string, payload: any) => {
       const identifier = topic.split("/")[1];
       const smart_plug_id = identifier.split("_")[1];
-  
+
       const tasmotaPayload: TasmotaPayload = JSON.parse(payload.toString());
       const content = tasmotaPayload; //.StatusSNS.ENERGY.ApparentPower
-  
+
       const message = JSON.stringify(content) + "\n";
       // fs.writeFile('./src/files/09.03.2023.txt', message, {flag : "a+"}, (err : NodeJS.ErrnoException | null) => {
       //     if (err) {
       //         console.log(err);
       //     }
       // });
-  
+
       const powerConsumption = content.StatusSNS.ENERGY.ApparentPower;
       console.log("power", powerConsumption);
-  
+
       const timestamp = new Date();
       powerData.push({ powerConsumption, timestamp });
-  
+
       // take the data no more than a minute old in prod
       const thresholdData = powerData.filter(
-        ({ timestamp }) => timestamp.valueOf() >= new Date().valueOf() - 10 * 1000
+        ({ timestamp }) =>
+          timestamp.valueOf() >= new Date().valueOf() - 10 * 1000
       );
-  
+
       // calculate the average power consumption
       const averagePowerConsumption =
         thresholdData.reduce(
           (sum, { powerConsumption }) => sum + powerConsumption,
           0
         ) / thresholdData.length;
-  
+
       // if it's below a certain threshold, save the time, else do it again, save the null, and hope that later the data will be below
       if (averagePowerConsumption < 30) {
         if (thresholdStartTime === null) {
           thresholdStartTime = timestamp;
         }
-  
+
         // if it passed a whole minute between the current time and the earlier saved time, do that
         if (timestamp.valueOf() - thresholdStartTime.valueOf() >= 10 * 1000) {
           // powerSmartPlug(`cmnd/tasmota_${smart_plug_id}/POWER`, "off", client);
           updateWashingMachineStatus(parseInt(smart_plug_id));
           const message = {
-            body: "Your machine has finished washing!",
-            data: { withSome: user_id.toString() }
+            body:
+              device === "WASHING_MACHINE"
+                ? "Your machine has finished washing!"
+                : "Your dryer has finished!",
+            data: { id: user_id.toString(), type: device },
           };
           sendNotification(expoPushToken, message);
           // unsubscribeFromTopic(`stat/tasmota_${smart_plug_id}/STATUS8`);

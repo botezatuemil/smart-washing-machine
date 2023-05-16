@@ -18,16 +18,16 @@ import { useLogin } from "../../api/login/useLogin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import { useLoginStore } from "../../store/LoginStore";
-import supabase from "../../supabase/supabase.config";
+import { registerForPushNotificationsAsync } from "../../utils/Notifications";
+import useAuthToken from "../../hooks/useAuthToken";
 
 const Auth = ({ navigation }: any) => {
   const { toggleLogin } = useLoginStore();
-
+  const { getAuthToken } = useAuthToken();
   const {
     handleSubmit,
     formState: { errors },
     control,
-    watch
   } = useForm<FormLogin>();
 
   const onError = (error: unknown) => {
@@ -37,19 +37,17 @@ const Auth = ({ navigation }: any) => {
       text1: message,
     });
   };
-   const onSuccess = async (data: string) => {
+  const onSuccess = async (data: string) => {
     try {
       await AsyncStorage.setItem("token", data);
-      toggleLogin(true);
-      const email = watch("email");
-      const password = watch("password");
+      getAuthToken();
+      //the toggle login is executed faster than the auth token is setted, causing
+      //the id to be of the user logged before, causing bugs on notification
 
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
+      setTimeout(() => {
+        toggleLogin(true);
+      }, 100)
 
-      // navigation.navigate("Tabs");
     } catch (error) {
       console.log(error);
     }
@@ -58,10 +56,12 @@ const Auth = ({ navigation }: any) => {
   const login = useLogin(onSuccess, onError);
 
   const LoginForm = () => {
-    const onSubmit = (data: FormLogin) => {
+    const onSubmit = async(data: FormLogin) => {
+      const expoToken = await registerForPushNotificationsAsync();
       const userData: LoginRequestType = {
         email: data.email,
         password: data.password,
+        expoToken: expoToken
       };
       login.mutate(userData);
     };

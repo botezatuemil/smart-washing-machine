@@ -48,11 +48,13 @@ const startWashing = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const { id, expoPushToken, user_id } = req.body;
         console.log(user_id);
         const wash = yield prisma.$queryRaw `SELECT reservation.washing_device_id from reservation where reservation.id = ${id}`;
+        const device = yield prisma.$queryRaw `SELECT washing_device.type from washing_device where washing_device.id = ${wash[0].washing_device_id}`;
         const updated = yield prisma.$queryRaw `UPDATE washing_device SET status = false where id = ${wash[0].washing_device_id}`;
+        console.log(device[0].type);
         const client = (0, mqttServer_1.connectToBroker)();
         (0, mqttServer_1.powerSmartPlug)("cmnd/tasmota_1/POWER", "on", client);
         res.status(200).json("Washing machine unlocked successfully!");
-        (0, mqttServer_1.getPowerStatus)(expoPushToken, client, "stat/+/STATUS8", user_id);
+        (0, mqttServer_1.getPowerStatus)(expoPushToken, client, "stat/+/STATUS8", user_id, device[0].type);
         // fs.readFile(
         //   "./src/files/inputTest.txt",
         //   "utf8",
