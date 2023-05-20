@@ -1,0 +1,82 @@
+"filename", "language", "TypeScript React", "TypeScript", "XML", "comment", "blank", "total"
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\authQR\authQR.const.ts", "TypeScript", 0, 7, 0, 0, 1, 8
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\authQR\endpoints.ts", "TypeScript", 0, 26, 0, 0, 3, 29
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\authQR\useQR.tsx", "TypeScript React", 17, 0, 0, 0, 2, 19
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\laundry\endpoints.ts", "TypeScript", 0, 15, 0, 0, 4, 19
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\laundry\useLaundry.ts", "TypeScript", 0, 26, 0, 0, 5, 31
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\login\endpoints.ts", "TypeScript", 0, 18, 0, 0, 5, 23
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\login\useLogin.tsx", "TypeScript React", 17, 0, 0, 0, 2, 19
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\reservation\endReservation\endpoints.ts", "TypeScript", 0, 29, 0, 0, 4, 33
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\reservation\endReservation\useEndReservation.tsx", "TypeScript React", 16, 0, 0, 0, 2, 18
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\reservation\getHistory\endpoints.ts", "TypeScript", 0, 16, 0, 0, 4, 20
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\reservation\getHistory\useHistory.tsx", "TypeScript React", 21, 0, 0, 0, 2, 23
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\reservation\incomingReservation\endpoints.ts", "TypeScript", 0, 21, 0, 1, 3, 25
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\reservation\incomingReservation\useIncomingReservation.tsx", "TypeScript React", 13, 0, 0, 0, 1, 14
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\reservation\makeReservation\endpoints.ts", "TypeScript", 0, 17, 0, 0, 4, 21
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\reservation\makeReservation\useReservation.tsx", "TypeScript React", 19, 0, 0, 0, 3, 22
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\reservation\reservationHours\endpoints.ts", "TypeScript", 0, 16, 0, 0, 3, 19
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\reservation\reservationHours\useAvailableHours.tsx", "TypeScript React", 33, 0, 0, 0, 4, 37
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\washingDevice\getAllDevices\endpoints.ts", "TypeScript", 0, 18, 0, 0, 4, 22
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\washingDevice\getAllDevices\types.ts", "TypeScript", 0, 14, 0, 0, 0, 14
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\washingDevice\getAllDevices\useDevices.tsx", "TypeScript React", 12, 0, 0, 1, 3, 16
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\washingDevice\getDevicesSelect\endpoints.ts", "TypeScript", 0, 17, 0, 0, 4, 21
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\washingDevice\getDevicesSelect\types.ts", "TypeScript", 0, 10, 0, 0, 2, 12
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\api\washingDevice\getDevicesSelect\useDevicesSelect.tsx", "TypeScript React", 28, 0, 0, 0, 2, 30
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\assets\icons\doorInterior.svg", "XML", 0, 0, 13, 0, 1, 14
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\components\Loading\SplashScreen.tsx", "TypeScript React", 25, 0, 0, 0, 3, 28
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\components\WashCard.tsx", "TypeScript React", 41, 0, 0, 0, 5, 46
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\components\WashingMachine\WashingMachineDoor.styles.ts", "TypeScript", 0, 21, 0, 0, 3, 24
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\components\WashingMachine\WashingMachineDoor.tsx", "TypeScript React", 25, 0, 0, 0, 4, 29
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\components\common\ButtonState.tsx", "TypeScript React", 67, 0, 0, 0, 7, 74
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\components\common\DateTimePicker\DateTimePicker.tsx", "TypeScript React", 34, 0, 0, 1, 8, 43
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\components\common\Modal\DialogSuccesfullReservation\SuccessfulReservation.tsx", "TypeScript React", 70, 0, 0, 3, 14, 87
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\components\common\Modal\ModalLayout\ModalOverlay.styles.ts", "TypeScript", 0, 5, 0, 0, 1, 6
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\components\common\Modal\ModalLayout\ModalOverlay.tsx", "TypeScript React", 48, 0, 0, 0, 3, 51
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\components\common\Modal\TimePicker\TimePicker.styles.ts", "TypeScript", 0, 23, 0, 1, 4, 28
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\components\common\Modal\TimePicker\TimePicker.tsx", "TypeScript React", 194, 0, 0, 4, 16, 214
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\components\common\SelectInput\SelectInput.styles.ts", "TypeScript", 0, 5, 0, 0, 1, 6
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\components\common\SelectInput\SelectInput.tsx", "TypeScript React", 95, 0, 0, 0, 11, 106
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\components\common\SwitchWithLabel\SwitchWithLabel.tsx", "TypeScript React", 36, 0, 0, 0, 6, 42
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\components\icons\DoorInterior.tsx", "TypeScript React", 30, 0, 0, 0, 2, 32
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\components\laundry\Device\Device.styles.ts", "TypeScript", 0, 15, 0, 0, 3, 18
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\components\laundry\Device\Device.tsx", "TypeScript React", 111, 0, 0, 1, 10, 122
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\components\laundry\Laundry.tsx", "TypeScript React", 54, 0, 0, 0, 7, 61
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\config\supabaseClient.ts", "TypeScript", 0, 7, 0, 0, 2, 9
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\helper\Metrics.ts", "TypeScript", 0, 8, 0, 0, 4, 12
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\hooks\useAuthToken.ts", "TypeScript", 0, 32, 0, 0, 5, 37
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\interfaces\index.ts", "TypeScript", 0, 33, 0, 0, 7, 40
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\navigation\DrawerNavigation.tsx", "TypeScript React", 72, 0, 0, 0, 10, 82
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\navigation\TabNavigator.tsx", "TypeScript React", 121, 0, 0, 0, 7, 128
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\routes\routes.ts", "TypeScript", 0, 5, 0, 0, 2, 7
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Auth\Auth.const.ts", "TypeScript", 0, 9, 0, 0, 3, 12
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Auth\Auth.styles.ts", "TypeScript", 0, 8, 0, 0, 4, 12
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Auth\Auth.tsx", "TypeScript React", 169, 0, 0, 2, 12, 183
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Chat\Chat.tsx", "TypeScript React", 10, 0, 0, 0, 3, 13
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Chat\ChatNavigator.tsx", "TypeScript React", 15, 0, 0, 0, 4, 19
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Home\Home.tsx", "TypeScript React", 83, 0, 0, 0, 9, 92
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Home\HomeNavigator.tsx", "TypeScript React", 55, 0, 0, 0, 5, 60
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Inbox\Inbox.tsx", "TypeScript React", 6, 0, 0, 0, 3, 9
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Inbox\InboxNavigator.tsx", "TypeScript React", 15, 0, 0, 0, 5, 20
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Profile\Profile.styles.ts", "TypeScript", 0, 6, 0, 0, 2, 8
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Profile\Profile.tsx", "TypeScript React", 46, 0, 0, 0, 10, 56
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Profile\ProfileNavigator.tsx", "TypeScript React", 15, 0, 0, 0, 4, 19
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Wash\History\History.styles.ts", "TypeScript", 0, 6, 0, 0, 1, 7
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Wash\History\History.tsx", "TypeScript React", 78, 0, 0, 0, 6, 84
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Wash\Reservations\Reservation.const.ts", "TypeScript", 0, 32, 0, 0, 8, 40
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Wash\Reservations\Reservation.styles.ts", "TypeScript", 0, 9, 0, 0, 3, 12
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Wash\Reservations\Reservations.tsx", "TypeScript React", 225, 0, 0, 1, 20, 246
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Wash\Tabs\WashTabs.styles.ts", "TypeScript", 0, 4, 0, 0, 1, 5
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Wash\Tabs\WashTabs.tsx", "TypeScript React", 178, 0, 0, 10, 20, 208
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Wash\UserWash\UserWash.styles.ts", "TypeScript", 0, 11, 0, 0, 3, 14
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Wash\UserWash\UserWash.tsx", "TypeScript React", 217, 0, 0, 5, 25, 247
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\screens\Wash\WashNavigator.tsx", "TypeScript React", 20, 0, 0, 0, 6, 26
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\store\DeviceStatus.ts", "TypeScript", 0, 9, 0, 0, 2, 11
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\store\LoginStore.ts", "TypeScript", 0, 14, 0, 0, 2, 16
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\store\ReservationStore.ts", "TypeScript", 0, 62, 0, 0, 7, 69
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\store\UserStore.ts", "TypeScript", 0, 22, 0, 0, 3, 25
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\supabase\supabase.config.ts", "TypeScript", 0, 5, 0, 0, 2, 7
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\types\assets.d.ts", "TypeScript", 0, 4, 0, 0, 1, 5
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\types\env.d.tsx", "TypeScript React", 8, 0, 0, 0, 1, 9
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\types\react-native-svg.d.ts", "TypeScript", 0, 7, 0, 0, 0, 7
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\client\src\utils\Notifications.ts", "TypeScript", 0, 23, 0, 8, 3, 34
+"Total", "-", 2339, 635, 13, 38, 391, 3416

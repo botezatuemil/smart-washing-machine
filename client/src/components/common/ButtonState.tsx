@@ -17,7 +17,12 @@ type ButtonStateType = {
 };
 const ButtonState = ({ onPress, deviceState, reservationId, token, refetch }: ButtonStateType) => {
 
-  const endReservation = useEndReservation();
+  const onSuccess = () => {
+    console.log("refetch boss");
+    refetch();
+  }
+  const endReservation = useEndReservation(onSuccess);
+
   const getText = () => {
     if (deviceState === "IDLE" || deviceState === "SCAN") {
       return "SCAN";
@@ -34,7 +39,6 @@ const ButtonState = ({ onPress, deviceState, reservationId, token, refetch }: Bu
   const onHandlePress = async() => {
     if (deviceState === "FINISHED" || deviceState === "CONTINUE?") {
       endReservation.mutate({reservationId, token})
-      refetch();
       return;
     }
     onPress();

@@ -1,0 +1,14 @@
+"filename", "language", "TypeScript", "comment", "blank", "total"
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\server\src\controllers\Auth.controller.ts", "TypeScript", 39, 0, 5, 44
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\server\src\controllers\Laundry.controller.ts", "TypeScript", 12, 0, 3, 15
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\server\src\controllers\Reservation.controller.ts", "TypeScript", 124, 5, 27, 156
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\server\src\controllers\Student.controller.ts", "TypeScript", 26, 0, 8, 34
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\server\src\controllers\WashingMachine.controller.ts", "TypeScript", 78, 28, 14, 120
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\server\src\interfaces\index.interface.ts", "TypeScript", 18, 0, 2, 20
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\server\src\middleware\Auth.ts", "TypeScript", 48, 0, 4, 52
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\server\src\routes\routes.ts", "TypeScript", 21, 0, 2, 23
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\server\src\utils\ConvertKeys.ts", "TypeScript", 12, 0, 3, 15
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\server\src\utils\ConvertTypes.ts", "TypeScript", 8, 0, 2, 10
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\server\src\utils\Notifications.ts", "TypeScript", 53, 3, 9, 65
+"c:\Emil\Proiecte\JavaScript\React Native\smart-washing-machine\server\src\utils\mqttServer.ts", "TypeScript", 84, 29, 19, 132
+"Total", "-", 523, 65, 98, 686

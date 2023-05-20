@@ -105,7 +105,7 @@ export const getHistory = async (req: Request, res: Response) => {
 
 export const getIncomingReservation = async (req: Request, res: Response) => {
   const user_id: number = res.locals.user_id;
-
+  
   try {
     const reservationStore: unknown[] =
       await prisma.$queryRaw`SELECT laundry.laundry_name, laundry.laundry_floor,reservation.*,
@@ -115,7 +115,7 @@ export const getIncomingReservation = async (req: Request, res: Response) => {
       WHERE reservation.student_id = ${user_id} 
       -- AND reservation.start_hour::timestamp >= (NOW() AT TIME ZONE 'Europe/Bucharest' - INTERVAL '10' MINUTE)
       ORDER BY reservation.reservation_date DESC, reservation.start_hour ASC  LIMIT 1`;
-    // console.log("recent", convertKeys(reservationStore[0]))
+    console.log("recent", convertKeys(reservationStore[0]))
 
     res.send(convertKeys(reservationStore[0]));
   } catch (error) {
@@ -147,6 +147,7 @@ export const endReservation = async (req: Request, res: Response) => {
       { type: device }[]
     >`SELECT washing_device.type from washing_device where washing_device.id = ${wash[0].washing_device_id}`;
     
+    await prisma.$queryRaw`DELETE from reservation where reservation.id = ${reservationId}`;
     sendNotificationList(newTokens, device[0].type);
   } catch (error) {
     console.log(error);

@@ -3,7 +3,7 @@ import { useMutation } from "react-query";
 import { EndReservation, endReservation } from "./endpoints";
 
 export const useEndReservation = (
-  onSuccess?: (data: string) => void,
+  onSuccess: () => void,
   onError?: (error: unknown) => void
 ) => {
   return useMutation(

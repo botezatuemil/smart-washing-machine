@@ -105,7 +105,7 @@ const getIncomingReservation = (req, res) => __awaiter(void 0, void 0, void 0, f
       WHERE reservation.student_id = ${user_id} 
       -- AND reservation.start_hour::timestamp >= (NOW() AT TIME ZONE 'Europe/Bucharest' - INTERVAL '10' MINUTE)
       ORDER BY reservation.reservation_date DESC, reservation.start_hour ASC  LIMIT 1`;
-        // console.log("recent", convertKeys(reservationStore[0]))
+        console.log("recent", (0, ConvertKeys_1.convertKeys)(reservationStore[0]));
         res.send((0, ConvertKeys_1.convertKeys)(reservationStore[0]));
     }
     catch (error) {
@@ -126,6 +126,7 @@ const endReservation = (req, res) => __awaiter(void 0, void 0, void 0, function*
         console.log(newTokens);
         const wash = yield prisma.$queryRaw `SELECT reservation.washing_device_id from reservation where reservation.id = ${reservationId}`;
         const device = yield prisma.$queryRaw `SELECT washing_device.type from washing_device where washing_device.id = ${wash[0].washing_device_id}`;
+        yield prisma.$queryRaw `DELETE from reservation where reservation.id = ${reservationId}`;
         (0, Notifications_1.sendNotificationList)(newTokens, device[0].type);
     }
     catch (error) {
