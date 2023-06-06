@@ -57,7 +57,7 @@ const Auth = ({ navigation }: any) => {
 
   const LoginForm = () => {
     const onSubmit = async(data: FormLogin) => {
-      const expoToken = await registerForPushNotificationsAsync();
+      const expoToken = (await registerForPushNotificationsAsync()) ?? '';
       const userData: LoginRequestType = {
         email: data.email,
         password: data.password,

@@ -9,7 +9,9 @@ const Auth_controller_1 = require("../controllers/Auth.controller");
 const WashingMachine_controller_1 = require("../controllers/WashingMachine.controller");
 const Laundry_controller_1 = require("../controllers/Laundry.controller");
 const Reservation_controller_1 = require("../controllers/Reservation.controller");
+const Chat_controller_1 = require("../controllers/Chat.controller");
 const Auth_1 = require("../middleware/Auth");
+const Notification_controller_1 = require("../controllers/Notification.controller");
 const router = express_1.default.Router();
 router.get('/getStudents', Student_controller_1.getStudents);
 router.post('/login', Auth_controller_1.login);
@@ -23,5 +25,10 @@ router.get('/getIncomingReservation', Auth_1.verifyJWT, Reservation_controller_1
 router.post('/sendQR', Auth_1.verifyQR, WashingMachine_controller_1.startWashing);
 router.post('/addExpoToken', Auth_1.verifyJWT, Student_controller_1.addExpoToken);
 router.post('/endReservation', Auth_1.verifyJWT, Reservation_controller_1.endReservation);
+router.get('/getConversations', Auth_1.verifyJWT, Chat_controller_1.getConversations);
+router.post('/getMessages', Auth_1.verifyJWT, Chat_controller_1.getMessages);
+router.post('/createChat', Auth_1.verifyJWT, Chat_controller_1.createChat);
+router.get('/getNotifications', Auth_1.verifyJWT, Notification_controller_1.getNotifications);
+router.post('/deleteNotification', Auth_1.verifyJWT, Notification_controller_1.deleteNotification);
 exports.default = router;
 //# sourceMappingURL=routes.js.map

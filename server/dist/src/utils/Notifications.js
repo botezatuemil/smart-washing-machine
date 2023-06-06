@@ -42,7 +42,9 @@ const sendNotificationList = (tokens, device) => {
         }
         messages.push({
             to: notification_token,
-            body: device === "WASHING_MACHINE" ? 'A new washing machine is available!' : 'A new dryer is available',
+            body: device === "WASHING_MACHINE"
+                ? "A new washing machine is available!"
+                : "A new dryer is available",
             data: { id: id, type: device },
         });
     }

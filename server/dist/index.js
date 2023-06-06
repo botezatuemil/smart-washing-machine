@@ -20,6 +20,8 @@ const routes_1 = __importDefault(require("./src/routes/routes"));
 const socket_io_1 = require("socket.io");
 const http_1 = require("http");
 require("./jobs/backgroundTasks");
+const Chat_controller_1 = require("./src/controllers/Chat.controller");
+const ConvertKeys_1 = require("./src/utils/ConvertKeys");
 const fs = require("fs");
 // nodejs server
 dotenv_1.default.config();
@@ -30,13 +32,16 @@ const port = process.env.PORT;
 app.use("/", routes_1.default);
 const httpServer = (0, http_1.createServer)(app);
 const io = new socket_io_1.Server(httpServer, { cors: { origin: "*" } });
-// io.on('connection', async(socket) => {
-//   console.log('A user has connected!');
-//   socket.on('disconnect', () => {
-//     console.log('A user has disconnected.');
-//     clearInterval(interval)
-//   });
-// })
+io.on("connection", (socket) => __awaiter(void 0, void 0, void 0, function* () {
+    socket.on("send message", (data) => __awaiter(void 0, void 0, void 0, function* () {
+        const message = (0, ConvertKeys_1.parseKeys)(JSON.parse(data));
+        const updatedMessage = yield (0, Chat_controller_1.getUpdatedMessage)(message);
+        io.emit("new message", JSON.stringify((0, ConvertKeys_1.convertKeys)(updatedMessage)));
+    }));
+    socket.on("disconnect", () => {
+        console.log("A user has disconnected.");
+    });
+}));
 httpServer.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 }));

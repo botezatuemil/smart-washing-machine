@@ -7,6 +7,10 @@ import { Server } from "socket.io";
 import { createServer } from "http";
 import { getPowerStatus } from "./src/utils/mqttServer";
 import "./jobs/backgroundTasks";
+import { messages } from "@prisma/client";
+import { getUpdatedMessage } from "./src/controllers/Chat.controller";
+import { convertTypes } from "./src/utils/ConvertTypes";
+import { convertKeys, parseKeys } from "./src/utils/ConvertKeys";
 
 const fs = require("fs");
 // nodejs server
@@ -23,20 +27,21 @@ const port = process.env.PORT;
 app.use("/", router);
 
 const httpServer = createServer(app);
-const io = new Server(httpServer, {cors: {origin: "*"}});
+const io = new Server(httpServer, { cors: { origin: "*" } });
 
-// io.on('connection', async(socket) => {
-  
-//   console.log('A user has connected!');
+io.on("connection", async (socket) => {
+  socket.on("send message", async (data) => {
+    const message = parseKeys(JSON.parse(data) )as Omit<messages, "id">;
+    const updatedMessage = await getUpdatedMessage(message);
 
-  
+    io.emit("new message", JSON.stringify(convertKeys(updatedMessage)));
+  });
 
-//   socket.on('disconnect', () => {
-//     console.log('A user has disconnected.');
-//     clearInterval(interval)
-//   });
-// })
-  
-httpServer.listen(port, async() => {
+  socket.on("disconnect", () => {
+    console.log("A user has disconnected.");
+  });
+});
+
+httpServer.listen(port, async () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });

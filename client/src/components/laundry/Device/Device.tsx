@@ -9,6 +9,9 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { WashStackParams } from "../../../screens/Wash/WashNavigator";
 import { RootStackParams } from "../../../navigation/TabNavigator";
+import { ChatStackParams } from "../../../screens/Chat/ChatNavigator";
+import { useCreateChat } from "../../../api/chat/createChat/useCreateChat";
+import { useLoginStore } from "../../../store/LoginStore";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -31,7 +34,9 @@ const Device = ({
 }: Laundry & {type : WashingOption} & {imagePath  : string} ) => {
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParams>>();
-  
+  const navigationChat = useNavigation<NativeStackNavigationProp<ChatStackParams>>();
+  const createChat = useCreateChat();
+  const { token } = useLoginStore();
   const getStatus = () => {
     if (status && opened) {
       return ["FREE", "#50BF6F"];
@@ -46,6 +51,12 @@ const Device = ({
     }
     return [];
   };
+
+  const onStartChat = async() => {
+    createChat.mutate({token, receiverId: studentId});
+    
+    navigation.navigate("ChatStack");
+  }
 
 
   return (
@@ -71,6 +82,7 @@ const Device = ({
             color="white"
             fontSize={12}
             icon={<Ionicons size={16} name="chatbubble-outline" />}
+            onPress={onStartChat}
           >
             Chat
           </Button>

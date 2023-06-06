@@ -32,7 +32,7 @@ export type HomeStackParams = {
 export default function TabNavigator() {
   const getTabBarVisibility = (route: any) => {
     const routeName = getFocusedRouteNameFromRoute(route);
-    const hideOnScreens = ["Laundry"];
+    const hideOnScreens = ["Laundry", "Chat"];
     return hideOnScreens.indexOf(routeName as string) <= -1;
   };
 

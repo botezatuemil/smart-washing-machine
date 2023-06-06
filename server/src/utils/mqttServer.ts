@@ -2,7 +2,8 @@ import moment from "moment";
 import { updateWashingMachineStatus } from "../controllers/WashingMachine.controller";
 import { TasmotaPayload } from "../interfaces/index.interface";
 import { ExpoTokenList, sendNotification, sendNotificationList } from "./Notifications";
-import { device } from "@prisma/client";
+import { device, notifications } from "@prisma/client";
+import { createNotification } from "../controllers/Notification.controller";
 const mqtt = require("mqtt");
 const fs = require("fs");
 
@@ -111,7 +112,13 @@ export const getPowerStatus = (
             data: { id: user_id.toString(), type: device },
           };
           sendNotification(expoPushToken, message);
-          // unsubscribeFromTopic(`stat/tasmota_${smart_plug_id}/STATUS8`);
+          const notification : Omit<notifications, "id"> = {
+            student_id: user_id,
+            title: message.body,
+            timestamp: new Date(),
+            subtitle: null
+          }
+          createNotification(notification)
           client.end();
         }
       } else {

@@ -4,20 +4,13 @@ import { YStack, Text, Stack, Button, XStack } from "tamagui";
 import { useIncomingReservation } from "../../../api/reservation/incomingReservation/useIncomingReservation";
 import WashingMachineDoor from "../../../components/WashingMachine/WashingMachineDoor";
 import { useLoginStore } from "../../../store/LoginStore";
-import { ReservationStore } from "../../../store/ReservationStore";
 import * as styles from "./UserWash.styles";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { useQR } from "../../../api/authQR/useQR";
 import ButtonState from "../../../components/common/ButtonState";
-import { useDeviceStatusStore } from "../../../store/DeviceStatus";
-import { PORT, IP, APP_ID } from "@env";
-import io from "socket.io-client";
 import { useIsFocused } from "@react-navigation/native";
-
 import { useUserStore } from "../../../store/UserStore";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParams } from "../../../navigation/TabNavigator";
-import { useNavigation } from "@react-navigation/native";
+
 
 type WashingState =
   | "IDLE"
@@ -96,6 +89,7 @@ const UserWash = () => {
         reservation.status &&
         !reservation.opened &&
         moment(reservation.endHour) > now &&
+        moment(reservation.startHour) < now &&
         reservation.studentId === user_id
       ) {
         setDeviceState("CONTINUE?");
@@ -107,6 +101,12 @@ const UserWash = () => {
       } else if (moment(reservation.endHour) < now && reservation.status) {
         setDeviceState("FINISHED");
         duration = moment.duration(now.diff(now)).asMinutes();
+
+        // for idle when the reservation did not begin yet
+      } else {
+        duration = moment
+        .duration(moment(reservation.startHour).diff(now))
+        .asMinutes();
       }
 
       const hours = Math.floor(duration / 60);

@@ -8,6 +8,7 @@ import { RootStackParams } from "../../navigation/TabNavigator";
 import * as Notifications from "expo-notifications";
 import { HomeStackParams } from "./HomeNavigator";
 import useAuthToken from "../../hooks/useAuthToken";
+import { useQueryClient } from "react-query";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -18,6 +19,8 @@ Notifications.setNotificationHandler({
 });
 
 const Home = () => {
+  const queryClient = useQueryClient();
+
   const { id, expoToken, getAuthToken } = useAuthToken();
   const notificationListener = useRef<any>();
   const responseListener = useRef<any>();
@@ -25,6 +28,10 @@ const Home = () => {
     useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const navigationOtherUsers =
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
+
+  const refetchNotifications = async () => {
+    await queryClient.invalidateQueries("getNotifications");
+  };
 
   useEffect(() => {
     getAuthToken();
@@ -45,6 +52,7 @@ const Home = () => {
             response.notification.request.content.data;
           console.log("notif", response.notification.request.content.data);
           console.log("id notif", id);
+          refetchNotifications();
           if (parseInt(receivedNotification.id as string) === id) {
             navigation.navigate("WashStack");
           } else {

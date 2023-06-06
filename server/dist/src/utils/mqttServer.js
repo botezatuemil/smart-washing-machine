@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.powerSmartPlug = exports.getPowerStatus = exports.connectToBroker = void 0;
 const WashingMachine_controller_1 = require("../controllers/WashingMachine.controller");
 const Notifications_1 = require("./Notifications");
+const Notification_controller_1 = require("../controllers/Notification.controller");
 const mqtt = require("mqtt");
 const fs = require("fs");
 let powerData = [];
@@ -77,7 +78,13 @@ const getPowerStatus = (expoPushToken, client, topic, user_id, device) => {
                         data: { id: user_id.toString(), type: device },
                     };
                     (0, Notifications_1.sendNotification)(expoPushToken, message);
-                    // unsubscribeFromTopic(`stat/tasmota_${smart_plug_id}/STATUS8`);
+                    const notification = {
+                        student_id: user_id,
+                        title: message.body,
+                        timestamp: new Date(),
+                        subtitle: null
+                    };
+                    (0, Notification_controller_1.createNotification)(notification);
                     client.end();
                 }
             }

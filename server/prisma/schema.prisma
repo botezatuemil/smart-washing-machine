@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,19 +8,23 @@ datasource db {
 }
 
 model student {
-  id                  Int              @id @default(autoincrement())
-  first_name          String
-  last_name           String
-  email               String
-  password            String
-  notification_token  String 
-  registration_number Int
-  address_id          Int
-  dorm_id             Int
-  address             address          @relation(fields: [address_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  dorm                dorm             @relation(fields: [dorm_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  washing_device      washing_device[]
-  reservation         reservation[]
+  id                                            Int              @id @default(autoincrement())
+  address_id                                    Int
+  dorm_id                                       Int
+  email                                         String
+  first_name                                    String
+  last_name                                     String
+  registration_number                           Int
+  password                                      String
+  notification_token                            String           @default("123")
+  conversations_conversations_user1_idTostudent conversations[]  @relation("conversations_user1_idTostudent")
+  conversations_conversations_user2_idTostudent conversations[]  @relation("conversations_user2_idTostudent")
+  messages                                      messages[]
+  reservation                                   reservation[]
+  address                                       address          @relation(fields: [address_id], references: [id], onDelete: Cascade)
+  dorm                                          dorm             @relation(fields: [dorm_id], references: [id], onDelete: Cascade)
+  washing_device                                washing_device[]
+  notifications                                 notifications[]
 }
 
 model address {
@@ -33,18 +34,18 @@ model address {
   county        String
   country       String
   street_number Int
-  student       student[]
-  building      building[]
   admin         admin[]
+  building      building[]
+  student       student[]
 }
 
 model dorm {
   id          Int       @id @default(autoincrement())
-  student     student[]
   dorm_number String
-  dorm_floor  Int
   building_id Int
-  building    building  @relation(fields: [building_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  dorm_floor  Int
+  building    building  @relation(fields: [building_id], references: [id], onDelete: Cascade)
+  student     student[]
 }
 
 model campus {
@@ -58,34 +59,34 @@ model building {
   number     Int
   campus_id  Int
   address_id Int
-  address    address   @relation(fields: [address_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  campus     campus    @relation(fields: [campus_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  laundry    laundry[]
+  address    address   @relation(fields: [address_id], references: [id], onDelete: Cascade)
+  campus     campus    @relation(fields: [campus_id], references: [id], onDelete: Cascade)
   dorm       dorm[]
+  laundry    laundry[]
 }
 
 model laundry {
   id             Int              @id @default(autoincrement())
   building_id    Int
-  building       building         @relation(fields: [building_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   laundry_floor  Int
-  washing_device washing_device[]
-  reservation    reservation[]
   laundry_name   String
+  building       building         @relation(fields: [building_id], references: [id], onDelete: Cascade)
+  reservation    reservation[]
+  washing_device washing_device[]
 }
 
 model washing_device {
   id          Int           @id @default(autoincrement())
-  device_name String
   status      Boolean
   opened      Boolean
   laundry_id  Int
-  laundry     laundry       @relation(fields: [laundry_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   type        device
   student_id  Int
-  student     student       @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  device_name String
   reservation reservation[]
   smart_plug  smart_plug?
+  laundry     laundry       @relation(fields: [laundry_id], references: [id], onDelete: Cascade)
+  student     student       @relation(fields: [student_id], references: [id], onDelete: Cascade)
 }
 
 model smart_plug {
@@ -93,7 +94,7 @@ model smart_plug {
   name              String
   identifier        Int            @unique
   washing_device_id Int            @unique
-  washing_device    washing_device @relation(fields: [washing_device_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  washing_device    washing_device @relation(fields: [washing_device_id], references: [id], onDelete: Cascade)
 }
 
 model power_consumption {
@@ -118,21 +119,21 @@ model admin {
   last_name  String
   email      String
   address_id Int
-  address    address @relation(fields: [address_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  address    address @relation(fields: [address_id], references: [id], onDelete: Cascade)
 }
 
 model reservation {
   id                Int            @id @default(autoincrement())
   laundry_id        Int
-  laudry            laundry        @relation(fields: [laundry_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   washing_device_id Int
-  washing_device    washing_device @relation(fields: [washing_device_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   reservation_date  DateTime
   start_hour        DateTime
   end_hour          DateTime
   scheduled_early   Boolean
   student_id        Int
-  student           student        @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  laudry            laundry        @relation(fields: [laundry_id], references: [id], onDelete: Cascade)
+  student           student        @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  washing_device    washing_device @relation(fields: [washing_device_id], references: [id], onDelete: Cascade)
 }
 
 model maintenance {
@@ -141,6 +142,34 @@ model maintenance {
   admin_id           Int
   lastTimeMaintained Int
   maintenance_status maintenance_status
+}
+
+model conversations {
+  id                                      Int        @id @default(autoincrement())
+  user1_id                                Int?
+  user2_id                                Int?
+  student_conversations_user1_idTostudent student?   @relation("conversations_user1_idTostudent", fields: [user1_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  student_conversations_user2_idTostudent student?   @relation("conversations_user2_idTostudent", fields: [user2_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  messages                                messages[]
+}
+
+model messages {
+  id              Int            @id @default(autoincrement())
+  sender_id       Int?
+  message         String?
+  timestamp       DateTime?      @db.Timestamp(6)
+  conversation_id Int?
+  conversations   conversations? @relation(fields: [conversation_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  student         student?       @relation(fields: [sender_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model notifications {
+  id         Int      @id @default(autoincrement())
+  title      String
+  subtitle   String?
+  timestamp  DateTime
+  student_id Int
+  student    student  @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 enum device {
