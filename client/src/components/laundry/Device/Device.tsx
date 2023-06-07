@@ -1,6 +1,6 @@
 import React from "react";
 import { YStack, Text, XStack, Stack, Button, Image } from "tamagui";
-import { WashingDevice,  WashingOption } from "../../../interfaces";
+import { WashingDevice, WashingOption } from "../../../interfaces";
 import * as styles from "./Device.styles";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Dimensions } from "react-native";
@@ -30,11 +30,12 @@ const Device = ({
   washingDeviceId,
   washingDeviceName,
   type,
-  imagePath
-}: Laundry & {type : WashingOption} & {imagePath  : string} ) => {
-
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParams>>();
-  const navigationChat = useNavigation<NativeStackNavigationProp<ChatStackParams>>();
+  imagePath,
+}: Laundry & { type: WashingOption } & { imagePath: string }) => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParams>>();
+  const navigationChat =
+    useNavigation<NativeStackNavigationProp<ChatStackParams>>();
   const createChat = useCreateChat();
   const { token } = useLoginStore();
   const getStatus = () => {
@@ -52,12 +53,11 @@ const Device = ({
     return [];
   };
 
-  const onStartChat = async() => {
-    createChat.mutate({token, receiverId: studentId});
-    
-    navigation.navigate("ChatStack");
-  }
+  const onStartChat = async () => {
+    createChat.mutate({ token, receiverId: studentId });
 
+    navigation.navigate("ChatStack");
+  };
 
   return (
     <YStack w="100%" h={windowHeight} alignItems="center">
@@ -74,56 +74,53 @@ const Device = ({
           alignItems="center"
         >
           <Text {...styles.header}>DETAILS:</Text>
-          <Button
-            height={30}
-            borderRadius={100}
-            bg="black"
-            fontFamily="InterSemi"
-            color="white"
-            fontSize={12}
-            icon={<Ionicons size={16} name="chatbubble-outline" />}
-            onPress={onStartChat}
-          >
-            Chat
-          </Button>
         </XStack>
         <XStack justifyContent="space-between" paddingHorizontal={36}>
           <YStack space={10}>
             <YStack>
-              <Text {...styles.header}>{lastName} {firstName}</Text>
-              <Text {...styles.text}>{dormNumber} / {dormFloor} floor</Text>
+              <Text {...styles.header}>
+                {lastName} {firstName}
+              </Text>
+              <Text {...styles.text}>
+                {dormNumber} / {dormFloor} floor
+              </Text>
             </YStack>
           </YStack>
           <YStack space={10}>
             <YStack>
               <Text {...styles.header}>Laundry {laundryId}</Text>
-              <Text {...styles.text}>{washingDeviceName} / {laundryFloor} floor</Text>
+              <Text {...styles.text}>
+                {washingDeviceName} / {laundryFloor} floor
+              </Text>
             </YStack>
           </YStack>
         </XStack>
       </YStack>
-      {/* ${type === "washing machine" ? "../../../assets/images/WashingMachineModel.png" : "../../../assets/images/TumbleDryerModel.png"} */}
-      <Image
-        marginTop={36}
-        src={imagePath}
-        height={400}
-        width={300}
-      />
+      <Image marginTop={36} src={imagePath} height={400} width={300} />
       <YStack
         w="100%"
         paddingHorizontal={36}
-        mt={28}
+        mt={60}
         justifyContent="center"
         space={9}
       >
-        <Button {...styles.textButton} bg="#0055EE" w="100%" onPress={() => navigation.navigate("WashStack")} >
+        <Button
+          {...styles.textButton}
+          bg="#0055EE"
+          w="100%"
+          onPress={() => navigation.navigate("WashStack")}
+        >
           RESERVE
         </Button>
-        <Button {...styles.textButton} color="black" bg="#E7E7E9" w="100%">
-          USE NOW
-        </Button>
-        <Button {...styles.textButton} bg="#060606" w="100%">
-          SEND NOTIFICATION!
+        <Button
+          {...styles.textButton}
+          color="white"
+          bg="black"
+          w="100%"
+          icon={<Ionicons size={16} name="chatbubble-outline" />}
+          onPress={onStartChat}
+        >
+          CHAT
         </Button>
       </YStack>
     </YStack>
