@@ -1,50 +1,78 @@
 import { useState } from "react";
-import { Button, YStack } from 'tamagui'
-import * as styles from "./Profile.styles"
+import { Button, XStack, YStack, Text, Stack } from "tamagui";
+import * as styles from "./Profile.styles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLoginStore } from "../../store/LoginStore";
-const Profile = () => {
+import { useGetProfile } from "../../api/profile/useGetProfile";
+import { UserProfile } from "../../api/profile/endpoints";
+import SwitchWithLabel from "../../components/common/SwitchWithLabel/SwitchWithLabel";
 
-  const [status, setStatus] = useState<string>("");
-  const [socketMessage, setSocketMessage] = useState<string>();
-  const {toggleLogin} = useLoginStore();
-  
-  const logout = async() => {
+const labels = [
+  "First Name",
+  "Last Name",
+  "Email",
+  "Dorm number",
+  "Floor",
+  "Building",
+  "Campus",
+];
+
+const Profile = () => {
+  const { toggleLogin, token } = useLoginStore();
+  const { data } = useGetProfile(token);
+  const [active, setActive] = useState<boolean>(true);
+  const logout = async () => {
     try {
       await AsyncStorage.removeItem("token");
       toggleLogin(false);
     } catch (error) {
       console.log(error);
     }
-  }
-
-  // useEffect(() => {
-  //   const socket = io(`http://${IP}:${PORT}`);
-  //   socket.on('connect', () => {
-  //     console.log("connected");
-  //     setStatus("connected")
-  //   });
-
-  //   socket.on('disconnect', (reason) => {
-  //     console.log("disconnected", reason);
-  //   });
-
-  //   socket.on('washing_machine', (msg) => {
-  //     console.log("Received message: ", msg);
-  //     setSocketMessage(msg)
-  //   });
-
-  //   return () => {
-  //     socket.disconnect();
-  //   }
-  // }, [])
-
+  };
 
   return (
-    <YStack display="flex" w="100%" h="100%" ai="center">
-      {/* <Text>{status}</Text>
-      <Text>{socketMessage}</Text> */}
-      <Button  {...styles.button} onPress={logout}>Log out</Button>
+    <YStack
+      display="flex"
+      w="100%"
+      h="100%"
+      space={10}
+      paddingTop={40}
+      bg="white"
+    >
+      <YStack space={10} paddingHorizontal={40}>
+        {data &&
+          Object.keys(data).map((key, index) => (
+            <XStack display="flex" justifyContent="space-between" w="100%">
+              <Stack w="40%">
+                <Text {...styles.label}>{labels[index]}:</Text>
+              </Stack>
+              <Stack w="100%">
+                <Text {...styles.text}>{data[key as keyof UserProfile]}</Text>
+              </Stack>
+            </XStack>
+          ))}
+      </YStack>
+        <Stack paddingHorizontal={40}>
+          <SwitchWithLabel
+            isActive={active}
+            setIsActive={setActive}
+            label="Notifications:"
+            textProps={styles.label}
+          />
+        </Stack>
+      <Stack
+        position="absolute"
+        bottom={0}
+        marginBottom={10}
+        w="100%"
+        ai="center"
+      >
+        <Button {...styles.button} onPress={logout} w="80%">
+          <Text color="white" fontFamily="InterSemi">
+            Log out
+          </Text>
+        </Button>
+      </Stack>
     </YStack>
   );
 };

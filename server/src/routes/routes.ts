@@ -1,5 +1,5 @@
 import express from "express";
-import { addExpoToken, getStudents } from "../controllers/Student.controller";
+import { addExpoToken, getStudents, getProfile } from "../controllers/Student.controller";
 import { login } from "../controllers/Auth.controller";
 import { getDevicesSelect, getLaundryDevices, startWashing } from "../controllers/WashingMachine.controller";
 import { getLaundries } from "../controllers/Laundry.controller";
@@ -27,4 +27,5 @@ router.post('/getMessages', verifyJWT, getMessages);
 router.post('/createChat', verifyJWT, createChat);
 router.get('/getNotifications', verifyJWT, getNotifications);
 router.post('/deleteNotification', verifyJWT, deleteNotification);
+router.get('/getProfile', verifyJWT, getProfile);
 export default router;

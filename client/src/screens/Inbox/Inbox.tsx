@@ -6,19 +6,12 @@ import IconFeather from "react-native-vector-icons/Feather";
 import { useGetNotifications } from "../../api/notifications/get/useGetNotifications";
 import moment from "moment";
 import { useDeleteNotification } from "../../api/notifications/delete/useDeleteNotification";
-import { useQueryClient } from "react-query";
 
 const Inbox = () => {
   const { token } = useLoginStore();
   const { data } = useGetNotifications(token);
   const deleteNotification = useDeleteNotification();
-  const queryClient = useQueryClient();
-  // const refetch = async() => {
-  //   await queryClient.invalidateQueries("getNotifications");
-  // }
-  // useEffect(() => {
-  //   refetch()
-  // }, []);
+
 
   return (
     <ScrollView

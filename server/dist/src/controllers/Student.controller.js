@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addExpoToken = exports.getStudents = void 0;
+exports.getProfile = exports.addExpoToken = exports.getStudents = void 0;
 const client_1 = require("@prisma/client");
+const ConvertKeys_1 = require("../utils/ConvertKeys");
 const prisma = new client_1.PrismaClient();
 const getStudents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -33,4 +34,23 @@ const addExpoToken = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.addExpoToken = addExpoToken;
+const getProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user_id = res.locals.user_id;
+    try {
+        const profile = yield prisma.$queryRaw `
+    select student.first_name, student.last_name, student.email ,
+     dorm.dorm_number as dorm_number, dorm.dorm_floor , building.number as building, campus.name as campus from student
+    inner join dorm on dorm.id = student.dorm_id
+    inner join building on building.id = dorm.building_id
+    inner join campus on campus.id = building.campus_id
+    where student.id = ${user_id}`;
+        console.log((0, ConvertKeys_1.convertKeys)(profile[0]));
+        // const profileAddress = {...profile[0], }
+        res.send((0, ConvertKeys_1.convertKeys)(profile[0]));
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.getProfile = getProfile;
 //# sourceMappingURL=Student.controller.js.map

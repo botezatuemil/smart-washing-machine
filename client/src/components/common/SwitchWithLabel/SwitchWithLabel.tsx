@@ -7,20 +7,23 @@ import {
   Text,
   YStack,
   SizeTokens,
+  TextProps,
 } from "tamagui";
 
 type SwitchType = {
   isActive: boolean;
   setIsActive: (value : boolean) => void;
+  label: string;
+  textProps?: TextProps;
 }
 
-const SwitchWithLabel = ({isActive, setIsActive} : SwitchType) => {
+const SwitchWithLabel = ({isActive, setIsActive, label, textProps} : SwitchType) => {
   
 
   return (
     <XStack w={200} ai="center" space="$4" alignItems="center" pt={10}>
-      <Text  miw={90} jc="flex-end" fontFamily="InterMedium">
-        Schedule early
+      <Text  miw={90} jc="flex-end" fontFamily="InterMedium" {...textProps}>
+       {label}
       </Text>
       <Switch
         size="$3"

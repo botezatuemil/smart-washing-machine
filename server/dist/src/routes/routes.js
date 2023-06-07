@@ -30,5 +30,6 @@ router.post('/getMessages', Auth_1.verifyJWT, Chat_controller_1.getMessages);
 router.post('/createChat', Auth_1.verifyJWT, Chat_controller_1.createChat);
 router.get('/getNotifications', Auth_1.verifyJWT, Notification_controller_1.getNotifications);
 router.post('/deleteNotification', Auth_1.verifyJWT, Notification_controller_1.deleteNotification);
+router.get('/getProfile', Auth_1.verifyJWT, Student_controller_1.getProfile);
 exports.default = router;
 //# sourceMappingURL=routes.js.map

@@ -77,7 +77,7 @@ const SuccessfulReservation = ({
         when the designated time period begins. Failure to validate within the
         first 5 minutes of the reservation will result in automatic cancellation.
       </Text>
-      <SwitchWithLabel isActive={isActive} setIsActive={setIsActive}/>
+      <SwitchWithLabel isActive={isActive} setIsActive={setIsActive} label="Schedule early"/>
       </YStack>
     </ModalOverlay>
   );
