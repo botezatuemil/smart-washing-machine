@@ -44,8 +44,6 @@ const getProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     inner join building on building.id = dorm.building_id
     inner join campus on campus.id = building.campus_id
     where student.id = ${user_id}`;
-        console.log((0, ConvertKeys_1.convertKeys)(profile[0]));
-        // const profileAddress = {...profile[0], }
         res.send((0, ConvertKeys_1.convertKeys)(profile[0]));
     }
     catch (error) {

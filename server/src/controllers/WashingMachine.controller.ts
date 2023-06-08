@@ -62,7 +62,7 @@ export const startWashing = async (req: Request, res: Response) => {
 
     const device = await prisma.$queryRaw<{type: device}[]>`SELECT washing_device.type from washing_device where washing_device.id = ${wash[0].washing_device_id}`
     const updated =
-      await prisma.$queryRaw`UPDATE washing_device SET status = false where id = ${wash[0].washing_device_id}`;
+      await prisma.$queryRaw`UPDATE washing_device SET status = false, opened = false where id = ${wash[0].washing_device_id}`;
       console.log(device[0].type)
       const client = connectToBroker();
     powerSmartPlug("cmnd/tasmota_1/POWER", "on", client);

@@ -71,18 +71,15 @@ const getPowerStatus = (expoPushToken, client, topic, user_id, device) => {
                 if (timestamp.valueOf() - thresholdStartTime.valueOf() >= 10 * 1000) {
                     // powerSmartPlug(`cmnd/tasmota_${smart_plug_id}/POWER`, "off", client);
                     (0, WashingMachine_controller_1.updateWashingMachineStatus)(parseInt(smart_plug_id));
-                    const message = {
-                        body: device === "WASHING_MACHINE"
-                            ? "Your machine has finished washing!"
-                            : "Your dryer has finished!",
-                        data: { id: user_id.toString(), type: device },
-                    };
+                    const message = device === "WASHING_MACHINE"
+                        ? "Your machine has finished washing!"
+                        : "Your dryer has finished!";
                     (0, Notifications_1.sendNotification)(expoPushToken, message);
                     const notification = {
                         student_id: user_id,
-                        title: message.body,
+                        title: message,
                         timestamp: new Date(),
-                        subtitle: null
+                        subtitle: null,
                     };
                     (0, Notification_controller_1.createNotification)(notification);
                     client.end();

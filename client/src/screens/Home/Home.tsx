@@ -55,14 +55,15 @@ const Home = () => {
           refetchNotifications();
           if (parseInt(receivedNotification.id as string) === id) {
             navigation.navigate("WashStack");
-          } else {
-            navigationOtherUsers.navigate("Laundry", {
-              option:
-                receivedNotification.type === "WASHING_MACHINE"
-                  ? "washing machine"
-                  : "tumble dryer",
-            });
           }
+          // } else {
+          //   navigationOtherUsers.navigate("Laundry", {
+          //     option:
+          //       receivedNotification.type === "WASHING_MACHINE"
+          //         ? "washing machine"
+          //         : "tumble dryer",
+          //   });
+          // }
         }
       });
     return () => {

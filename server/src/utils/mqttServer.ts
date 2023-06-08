@@ -1,7 +1,11 @@
 import moment from "moment";
 import { updateWashingMachineStatus } from "../controllers/WashingMachine.controller";
 import { TasmotaPayload } from "../interfaces/index.interface";
-import { ExpoTokenList, sendNotification, sendNotificationList } from "./Notifications";
+import {
+  ExpoTokenList,
+  sendNotification,
+  sendNotificationList,
+} from "./Notifications";
 import { device, notifications } from "@prisma/client";
 import { createNotification } from "../controllers/Notification.controller";
 const mqtt = require("mqtt");
@@ -104,21 +108,19 @@ export const getPowerStatus = (
         if (timestamp.valueOf() - thresholdStartTime.valueOf() >= 10 * 1000) {
           // powerSmartPlug(`cmnd/tasmota_${smart_plug_id}/POWER`, "off", client);
           updateWashingMachineStatus(parseInt(smart_plug_id));
-          const message = {
-            body:
-              device === "WASHING_MACHINE"
-                ? "Your machine has finished washing!"
-                : "Your dryer has finished!",
-            data: { id: user_id.toString(), type: device },
-          };
+          const message =
+            device === "WASHING_MACHINE"
+              ? "Your machine has finished washing!"
+              : "Your dryer has finished!";
+
           sendNotification(expoPushToken, message);
-          const notification : Omit<notifications, "id"> = {
+          const notification: Omit<notifications, "id"> = {
             student_id: user_id,
-            title: message.body,
+            title: message,
             timestamp: new Date(),
-            subtitle: null
-          }
-          createNotification(notification)
+            subtitle: null,
+          };
+          createNotification(notification);
           client.end();
         }
       } else {

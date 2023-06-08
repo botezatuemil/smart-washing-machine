@@ -3,7 +3,7 @@ import { addExpoToken, getStudents, getProfile } from "../controllers/Student.co
 import { login } from "../controllers/Auth.controller";
 import { getDevicesSelect, getLaundryDevices, startWashing } from "../controllers/WashingMachine.controller";
 import { getLaundries } from "../controllers/Laundry.controller";
-import { addReservation, getAvailableHours, getHistory, getIncomingReservation, endReservation } from "../controllers/Reservation.controller";
+import { addReservation, getAvailableHours, getHistory, getIncomingReservation, endReservation, deleteReservation } from "../controllers/Reservation.controller";
 import { getConversations, getMessages, createChat } from "../controllers/Chat.controller";
 import { verifyJWT, verifyQR } from "../middleware/Auth";
 import {getNotifications, deleteNotification} from "../controllers/Notification.controller";
@@ -28,4 +28,5 @@ router.post('/createChat', verifyJWT, createChat);
 router.get('/getNotifications', verifyJWT, getNotifications);
 router.post('/deleteNotification', verifyJWT, deleteNotification);
 router.get('/getProfile', verifyJWT, getProfile);
+router.post('/deleteReservation', verifyJWT, deleteReservation);
 export default router;
