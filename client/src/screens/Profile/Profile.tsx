@@ -76,7 +76,7 @@ const Profile = () => {
         w="100%"
         ai="center"
       >
-        <Button {...styles.button} onPress={refetch} w="80%">
+        <Button {...styles.button} onPress={logout} w="80%">
           <Text color="white" fontFamily="InterSemi">
             Log out
           </Text>

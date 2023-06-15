@@ -70,14 +70,7 @@ export const getPowerStatus = (
       const smart_plug_id = identifier.split("_")[1];
 
       const tasmotaPayload: TasmotaPayload = JSON.parse(payload.toString());
-      const content = tasmotaPayload; //.StatusSNS.ENERGY.ApparentPower
-
-      const message = JSON.stringify(content) + "\n";
-      // fs.writeFile('./src/files/09.03.2023.txt', message, {flag : "a+"}, (err : NodeJS.ErrnoException | null) => {
-      //     if (err) {
-      //         console.log(err);
-      //     }
-      // });
+      const content = tasmotaPayload;
 
       const powerConsumption = content.StatusSNS.ENERGY.ApparentPower;
       console.log("power", powerConsumption);
@@ -106,7 +99,7 @@ export const getPowerStatus = (
 
         // if it passed a whole minute between the current time and the earlier saved time, do that
         if (timestamp.valueOf() - thresholdStartTime.valueOf() >= 10 * 1000) {
-          // powerSmartPlug(`cmnd/tasmota_${smart_plug_id}/POWER`, "off", client);
+          powerSmartPlug(`cmnd/tasmota_${smart_plug_id}/POWER`, "off", client);
           updateWashingMachineStatus(parseInt(smart_plug_id));
           const message =
             device === "WASHING_MACHINE"

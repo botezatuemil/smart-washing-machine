@@ -47,13 +47,7 @@ const getPowerStatus = (expoPushToken, client, topic, user_id, device) => {
             const identifier = topic.split("/")[1];
             const smart_plug_id = identifier.split("_")[1];
             const tasmotaPayload = JSON.parse(payload.toString());
-            const content = tasmotaPayload; //.StatusSNS.ENERGY.ApparentPower
-            const message = JSON.stringify(content) + "\n";
-            // fs.writeFile('./src/files/09.03.2023.txt', message, {flag : "a+"}, (err : NodeJS.ErrnoException | null) => {
-            //     if (err) {
-            //         console.log(err);
-            //     }
-            // });
+            const content = tasmotaPayload;
             const powerConsumption = content.StatusSNS.ENERGY.ApparentPower;
             console.log("power", powerConsumption);
             const timestamp = new Date();
@@ -69,7 +63,7 @@ const getPowerStatus = (expoPushToken, client, topic, user_id, device) => {
                 }
                 // if it passed a whole minute between the current time and the earlier saved time, do that
                 if (timestamp.valueOf() - thresholdStartTime.valueOf() >= 10 * 1000) {
-                    // powerSmartPlug(`cmnd/tasmota_${smart_plug_id}/POWER`, "off", client);
+                    (0, exports.powerSmartPlug)(`cmnd/tasmota_${smart_plug_id}/POWER`, "off", client);
                     (0, WashingMachine_controller_1.updateWashingMachineStatus)(parseInt(smart_plug_id));
                     const message = device === "WASHING_MACHINE"
                         ? "Your machine has finished washing!"
