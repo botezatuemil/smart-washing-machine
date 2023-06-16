@@ -12,6 +12,7 @@ import { RootStackParams } from "../../../navigation/TabNavigator";
 import { ChatStackParams } from "../../../screens/Chat/ChatNavigator";
 import { useCreateChat } from "../../../api/chat/createChat/useCreateChat";
 import { useLoginStore } from "../../../store/LoginStore";
+import {LaundryType} from "../../../screens/Wash/Reservations/Reservation.const";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -58,6 +59,13 @@ const Device = ({
 
     navigation.navigate("ChatStack");
   };
+
+  const navigateToReserve = () => {
+    // const laundry : LaundryType = {
+    //   buildingId: 
+    // }
+    navigation.navigate("WashStack")
+  }
 
   return (
     <YStack w="100%" h={windowHeight} alignItems="center">
@@ -108,7 +116,7 @@ const Device = ({
           {...styles.textButton}
           bg="#0055EE"
           w="100%"
-          onPress={() => navigation.navigate("WashStack")}
+          onPress={navigateToReserve}
         >
           RESERVE
         </Button>

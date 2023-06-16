@@ -14,7 +14,7 @@ type SelectProps<T> = {
   placeholder: string
 }
 
-const SelectInput = <T extends {name: string, obj: any} >({placeholder, onChange, value, onOpen, items, title} : SelectProps<T>) => {
+const SelectInput = <T extends {name: string, id: number | string}>({placeholder, onChange, value, onOpen, items, title} : SelectProps<T>) => {
   
   return (
     <Select onValueChange={onChange} onOpenChange={onOpen}>
@@ -64,7 +64,7 @@ const SelectInput = <T extends {name: string, obj: any} >({placeholder, onChange
                 <Select.Item
                   index={i}
                   key={item.name}
-                  value={item.obj}
+                  value={item.id.toString()}
                   w="100%"
                 >
                   <Select.ItemText>{item.name}</Select.ItemText>

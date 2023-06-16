@@ -4,7 +4,12 @@ import { Text } from "tamagui";
 import * as styles from "./Reservation.styles";
 import { useForm, Controller } from "react-hook-form";
 import SelectInput from "../../../components/common/SelectInput/SelectInput";
-import { FormReservation, Item, LaundryType, ReservationRequestType } from "./Reservation.const";
+import {
+  FormReservation,
+  Item,
+  LaundryType,
+  ReservationRequestType,
+} from "./Reservation.const";
 import { SelectInputElements, SelectType } from "./Reservation.const";
 import { Pressable } from "react-native";
 import DateTimePickerSelect from "../../../components/common/DateTimePicker/DateTimePicker";
@@ -14,6 +19,7 @@ import { useLaundries } from "../../../api/laundry/useLaundry";
 import { useDevicesSelect } from "../../../api/washingDevice/getDevicesSelect/useDevicesSelect";
 import { DeviceType, HourInterval, WashingOption } from "../../../interfaces";
 import { useAvailableHours } from "../../../api/reservation/reservationHours/useAvailableHours";
+import TimePickerScroll from "../../../components/common/TimePickerScroll/TimePickerScroll";
 
 const selectElements: SelectInputElements[] = [
   { key: "laundry", label: "Select Laundry" },
@@ -43,7 +49,9 @@ const Reservations = () => {
   const [openDate, setOpenDate] = useState<boolean>(false);
   const [openAlert, setOpenAlert] = useState<boolean>(false);
   const [openTime, setOpenTime] = useState<boolean>(false);
-  const [formData, setFormData] = useState<ReservationRequestType | undefined>();
+  const [formData, setFormData] = useState<
+    ReservationRequestType | undefined
+  >();
   const [optionDevice, setOptionDevice] =
     useState<WashingOption>("washing machine");
 
@@ -85,6 +93,7 @@ const Reservations = () => {
     setOpenAlert(false);
   };
 
+  
 
   const renderInputElements = (
     key: SelectType,
@@ -116,16 +125,26 @@ const Reservations = () => {
         return (
           <>
             <Pressable onPress={onOpenTime}>
-              <Input placeholder="Select time" value={value as string} editable={false} />
+              <Input
+                placeholder="Select time"
+                value={value as string}
+                editable={false}
+              />
             </Pressable>
-            <TimePicker
+            {/* <TimePicker
               day={watch("date")}
               isOpen={openTime}
               closeModal={closeTime}
               onCancel={closeTime}
               onSave={closeTime}
               onChange={(time) => setValue("time", time)}
+              
+            /> */}
+            <TimePickerScroll
+              isOpen={openTime}
+              closeModal={closeTime}
               selectedInterval={timeSlot}
+              onChange={(time) => setValue("time", time)}
             />
           </>
         );
@@ -165,8 +184,7 @@ const Reservations = () => {
   const renderReservationForm = () => {
     const onSubmit = (data: FormReservation) => {
       onOpenAlert();
-      setFormData(data)
-      // console.log("submit", data.date);
+      setFormData(data);
     };
 
     return (

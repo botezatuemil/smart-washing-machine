@@ -14,7 +14,7 @@ export const useDevicesSelect = (option: WashingOption) : { items: Item | undefi
       enabled: false,
       onSuccess: (data) => {
         const valuesDevice = data?.map((washingMachine) => ({
-          obj: { ...washingMachine },
+          id: washingMachine.id,
           name: washingMachine.deviceName,
         }));
         setItems({

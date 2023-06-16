@@ -13,7 +13,7 @@ export const useLaundries = () : { items: Item | undefined, refetch : () => void
       enabled: false,
       onSuccess : (data) => {
         const valuesLaundry = data?.map((laundry) => ({
-          obj: { ...laundry },
+          id: laundry.id,
           name: laundry.laundryName + " / floor " + laundry.laundryFloor,
         }));
     

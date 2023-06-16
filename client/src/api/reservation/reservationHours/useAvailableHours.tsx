@@ -17,7 +17,9 @@ export const useAvailableHours = (
       enabled: false,
       onSuccess: (data) => {
         const valuesIntervals = data?.reserve.map((interval) => ({
-          obj: { ...interval },
+          id: moment(interval.startHour).utcOffset(0).format("HH:mm") +
+          " - " +
+          moment(interval.endHour).utcOffset(0).format("HH:mm"),
           name:
             moment(interval.startHour).utcOffset(0).format("HH:mm") +
             " - " +

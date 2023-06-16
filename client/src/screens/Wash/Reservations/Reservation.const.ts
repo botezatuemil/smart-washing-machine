@@ -27,12 +27,12 @@ export type SelectType =
   | "time";
 
 export type Item = {
-  values: { name: string; obj: any }[] | undefined;
+  values: { name: string; id: number | string }[] | undefined;
   title: string;
 };
 
 export type LaundryType = {
-  id: React.Key;
+  id: number;
   laundryName: string;
   laundryFloor: number;
   buildingId: number;
