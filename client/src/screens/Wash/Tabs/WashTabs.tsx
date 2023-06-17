@@ -18,8 +18,12 @@ import * as styles from "./WashTabs.styles";
 import Reservations from "../Reservations/Reservations";
 import UserWash from "../UserWash/UserWash";
 import History from "../History/History";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParams } from "../../../navigation/TabNavigator";
 
-export const Wash = () => {
+type Props = NativeStackScreenProps<RootStackParams, "WashStack">;
+
+export const Wash = ({route}: Props) => {
   const [currentTab, setCurrentTab] = useState("tab1");
 
   // Layout of the trigger user might intend to select (hovering / focusing)
@@ -96,7 +100,7 @@ export const Wash = () => {
   const renderByTab = () => {
     switch (currentTab) {
       case "tab1":
-        return <Reservations />;
+        return <Reservations laundry={route.params?.laundry} washingDevice={route.params?.washingDevice} />;
       case "tab2":
         return <UserWash />;
       default:

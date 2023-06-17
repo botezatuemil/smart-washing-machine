@@ -27,7 +27,7 @@ export type SelectType =
   | "time";
 
 export type Item = {
-  values: { name: string; id: number | string }[] | undefined;
+  values: { name: string; id: number | string }[];
   title: string;
 };
 

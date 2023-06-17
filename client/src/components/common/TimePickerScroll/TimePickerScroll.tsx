@@ -160,7 +160,7 @@ const TimePickerScroll = ({
                   height: ITEM_HEIGHT * 3,
                   overflow: "hidden",
                 }}
-                onMomentumScrollEnd={(event) => {
+                onScroll={(event) => {
                   const offsetY = event.nativeEvent.contentOffset.y;
                   const index = Math.round(offsetY / ITEM_HEIGHT);
                   setSelectedHour(parseInt(Object.keys(options[index])[0]));
@@ -200,7 +200,7 @@ const TimePickerScroll = ({
                   height: ITEM_HEIGHT * 3,
                   overflow: "hidden",
                 }}
-                onMomentumScrollEnd={(event) => {
+                onScroll={(event) => {
                   const offsetY = event.nativeEvent.contentOffset.y;
                   const index = Math.round(offsetY / ITEM_HEIGHT);
                   const minute = options

@@ -20,6 +20,9 @@ import { useDevicesSelect } from "../../../api/washingDevice/getDevicesSelect/us
 import { DeviceType, HourInterval, WashingOption } from "../../../interfaces";
 import { useAvailableHours } from "../../../api/reservation/reservationHours/useAvailableHours";
 import TimePickerScroll from "../../../components/common/TimePickerScroll/TimePickerScroll";
+// import { WashStackParams } from "../WashNavigator";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParams } from "../../../navigation/TabNavigator";
 
 const selectElements: SelectInputElements[] = [
   { key: "laundry", label: "Select Laundry" },
@@ -29,7 +32,13 @@ const selectElements: SelectInputElements[] = [
   { key: "time", label: "Choose the start hour and end hour" },
 ];
 
-const Reservations = () => {
+type Props = {
+  laundry: Item,
+  washingDevice: Item
+}
+
+const Reservations = ({ laundry, washingDevice }: Props) => {
+
   const [focusColor, setFocusColor] = useState({
     wash: "#0055EE",
     dry: "#8C90A2",
@@ -93,7 +102,7 @@ const Reservations = () => {
     setOpenAlert(false);
   };
 
-  
+  console.log('washig', washingDevice)
 
   const renderInputElements = (
     key: SelectType,
@@ -145,19 +154,22 @@ const Reservations = () => {
             placeholder="Choose a laundry"
             onChange={onChange}
             onOpen={refetchLaundry}
-            items={laundries?.values}
-            title={laundries?.title}
+            defaultValue={laundry}
+            items={laundries}
+           
           />
         );
       case "washingMachine":
+      
         return (
           <SelectInput
             placeholder="Available washing devices"
             onChange={onChange}
             onOpen={refetchDevice}
-            items={devices?.values}
-            title={devices?.title}
+            items={devices}
+            defaultValue={washingDevice}
           />
+         
         );
       default:
         return (
@@ -165,8 +177,8 @@ const Reservations = () => {
             placeholder="Choose an available hour interval"
             onChange={onChange}
             onOpen={refetchAvailableHours}
-            items={availableHours?.values}
-            title={availableHours?.title}
+            items={availableHours}
+           
           />
         );
     }

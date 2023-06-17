@@ -7,12 +7,12 @@ import { Dimensions } from "react-native";
 import { Laundry } from "../../../api/washingDevice/getAllDevices/types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
-import { WashStackParams } from "../../../screens/Wash/WashNavigator";
+// import { WashStackParams } from "../../../screens/Wash/WashNavigator";
 import { RootStackParams } from "../../../navigation/TabNavigator";
 import { ChatStackParams } from "../../../screens/Chat/ChatNavigator";
 import { useCreateChat } from "../../../api/chat/createChat/useCreateChat";
 import { useLoginStore } from "../../../store/LoginStore";
-import {LaundryType} from "../../../screens/Wash/Reservations/Reservation.const";
+import {Item, LaundryType} from "../../../screens/Wash/Reservations/Reservation.const";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -32,11 +32,12 @@ const Device = ({
   washingDeviceName,
   type,
   imagePath,
+  laundryName
 }: Laundry & { type: WashingOption } & { imagePath: string }) => {
-  const navigation =
+  // const navigationWash =
+    // useNavigation<NativeStackNavigationProp<RootStackParams>>();
+  const navigationRoot =
     useNavigation<NativeStackNavigationProp<RootStackParams>>();
-  const navigationChat =
-    useNavigation<NativeStackNavigationProp<ChatStackParams>>();
   const createChat = useCreateChat();
   const { token } = useLoginStore();
   const getStatus = () => {
@@ -57,14 +58,29 @@ const Device = ({
   const onStartChat = async () => {
     createChat.mutate({ token, receiverId: studentId });
 
-    navigation.navigate("ChatStack");
+    navigationRoot.navigate("ChatStack");
   };
 
   const navigateToReserve = () => {
-    // const laundry : LaundryType = {
-    //   buildingId: 
-    // }
-    navigation.navigate("WashStack")
+    let valuesLaundry = [];
+    let valuesWashingDevice = [];
+
+    valuesLaundry.push({id: laundryId, name: laundryName + " / floor " + laundryFloor}) ;
+    valuesWashingDevice.push({id: washingDeviceId, name: washingDeviceName})
+
+    const laundryItem : Item = {
+      title: "Available Laundries",
+      values: valuesLaundry,
+    };
+
+    const washingDeviceItem : Item = {
+      title: "Available Devices",
+      values: valuesWashingDevice
+    }
+
+    console.log("laundr", laundryItem)
+    navigationRoot.navigate("WashStack", {laundry: laundryItem, washingDevice : washingDeviceItem});
+    // navigationRoot.navigate("WashStack", {screen: "Wash", params: {}}).navigationWash.navigate("Wash", {laundry: laundryItem})
   }
 
   return (

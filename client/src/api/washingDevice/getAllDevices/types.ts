@@ -7,8 +7,9 @@ export type Laundry = {
     dormFloor: number;
     laundryId: number;
     laundryFloor: number;
-    washingDeviceName: number;
+    washingDeviceName: string;
     washingDeviceId: number;
     opened: boolean;
     status: boolean;
+    laundryName: string;
   };

@@ -20,13 +20,13 @@ const getLaundryDevices = (req, res) => __awaiter(void 0, void 0, void 0, functi
     const { option } = req.body;
     const convertedDeviceType = (0, ConvertTypes_1.convertTypes)(option);
     const laundryData = yield prisma.$queryRaw `
-        SELECT washing_device.id, device_name as washing_device_name, status, opened, laundry_id, type, student_id, first_name, last_name, dorm_id, dorm_number,
-        dorm_floor, laundry_floor, dorm.id FROM washing_device
+        SELECT washing_device.id as washing_device_id, device_name as washing_device_name, status, opened, laundry_id, type, student_id, first_name, last_name, dorm_id, dorm_number,
+        dorm_floor, laundry_floor, laundry_name, dorm.id FROM washing_device
         INNER JOIN laundry on laundry.id = washing_device.laundry_id
         INNER JOIN student on student.id =  washing_device.student_id
         INNER JOIN dorm on dorm.id = student.dorm_id
         WHERE ${convertedDeviceType}::device = type
-        GROUP BY washing_device.id, student.first_name, student.last_name, student.dorm_id, dorm.dorm_number, dorm.dorm_floor, laundry.laundry_floor, dorm.id
+        GROUP BY washing_device.id, student.first_name, student.last_name, student.dorm_id, dorm.dorm_number, dorm.dorm_floor, laundry.laundry_floor, laundry_name, dorm.id
     `;
     res.send((0, ConvertKeys_1.convertKeysArray)(laundryData));
 });

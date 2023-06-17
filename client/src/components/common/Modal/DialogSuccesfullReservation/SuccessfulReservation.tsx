@@ -36,13 +36,15 @@ const SuccessfulReservation = ({
   const [isActive, setIsActive] = useState<boolean>(false);
   
   const {id} = useUserStore();
- 
 
+  console.log("submit", data);
+ 
   const onMakeReservation = () => {
     // get needed reservation data from the data
     if (!data) {
       return;
     }
+    
     const laundryId = parseInt(data.laundry);
     const washingDeviceId = parseInt(data.washingMachine);
     const date = data.date as Date;
@@ -50,7 +52,7 @@ const SuccessfulReservation = ({
 
     //split by start hour and end hour
     const hours =  interval!.split("-");
-
+    
     // convert start hour and end hour back to moment type
     const reservation : Omit<ReservationType, "id"> = {
       studentId: id,

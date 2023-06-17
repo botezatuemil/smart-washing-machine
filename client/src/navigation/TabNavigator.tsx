@@ -9,17 +9,18 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Home as HomeIcon } from "@tamagui/lucide-icons";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
-import WashScreenStack from "../screens/Wash/WashNavigator";
 import HomeScreenStack from "../screens/Home/HomeNavigator";
 import ProfileScreenStack from "../screens/Profile/ProfileNavigator";
 import ChatScreenStack from "../screens/Chat/ChatNavigator";
 import InboxScreenStack from "../screens/Inbox/InboxNavigator";
+import { Item } from "../screens/Wash/Reservations/Reservation.const";
+import { Wash } from "../screens/Wash/Tabs/WashTabs";
 
 export const RootStack = createBottomTabNavigator<RootStackParams>();
 
 export type RootStackParams = {
   HomeStack: undefined;
-  WashStack: undefined;
+  WashStack: {laundry: Item, washingDevice: Item};
   InboxStack: undefined;
   ChatStack: undefined;
   ProfileStack: undefined;
@@ -49,7 +50,7 @@ export default function TabNavigator() {
     >
       <RootStack.Screen
         name="WashStack"
-        component={WashScreenStack}
+        component={Wash}
         options={{
           headerShown: false,
           tabBarShowLabel: false,
