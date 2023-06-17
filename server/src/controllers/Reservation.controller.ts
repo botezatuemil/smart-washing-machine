@@ -11,7 +11,7 @@ import {
 const prisma = new PrismaClient();
 
 const MIN_HOUR = 12;
-const MAX_HOUR = 27;
+const MAX_HOUR = 24;
 
 export const getAvailableHours = async (req: Request, res: Response) => {
   try {
@@ -64,7 +64,7 @@ export const addReservation = async (req: Request, res: Response) => {
   const { reservation } = req.body;
 
   // get the keys from camel case to snake case to keep consistency across frontend / backend
-
+  console.log(reservation);
   const parsedReservation = parseKeys(reservation) as Omit<reservation, "id">;
   try {
     const addedReservation: reservation = await prisma.reservation.create({

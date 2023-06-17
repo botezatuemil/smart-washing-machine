@@ -131,21 +131,12 @@ const Reservations = () => {
                 editable={false}
               />
             </Pressable>
-            {/* <TimePicker
-              day={watch("date")}
-              isOpen={openTime}
-              closeModal={closeTime}
-              onCancel={closeTime}
-              onSave={closeTime}
-              onChange={(time) => setValue("time", time)}
-              
-            /> */}
-            <TimePickerScroll
+           {openTime &&  <TimePickerScroll
               isOpen={openTime}
               closeModal={closeTime}
               selectedInterval={timeSlot}
               onChange={(time) => setValue("time", time)}
-            />
+            />}
           </>
         );
       case "laundry":

@@ -9,6 +9,7 @@ import { WashingDevice } from "../../../../api/washingDevice/getDevicesSelect/ty
 import moment from "moment";
 import { useUserStore } from "../../../../store/UserStore";
 import { ReservationStore, useReservationStore } from "../../../../store/ReservationStore";
+import { invalidateQuery } from "../../../../utils/InvalidateCache";
 
 type SuccessReservationProp = {
   isOpen: boolean;
@@ -25,6 +26,7 @@ const SuccessfulReservation = ({
 }: SuccessReservationProp) => {
 
   const { addReservationStore } = useReservationStore();
+
   const onSuccess = (data : ReservationStore) => {
     addReservationStore(data)
   }
@@ -38,26 +40,29 @@ const SuccessfulReservation = ({
 
   const onMakeReservation = () => {
     // get needed reservation data from the data
-    const laundry = data?.laundry as unknown as LaundryType;
-    const device = data?.washingMachine as unknown as WashingDevice;
-    const date = data?.date as Date;
-    const interval = data?.time
+    if (!data) {
+      return;
+    }
+    const laundryId = parseInt(data.laundry);
+    const washingDeviceId = parseInt(data.washingMachine);
+    const date = data.date as Date;
+    const interval = data.time
 
     //split by start hour and end hour
     const hours =  interval!.split("-");
 
     // convert start hour and end hour back to moment type
-   
     const reservation : Omit<ReservationType, "id"> = {
       studentId: id,
-      laundryId: laundry.id,
+      laundryId: laundryId,
       reservationDate: moment(date),
       scheduledEarly: isActive,
-      washingDeviceId: device.id,
+      washingDeviceId: washingDeviceId,
       startHour: moment(date).utc().set({h: parseInt(hours[0].split(":")[0]), m: parseInt(hours[0].split(":")[1])}),
       endHour : moment(date).utc().set({h: parseInt(hours[1].split(":")[0]), m: parseInt(hours[1].split(":")[1])}),
     }
-    addReservation.mutate(reservation)
+    addReservation.mutate(reservation);
+    invalidateQuery("incomingReservation");
     closeModal()
   }
 
