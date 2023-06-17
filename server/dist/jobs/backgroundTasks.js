@@ -25,8 +25,6 @@ node_cron_1.default.schedule("* * * * *", () => __awaiter(void 0, void 0, void 0
     and reservation.end_hour > NOW() AT TIME ZONE 'Europe/Bucharest' 
     and washing_device.status = true 
     `;
-        // or reservation.end_hour < NOW() AT TIME ZONE 'Europe/Bucharest'
-        // and washing_device.opened = true
         if (reservations.length !== 0) {
             reservations.map((reservation) => __awaiter(void 0, void 0, void 0, function* () {
                 // await prisma.$queryRaw`delete from reservation where reservation.id = ${reservation.id}`;

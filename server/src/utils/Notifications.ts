@@ -4,7 +4,7 @@ import { createNotification } from "../controllers/Notification.controller";
 
 export type Notification = {
   body: string;
-  data: { id: string; type: "WASHING_MACHINE" | "TUMBLE_DRYER" };
+  data?: { id: string; };
 };
 
 export type ExpoTokenList = {
@@ -13,12 +13,24 @@ export type ExpoTokenList = {
 };
 
 export const sendNotification = (
-  expoPushToken: string,
-  message: Notification
+  expoPushToken: string | undefined,
+  message: string
 ) => {
   const expo = new Expo({ accessToken: process.env.ACCESS_TOKEN });
 
-  let chunks = expo.chunkPushNotifications([{ to: expoPushToken, ...message }]);
+  if (!Expo.isExpoPushToken(expoPushToken)) {
+    console.error(
+      `Push token ${expoPushToken} is not a valid Expo push token`
+    );
+    return;
+  }
+
+  const messageSend = {
+    to: expoPushToken,
+    body: message
+  }
+
+  let chunks = expo.chunkPushNotifications([messageSend]);
   let tickets = [];
   (async () => {
     // Send the chunks to the Expo push notification service. There are
@@ -38,7 +50,7 @@ export const sendNotification = (
 
 export const sendNotificationList = (
   tokens: ExpoTokenList[],
-  device: "WASHING_MACHINE" | "TUMBLE_DRYER"
+  message: string
 ) => {
   const expo = new Expo({ accessToken: process.env.ACCESS_TOKEN });
   let messages = [];
@@ -51,11 +63,8 @@ export const sendNotificationList = (
     }
     messages.push({
       to: notification_token,
-      body:
-        device === "WASHING_MACHINE"
-          ? "A new washing machine is available!"
-          : "A new dryer is available",
-      data: { id: id, type: device },
+      body: message,
+      data: { id },
     });
   }
 

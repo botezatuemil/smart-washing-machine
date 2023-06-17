@@ -13,7 +13,15 @@ exports.sendNotificationList = exports.sendNotification = void 0;
 const expo_server_sdk_1 = require("expo-server-sdk");
 const sendNotification = (expoPushToken, message) => {
     const expo = new expo_server_sdk_1.Expo({ accessToken: process.env.ACCESS_TOKEN });
-    let chunks = expo.chunkPushNotifications([Object.assign({ to: expoPushToken }, message)]);
+    if (!expo_server_sdk_1.Expo.isExpoPushToken(expoPushToken)) {
+        console.error(`Push token ${expoPushToken} is not a valid Expo push token`);
+        return;
+    }
+    const messageSend = {
+        to: expoPushToken,
+        body: message
+    };
+    let chunks = expo.chunkPushNotifications([messageSend]);
     let tickets = [];
     (() => __awaiter(void 0, void 0, void 0, function* () {
         // Send the chunks to the Expo push notification service. There are
@@ -32,7 +40,7 @@ const sendNotification = (expoPushToken, message) => {
     }))();
 };
 exports.sendNotification = sendNotification;
-const sendNotificationList = (tokens, device) => {
+const sendNotificationList = (tokens, message) => {
     const expo = new expo_server_sdk_1.Expo({ accessToken: process.env.ACCESS_TOKEN });
     let messages = [];
     for (let { notification_token, id } of tokens) {
@@ -42,10 +50,8 @@ const sendNotificationList = (tokens, device) => {
         }
         messages.push({
             to: notification_token,
-            body: device === "WASHING_MACHINE"
-                ? "A new washing machine is available!"
-                : "A new dryer is available",
-            data: { id: id, type: device },
+            body: message,
+            data: { id },
         });
     }
     let chunks = expo.chunkPushNotifications(messages);

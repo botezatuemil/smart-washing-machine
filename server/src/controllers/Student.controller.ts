@@ -43,9 +43,6 @@ export const getProfile = async(req: Request, res: Response) => {
     inner join building on building.id = dorm.building_id
     inner join campus on campus.id = building.campus_id
     where student.id = ${user_id}`
-    
-    console.log(convertKeys(profile[0]));
-    // const profileAddress = {...profile[0], }
     res.send(convertKeys(profile[0]))
   } catch (error) {
     console.log(error)

@@ -16,7 +16,7 @@ model student {
   last_name                                     String
   registration_number                           Int
   password                                      String
-  notification_token                            String           @default("123")
+  notification_token                            String          
   conversations_conversations_user1_idTostudent conversations[]  @relation("conversations_user1_idTostudent")
   conversations_conversations_user2_idTostudent conversations[]  @relation("conversations_user2_idTostudent")
   messages                                      messages[]

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, XStack, YStack, Text, Stack } from "tamagui";
 import * as styles from "./Profile.styles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -6,6 +6,7 @@ import { useLoginStore } from "../../store/LoginStore";
 import { useGetProfile } from "../../api/profile/useGetProfile";
 import { UserProfile } from "../../api/profile/endpoints";
 import SwitchWithLabel from "../../components/common/SwitchWithLabel/SwitchWithLabel";
+import { useQueryClient } from "react-query";
 
 const labels = [
   "First Name",
@@ -21,6 +22,10 @@ const Profile = () => {
   const { toggleLogin, token } = useLoginStore();
   const { data } = useGetProfile(token);
   const [active, setActive] = useState<boolean>(true);
+  
+    const queryClient = useQueryClient();
+ 
+
   const logout = async () => {
     try {
       await AsyncStorage.removeItem("token");
@@ -29,6 +34,10 @@ const Profile = () => {
       console.log(error);
     }
   };
+ const refetch = async() => {
+    await queryClient.invalidateQueries("getProfile");
+  }
+  
 
   return (
     <YStack

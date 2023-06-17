@@ -10,14 +10,19 @@ import FeatherIcons from "react-native-vector-icons/Feather";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useHistory } from "../../../api/reservation/getHistory/useHistory";
 import { useUserStore } from "../../../store/UserStore";
+import { useDeleteReservation } from "../../../api/reservation/delete/useDeleteReservation";
+import { useLoginStore } from "../../../store/LoginStore";
 
 const History = () => {
   const { reservations, removeReservationStore, sortedReservations } =
     useReservationStore();
   const { id } = useUserStore();
+  const {token} = useLoginStore();
+  const deleteReservation = useDeleteReservation()
 
-  const deleteReservation = (id: React.Key) => {
-    removeReservationStore(id);
+  const onDeleteReservation = (id: React.Key) => {
+    // removeReservationStore(id);
+    deleteReservation.mutate({reservationId: id, token});
   };
 
   const { data } = useHistory(id);
@@ -67,7 +72,7 @@ const History = () => {
                   </Text>
                 </YStack>
                 <TouchableOpacity
-                  onPress={() => deleteReservation(reservation.id)}
+                  onPress={() => onDeleteReservation(reservation.id)}
                 >
                   <FeatherIcons name="trash-2" size={32} />
                 </TouchableOpacity>
