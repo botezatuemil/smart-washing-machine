@@ -12,7 +12,7 @@ import {
 } from "./Reservation.const";
 import { SelectInputElements, SelectType } from "./Reservation.const";
 import { Pressable } from "react-native";
-import DateTimePickerSelect from "../../../components/common/DateTimePicker/DateTimePicker";
+import DateTimePickerSelect, { changeTimeZone } from "../../../components/common/DateTimePicker/DateTimePicker";
 import SuccessfulReservation from "../../../components/common/Modal/DialogSuccesfullReservation/SuccessfulReservation";
 import TimePicker from "../../../components/common/Modal/TimePicker/TimePicker";
 import { useLaundries } from "../../../api/laundry/useLaundry";
@@ -25,6 +25,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParams } from "../../../navigation/TabNavigator";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
+import moment from "moment";
 const selectElements: SelectInputElements[] = [
   { key: "laundry", label: "Select Laundry" },
   { key: "washingMachine", label: "Pick a washing machine" },
@@ -71,7 +72,13 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
     watch,
     getValues,
     setValue,
-  } = useForm<FormReservation>();
+  } = useForm<FormReservation>({
+    defaultValues : {
+      date: changeTimeZone(new Date())
+    }
+  });
+
+
 
   const { items: laundries, refetch: refetchLaundry } = useLaundries();
   const { items: devices, refetch: refetchDevice } =
@@ -88,7 +95,7 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
       onChange : (event: any, selectedDate: any) => {
         const currentDate = selectedDate;
         setFirstDate(currentDate);
-        setValue("date", currentDate);
+        setValue("date", changeTimeZone(currentDate));
       },
       mode: "date",
       is24Hour: true,

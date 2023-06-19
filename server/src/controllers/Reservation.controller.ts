@@ -113,7 +113,7 @@ export const getIncomingReservation = async (req: Request, res: Response) => {
       INNER JOIN washing_device on  washing_device.id = reservation.washing_device_id
       WHERE reservation.student_id = ${user_id}
       AND reservation.start_hour::timestamp >= (NOW() AT TIME ZONE 'Europe/Bucharest')
-      ORDER BY reservation.reservation_date::DATE DESC, reservation.start_hour ASC  LIMIT 1`;
+      ORDER BY reservation.reservation_date::DATE, reservation.start_hour ASC  LIMIT 1`;
       console.log(convertKeys(reservationStore[0]))
     res.send(convertKeys(reservationStore[0]));
   } catch (error) {

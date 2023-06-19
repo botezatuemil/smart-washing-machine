@@ -10,6 +10,7 @@ import moment from "moment";
 import { useUserStore } from "../../../../store/UserStore";
 import { ReservationStore, useReservationStore } from "../../../../store/ReservationStore";
 import { invalidateQuery } from "../../../../utils/InvalidateCache";
+import { changeTimeZone } from "../../DateTimePicker/DateTimePicker";
 
 type SuccessReservationProp = {
   isOpen: boolean;
@@ -36,7 +37,7 @@ const SuccessfulReservation = ({
   const [isActive, setIsActive] = useState<boolean>(false);
   
   const {id} = useUserStore();
-  console.log("modal", data?.date);
+ 
 
   const onMakeReservation = () => {
     // get needed reservation data from the data
@@ -49,9 +50,7 @@ const SuccessfulReservation = ({
     const date = data.date;
     const interval = data.time
 
-   
-
-    //split by start hour and end hour
+    // split by start hour and end hour
     const hours =  interval!.split("-");
     
     // convert start hour and end hour back to moment type

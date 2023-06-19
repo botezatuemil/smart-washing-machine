@@ -9,16 +9,17 @@ type DateTimePropType = {
   onChangeDate: (selectedDate : any) => void;
 };
 
+export const changeTimeZone = (date: Date) => {
+  const currentDate = date;
+  const difference = -currentDate.getTimezoneOffset() / 60
+  currentDate.setHours(currentDate.getHours() + difference);
+  return currentDate;
+}
 const DateTimePickerSelect = ({ isShowing, closeModal, onChangeDate }: DateTimePropType) => {
 
   const [date, setDate] = useState(new Date());
 
-  const changeTimeZone = (date: Date) => {
-    const currentDate = date;
-    const difference = -currentDate.getTimezoneOffset() / 60
-    currentDate.setHours(currentDate.getHours() + difference);
-    return currentDate;
-  }
+
   const onChangeHandler = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || date;
     // const parsedDate = changeTimeZone(currentDate)
