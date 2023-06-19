@@ -85,7 +85,7 @@ const TimePickerScroll = ({
       .map((option) => option[selectedHour.toString().padStart(2, "0")])
       .flat();
     setSelectedMinute(minute[0]);
-  }, [selectedHour]);
+  }, [options, selectedHour]);
 
   const hourScrollViewRef = React.useRef<any>();
   const minuteScrollViewRef = React.useRef<any>();

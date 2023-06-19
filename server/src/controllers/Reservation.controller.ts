@@ -96,7 +96,6 @@ export const getHistory = async (req: Request, res: Response) => {
     INNER JOIN laundry on  laundry.id = reservation.laundry_id
     INNER JOIN washing_device on  washing_device.id = reservation.washing_device_id
     WHERE reservation.student_id = ${id}`;
-    // console.log(convertKeysArray(reservationStore));
     res.send(convertKeysArray(reservationStore));
   } catch (error) {
     console.log(error);
@@ -114,9 +113,8 @@ export const getIncomingReservation = async (req: Request, res: Response) => {
       INNER JOIN washing_device on  washing_device.id = reservation.washing_device_id
       WHERE reservation.student_id = ${user_id}
       -- AND reservation.start_hour::timestamp >= (NOW() AT TIME ZONE 'Europe/Bucharest' - INTERVAL '10' MINUTE)
-      ORDER BY reservation.reservation_date DESC, reservation.start_hour ASC  LIMIT 1`;
-    console.log("recent", convertKeys(reservationStore[0]));
-
+      ORDER BY reservation.reservation_date::DATE DESC, reservation.start_hour ASC  LIMIT 1`;
+      console.log(convertKeys(reservationStore[0]))
     res.send(convertKeys(reservationStore[0]));
   } catch (error) {
     console.log(error);
@@ -149,7 +147,7 @@ export const endReservation = async (req: Request, res: Response) => {
       { type: device }[]
     >`SELECT washing_device.type from washing_device where washing_device.id = ${wash[0].washing_device_id}`;
     const deletedReservation: reservation[] =
-    await prisma.$queryRaw`select * from reservation where reservation.id = ${reservationId}`;
+      await prisma.$queryRaw`select * from reservation where reservation.id = ${reservationId}`;
     await prisma.$queryRaw`DELETE from reservation where reservation.id = ${reservationId}`;
     const message =
       device[0].type === "WASHING_MACHINE"
@@ -157,7 +155,6 @@ export const endReservation = async (req: Request, res: Response) => {
         : "A new dryer is available";
     sendNotificationList(newTokens, message);
     scheduleEarly(moment(), moment.utc(deletedReservation[0].end_hour));
-
   } catch (error) {
     console.log(error);
   }
@@ -169,7 +166,10 @@ export const deleteReservation = async (req: Request, res: Response) => {
     const deletedReservation: reservation[] =
       await prisma.$queryRaw`select * from reservation where reservation.id = ${reservationId}`;
     await prisma.$queryRaw`delete from reservation where reservation.id = ${reservationId}`;
-    scheduleEarly(moment.utc(deletedReservation[0].start_hour), moment.utc(deletedReservation[0].end_hour));
+    scheduleEarly(
+      moment.utc(deletedReservation[0].start_hour),
+      moment.utc(deletedReservation[0].end_hour)
+    );
     res.status(200).json("Reservation deleted successfully");
   } catch (error) {
     console.log(error);
@@ -185,12 +185,12 @@ const getValue = (interval: reservation) => {
 export const updateReservationTime = async (
   reservationId: number,
   startDate: moment.Moment,
-  endDate:  moment.Moment
+  endDate: moment.Moment
 ) => {
   try {
-    const sqlStartDate = startDate.format('YYYY-MM-DD HH:mm:ss')
-    const sqlEndDate = endDate.format('YYYY-MM-DD HH:mm:ss')
-    
+    const sqlStartDate = startDate.format("YYYY-MM-DD HH:mm:ss");
+    const sqlEndDate = endDate.format("YYYY-MM-DD HH:mm:ss");
+
     await prisma.$queryRaw`update reservation set start_hour = ${sqlStartDate}::timestamp, end_hour = ${sqlEndDate}::timestamp where reservation.id = ${reservationId}`;
   } catch (error) {
     console.log(error);
@@ -208,11 +208,17 @@ const getTokenById = async (studentId: number) => {
   }
 };
 
-export const scheduleEarly = async (startTime: moment.Moment, endTime: moment.Moment) => {
-
+export const scheduleEarly = async (
+  startTime: moment.Moment,
+  endTime: moment.Moment
+) => {
   try {
     const intervals: reservation[] =
       await prisma.$queryRaw`SELECT * from reservation where reservation.scheduled_early = true and reservation.start_hour > ${startTime}::timestamp`;
+
+    if (intervals.length === 0) {
+      return;
+    }
     const sortedIntervals = intervals.sort((r1, r2) =>
       r1.end_hour.getTime() - r1.start_hour.getTime() <
       r2.end_hour.getTime() - r2.start_hour.getTime()
@@ -221,9 +227,7 @@ export const scheduleEarly = async (startTime: moment.Moment, endTime: moment.Mo
     );
     let n = sortedIntervals.length;
 
-    let intervalLength = Math.floor(
-      endTime.diff(startTime, 'minutes')
-    );
+    let intervalLength = Math.floor(endTime.diff(startTime, "minutes"));
     console.log(intervalLength);
     let dp = Array.from({ length: n + 1 }, () =>
       new Array(intervalLength + 1).fill(0)
@@ -257,7 +261,7 @@ export const scheduleEarly = async (startTime: moment.Moment, endTime: moment.Mo
 
     let start = startTime;
     for (let reservation of scheduledReservations.reverse()) {
-      let end = start.clone().add(getValue(reservation), 'minutes');
+      let end = start.clone().add(getValue(reservation), "minutes");
       // Update the time of the reservation
       updateReservationTime(reservation.id, start, end);
       const message =

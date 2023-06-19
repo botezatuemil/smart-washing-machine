@@ -96,7 +96,6 @@ const Chat = ({ route }: Props) => {
     refetch();
     socket.on("new message", (message: string) => {
       const parsedMessage = JSON.parse(message) as Message;
-      console.log("socket", parsedMessage)
       addMessage(parsedMessage);
     });
 

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import moment from "moment";
 
 type DateTimePropType = {
   isShowing: boolean;
@@ -12,12 +13,19 @@ const DateTimePickerSelect = ({ isShowing, closeModal, onChangeDate }: DateTimeP
 
   const [date, setDate] = useState(new Date());
 
-  const onChange = (event: any, selectedDate: any) => {
-    const currentDate = selectedDate || date;
+  const changeTimeZone = (date: Date) => {
+    const currentDate = date;
     const difference = -currentDate.getTimezoneOffset() / 60
-    currentDate.setHours(currentDate.getHours() + difference)
-    closeModal();
+    currentDate.setHours(currentDate.getHours() + difference);
+    return currentDate;
+  }
+  const onChangeHandler = (event: any, selectedDate: any) => {
+    const currentDate = selectedDate || date;
+    // const parsedDate = changeTimeZone(currentDate)
+    // console.log("parse", currentDate)
     setDate(currentDate);
+    onChangeDate(currentDate); 
+    closeModal();
   };
 
 
@@ -29,9 +37,8 @@ const DateTimePickerSelect = ({ isShowing, closeModal, onChangeDate }: DateTimeP
           mode="date"
           is24Hour={true}
           display="default"
-          onChange={(event :any, selectedDate:any) => {
-            onChange(event, selectedDate); onChangeDate(selectedDate);
-          }}
+          timeZoneOffsetInMinutes={-180}
+          onChange={onChangeHandler}
           // minimumDate={new Date()}
         />
       )}

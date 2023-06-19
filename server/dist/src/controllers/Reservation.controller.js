@@ -88,7 +88,6 @@ const getHistory = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     INNER JOIN laundry on  laundry.id = reservation.laundry_id
     INNER JOIN washing_device on  washing_device.id = reservation.washing_device_id
     WHERE reservation.student_id = ${id}`;
-        // console.log(convertKeysArray(reservationStore));
         res.send((0, ConvertKeys_1.convertKeysArray)(reservationStore));
     }
     catch (error) {
@@ -105,8 +104,8 @@ const getIncomingReservation = (req, res) => __awaiter(void 0, void 0, void 0, f
       INNER JOIN washing_device on  washing_device.id = reservation.washing_device_id
       WHERE reservation.student_id = ${user_id}
       -- AND reservation.start_hour::timestamp >= (NOW() AT TIME ZONE 'Europe/Bucharest' - INTERVAL '10' MINUTE)
-      ORDER BY reservation.reservation_date DESC, reservation.start_hour ASC  LIMIT 1`;
-        console.log("recent", (0, ConvertKeys_1.convertKeys)(reservationStore[0]));
+      ORDER BY reservation.reservation_date::DATE DESC, reservation.start_hour ASC  LIMIT 1`;
+        console.log((0, ConvertKeys_1.convertKeys)(reservationStore[0]));
         res.send((0, ConvertKeys_1.convertKeys)(reservationStore[0]));
     }
     catch (error) {
@@ -162,8 +161,8 @@ const getValue = (interval) => {
 };
 const updateReservationTime = (reservationId, startDate, endDate) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const sqlStartDate = startDate.format('YYYY-MM-DD HH:mm:ss');
-        const sqlEndDate = endDate.format('YYYY-MM-DD HH:mm:ss');
+        const sqlStartDate = startDate.format("YYYY-MM-DD HH:mm:ss");
+        const sqlEndDate = endDate.format("YYYY-MM-DD HH:mm:ss");
         yield prisma.$queryRaw `update reservation set start_hour = ${sqlStartDate}::timestamp, end_hour = ${sqlEndDate}::timestamp where reservation.id = ${reservationId}`;
     }
     catch (error) {
@@ -183,12 +182,15 @@ const getTokenById = (studentId) => __awaiter(void 0, void 0, void 0, function* 
 const scheduleEarly = (startTime, endTime) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const intervals = yield prisma.$queryRaw `SELECT * from reservation where reservation.scheduled_early = true and reservation.start_hour > ${startTime}::timestamp`;
+        if (intervals.length === 0) {
+            return;
+        }
         const sortedIntervals = intervals.sort((r1, r2) => r1.end_hour.getTime() - r1.start_hour.getTime() <
             r2.end_hour.getTime() - r2.start_hour.getTime()
             ? -1
             : 1);
         let n = sortedIntervals.length;
-        let intervalLength = Math.floor(endTime.diff(startTime, 'minutes'));
+        let intervalLength = Math.floor(endTime.diff(startTime, "minutes"));
         console.log(intervalLength);
         let dp = Array.from({ length: n + 1 }, () => new Array(intervalLength + 1).fill(0));
         for (let i = 1; i <= n; i++) {
@@ -214,7 +216,7 @@ const scheduleEarly = (startTime, endTime) => __awaiter(void 0, void 0, void 0, 
         }
         let start = startTime;
         for (let reservation of scheduledReservations.reverse()) {
-            let end = start.clone().add(getValue(reservation), 'minutes');
+            let end = start.clone().add(getValue(reservation), "minutes");
             // Update the time of the reservation
             (0, exports.updateReservationTime)(reservation.id, start, end);
             const message = "Your reservation has been scheduled early from: " +

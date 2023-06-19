@@ -36,9 +36,8 @@ const SuccessfulReservation = ({
   const [isActive, setIsActive] = useState<boolean>(false);
   
   const {id} = useUserStore();
+  console.log("modal", data?.date);
 
-  console.log("submit", data);
- 
   const onMakeReservation = () => {
     // get needed reservation data from the data
     if (!data) {
@@ -47,8 +46,10 @@ const SuccessfulReservation = ({
     
     const laundryId = parseInt(data.laundry);
     const washingDeviceId = parseInt(data.washingMachine);
-    const date = data.date as Date;
+    const date = data.date;
     const interval = data.time
+
+   
 
     //split by start hour and end hour
     const hours =  interval!.split("-");

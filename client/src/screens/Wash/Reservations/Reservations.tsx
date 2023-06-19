@@ -23,7 +23,8 @@ import TimePickerScroll from "../../../components/common/TimePickerScroll/TimePi
 // import { WashStackParams } from "../WashNavigator";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParams } from "../../../navigation/TabNavigator";
-
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 const selectElements: SelectInputElements[] = [
   { key: "laundry", label: "Select Laundry" },
   { key: "washingMachine", label: "Pick a washing machine" },
@@ -33,12 +34,11 @@ const selectElements: SelectInputElements[] = [
 ];
 
 type Props = {
-  laundry: Item,
-  washingDevice: Item
-}
+  laundry: Item;
+  washingDevice: Item;
+};
 
 const Reservations = ({ laundry, washingDevice }: Props) => {
-
   const [focusColor, setFocusColor] = useState({
     wash: "#0055EE",
     dry: "#8C90A2",
@@ -54,7 +54,7 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
     setOptionDevice("tumble dryer");
   };
 
-  const [firstDate, _] = useState<string>(new Date().toDateString());
+  const [firstDate, setFirstDate] = useState<Date>(new Date());
   const [openDate, setOpenDate] = useState<boolean>(false);
   const [openAlert, setOpenAlert] = useState<boolean>(false);
   const [openTime, setOpenTime] = useState<boolean>(false);
@@ -83,6 +83,16 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
     setOpenDate(false);
   };
   const onOpenDate = () => {
+    DateTimePickerAndroid.open({
+      value: firstDate,
+      onChange : (event: any, selectedDate: any) => {
+        const currentDate = selectedDate;
+        setFirstDate(currentDate);
+        setValue("date", currentDate);
+      },
+      mode: "date",
+      is24Hour: true,
+    });
     setOpenDate(true);
   };
 
@@ -102,8 +112,6 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
     setOpenAlert(false);
   };
 
-  console.log('washig', washingDevice)
-
   const renderInputElements = (
     key: SelectType,
     onChange: () => void,
@@ -116,17 +124,33 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
           <>
             <Pressable onPress={onOpenDate}>
               <Input
-                value={date ? date.toDateString() : firstDate}
+                value={date ? date.toDateString() : new Date().toDateString()}
                 editable={false}
               />
             </Pressable>
-            <DateTimePickerSelect
+
+            {/* {openDate && (
+              <DateTimePicker
+                value={firstDate}
+                mode={"date"}
+                is24Hour={true}
+                display="default"
+                onChange={(event: any, selectedDate: any) => {
+                  setValue("date", selectedDate);
+                  setFirstDate(selectedDate);
+                  closeOpenDate()
+                }}
+              />
+            )} */}
+
+            {/* {openDate && <DateTimePickerSelect
               isShowing={openDate}
               closeModal={closeOpenDate}
-              onChangeDate={(selectedDate: any) =>
+              onChangeDate={(selectedDate: any) => 
                 setValue("date", selectedDate)
+                // console.log("reservation", selectedDate)
               }
-            />
+            />} */}
           </>
         );
       case "time":
@@ -140,12 +164,14 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
                 editable={false}
               />
             </Pressable>
-           {openTime &&  <TimePickerScroll
-              isOpen={openTime}
-              closeModal={closeTime}
-              selectedInterval={timeSlot}
-              onChange={(time) => setValue("time", time)}
-            />}
+            {openTime && (
+              <TimePickerScroll
+                isOpen={openTime}
+                closeModal={closeTime}
+                selectedInterval={timeSlot}
+                onChange={(time) => setValue("time", time)}
+              />
+            )}
           </>
         );
       case "laundry":
@@ -156,11 +182,9 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
             onOpen={refetchLaundry}
             defaultValue={laundry}
             items={laundries}
-           
           />
         );
       case "washingMachine":
-      
         return (
           <SelectInput
             placeholder="Available washing devices"
@@ -169,7 +193,6 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
             items={devices}
             defaultValue={washingDevice}
           />
-         
         );
       default:
         return (
@@ -178,7 +201,6 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
             onChange={onChange}
             onOpen={refetchAvailableHours}
             items={availableHours}
-           
           />
         );
     }

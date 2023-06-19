@@ -78,7 +78,6 @@ const Device = ({
       values: valuesWashingDevice
     }
 
-    console.log("laundr", laundryItem)
     navigationRoot.navigate("WashStack", {laundry: laundryItem, washingDevice : washingDeviceItem});
     // navigationRoot.navigate("WashStack", {screen: "Wash", params: {}}).navigationWash.navigate("Wash", {laundry: laundryItem})
   }
