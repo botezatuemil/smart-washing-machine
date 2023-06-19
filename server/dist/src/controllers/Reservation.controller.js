@@ -103,7 +103,7 @@ const getIncomingReservation = (req, res) => __awaiter(void 0, void 0, void 0, f
       INNER JOIN laundry on  laundry.id = reservation.laundry_id
       INNER JOIN washing_device on  washing_device.id = reservation.washing_device_id
       WHERE reservation.student_id = ${user_id}
-      -- AND reservation.start_hour::timestamp >= (NOW() AT TIME ZONE 'Europe/Bucharest' - INTERVAL '10' MINUTE)
+      AND reservation.start_hour::timestamp >= (NOW() AT TIME ZONE 'Europe/Bucharest')
       ORDER BY reservation.reservation_date::DATE DESC, reservation.start_hour ASC  LIMIT 1`;
         console.log((0, ConvertKeys_1.convertKeys)(reservationStore[0]));
         res.send((0, ConvertKeys_1.convertKeys)(reservationStore[0]));
