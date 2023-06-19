@@ -56,7 +56,6 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
   };
 
   const [firstDate, setFirstDate] = useState<Date>(new Date());
-  const [openDate, setOpenDate] = useState<boolean>(false);
   const [openAlert, setOpenAlert] = useState<boolean>(false);
   const [openTime, setOpenTime] = useState<boolean>(false);
   const [formData, setFormData] = useState<
@@ -78,17 +77,13 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
     }
   });
 
-
-
   const { items: laundries, refetch: refetchLaundry } = useLaundries();
   const { items: devices, refetch: refetchDevice } =
     useDevicesSelect(optionDevice);
   const { items: availableHours, refetch: refetchAvailableHours } =
     useAvailableHours(watch("date"));
 
-  const closeOpenDate = () => {
-    setOpenDate(false);
-  };
+
   const onOpenDate = () => {
     DateTimePickerAndroid.open({
       value: firstDate,
@@ -102,8 +97,6 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
       firstDayOfWeek: 1,
       minimumDate: new Date()
     });
-    setOpenDate(true);
-    
   };
 
   const onOpenTime = () => {
@@ -131,37 +124,12 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
       case "date":
         const { date } = getValues();
         return (
-          <>
             <Pressable onPress={onOpenDate}>
               <Input
                 value={date ? date.toDateString() : new Date().toDateString()}
                 editable={false}
               />
             </Pressable>
-
-            {/* {openDate && (
-              <DateTimePicker
-                value={firstDate}
-                mode={"date"}
-                is24Hour={true}
-                display="default"
-                onChange={(event: any, selectedDate: any) => {
-                  setValue("date", selectedDate);
-                  setFirstDate(selectedDate);
-                  closeOpenDate()
-                }}
-              />
-            )} */}
-
-            {/* {openDate && <DateTimePickerSelect
-              isShowing={openDate}
-              closeModal={closeOpenDate}
-              onChangeDate={(selectedDate: any) => 
-                setValue("date", selectedDate)
-                // console.log("reservation", selectedDate)
-              }
-            />} */}
-          </>
         );
       case "time":
         const { timeSlot } = getValues();

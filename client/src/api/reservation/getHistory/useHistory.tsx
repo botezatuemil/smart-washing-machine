@@ -13,7 +13,6 @@ export const useHistory = (id: React.Key) => {
     async () => await getHistory(id),
     {
       onSuccess: (data) => {
-        console.log("data","a intrat");
         setReservations(data);
       },
       onError: () => console.log("Error getting history"),

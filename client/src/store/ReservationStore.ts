@@ -49,6 +49,19 @@ export const useReservationStore = create<ReservationStoreType>()(
     },
     sortedReservations: () => {
       const reservations = get().reservations;
+      reservations.sort((r1, r2) => {
+        if (r1.reservationDate < r2.reservationDate) {
+          return 1;
+        } else if (r1.reservationDate < r2.reservationDate) {
+          return -1;
+        } else {
+          if (r1.startHour < r2.startHour) {
+            return 1;
+          } else {
+            return -1;
+          }
+        }
+      });
       let hashmap = new Map<string, ReservationStore[]>();
 
       reservations.map((reservation) => {
