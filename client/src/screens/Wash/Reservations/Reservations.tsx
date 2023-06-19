@@ -92,8 +92,11 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
       },
       mode: "date",
       is24Hour: true,
+      firstDayOfWeek: 1,
+      minimumDate: new Date()
     });
     setOpenDate(true);
+    
   };
 
   const onOpenTime = () => {
