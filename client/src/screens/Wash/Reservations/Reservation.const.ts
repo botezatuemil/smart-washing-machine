@@ -1,4 +1,5 @@
 import React from "react";
+import { WashingOption } from "../../../interfaces";
 
 export type FormReservation = ReservationResponseType & ReservationRequestType;
 
@@ -29,6 +30,7 @@ export type SelectType =
 export type Item = {
   values: { name: string; id: number | string }[];
   title: string;
+  washingOption? : WashingOption
 };
 
 export type LaundryType = {

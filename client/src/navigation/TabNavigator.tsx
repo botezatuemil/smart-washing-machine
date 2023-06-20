@@ -15,6 +15,7 @@ import ChatScreenStack from "../screens/Chat/ChatNavigator";
 import InboxScreenStack from "../screens/Inbox/InboxNavigator";
 import { Item } from "../screens/Wash/Reservations/Reservation.const";
 import { Wash } from "../screens/Wash/Tabs/WashTabs";
+import { WashingOption } from "../interfaces";
 
 export const RootStack = createBottomTabNavigator<RootStackParams>();
 

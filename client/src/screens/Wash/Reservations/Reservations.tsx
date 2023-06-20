@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { YStack, XStack, Button, Form, Input, Stack } from "tamagui";
 import { Text } from "tamagui";
 import * as styles from "./Reservation.styles";
@@ -12,7 +12,9 @@ import {
 } from "./Reservation.const";
 import { SelectInputElements, SelectType } from "./Reservation.const";
 import { Pressable } from "react-native";
-import DateTimePickerSelect, { changeTimeZone } from "../../../components/common/DateTimePicker/DateTimePicker";
+import DateTimePickerSelect, {
+  changeTimeZone,
+} from "../../../components/common/DateTimePicker/DateTimePicker";
 import SuccessfulReservation from "../../../components/common/Modal/DialogSuccesfullReservation/SuccessfulReservation";
 import TimePicker from "../../../components/common/Modal/TimePicker/TimePicker";
 import { useLaundries } from "../../../api/laundry/useLaundry";
@@ -61,8 +63,28 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
   const [formData, setFormData] = useState<
     ReservationRequestType | undefined
   >();
+
+  // console.log("washingOption", washingDevice.washingOption);
+
+  // console.log(washingDevice.washingOption)
   const [optionDevice, setOptionDevice] =
     useState<WashingOption>("washing machine");
+
+  useEffect(() => {
+    if (washingDevice?.washingOption) {
+      setOptionDevice(washingDevice.washingOption);
+      setFocusColor({
+        wash:
+          washingDevice.washingOption === "washing machine"
+            ? "#0055EE"
+            : "#8C90A2",
+        dry:
+          washingDevice.washingOption === "tumble dryer"
+            ? "#0055EE"
+            : "#8C90A2",
+      });
+    }
+  }, [washingDevice?.washingOption]);
 
   const {
     handleSubmit,
@@ -72,9 +94,9 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
     getValues,
     setValue,
   } = useForm<FormReservation>({
-    defaultValues : {
-      date: changeTimeZone(new Date())
-    }
+    defaultValues: {
+      date: changeTimeZone(new Date()),
+    },
   });
 
   const { items: laundries, refetch: refetchLaundry } = useLaundries();
@@ -83,11 +105,10 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
   const { items: availableHours, refetch: refetchAvailableHours } =
     useAvailableHours(watch("date"));
 
-
   const onOpenDate = () => {
     DateTimePickerAndroid.open({
       value: firstDate,
-      onChange : (event: any, selectedDate: any) => {
+      onChange: (event: any, selectedDate: any) => {
         const currentDate = selectedDate;
         setFirstDate(currentDate);
         setValue("date", changeTimeZone(currentDate));
@@ -95,7 +116,7 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
       mode: "date",
       is24Hour: true,
       firstDayOfWeek: 1,
-      minimumDate: new Date()
+      minimumDate: new Date(),
     });
   };
 
@@ -124,12 +145,12 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
       case "date":
         const { date } = getValues();
         return (
-            <Pressable onPress={onOpenDate}>
-              <Input
-                value={date ? date.toDateString() : new Date().toDateString()}
-                editable={false}
-              />
-            </Pressable>
+          <Pressable onPress={onOpenDate}>
+            <Input
+              value={date ? date.toDateString() : new Date().toDateString()}
+              editable={false}
+            />
+          </Pressable>
         );
       case "time":
         const { timeSlot } = getValues();

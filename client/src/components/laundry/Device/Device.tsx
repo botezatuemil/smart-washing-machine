@@ -77,8 +77,7 @@ const Device = ({
       title: "Available Devices",
       values: valuesWashingDevice
     }
-
-    navigationRoot.navigate("WashStack", {laundry: laundryItem, washingDevice : washingDeviceItem});
+    navigationRoot.navigate("WashStack", {laundry: laundryItem, washingDevice : {...washingDeviceItem,  washingOption: type}});
     // navigationRoot.navigate("WashStack", {screen: "Wash", params: {}}).navigationWash.navigate("Wash", {laundry: laundryItem})
   }
 
