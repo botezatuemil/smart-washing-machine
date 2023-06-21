@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendNotificationList = exports.sendNotification = void 0;
 const expo_server_sdk_1 = require("expo-server-sdk");
-const sendNotification = (expoPushToken, message) => {
+const sendNotification = (expoPushToken, message, type) => {
     const expo = new expo_server_sdk_1.Expo({ accessToken: process.env.ACCESS_TOKEN });
     if (!expo_server_sdk_1.Expo.isExpoPushToken(expoPushToken)) {
         console.error(`Push token ${expoPushToken} is not a valid Expo push token`);
@@ -19,7 +19,8 @@ const sendNotification = (expoPushToken, message) => {
     }
     const messageSend = {
         to: expoPushToken,
-        body: message
+        body: message,
+        data: { type }
     };
     let chunks = expo.chunkPushNotifications([messageSend]);
     let tickets = [];
@@ -40,7 +41,7 @@ const sendNotification = (expoPushToken, message) => {
     }))();
 };
 exports.sendNotification = sendNotification;
-const sendNotificationList = (tokens, message) => {
+const sendNotificationList = (tokens, message, type) => {
     const expo = new expo_server_sdk_1.Expo({ accessToken: process.env.ACCESS_TOKEN });
     let messages = [];
     for (let { notification_token, id } of tokens) {
@@ -51,7 +52,7 @@ const sendNotificationList = (tokens, message) => {
         messages.push({
             to: notification_token,
             body: message,
-            data: { id },
+            data: { type },
         });
     }
     let chunks = expo.chunkPushNotifications(messages);

@@ -14,7 +14,8 @@ export type ExpoTokenList = {
 
 export const sendNotification = (
   expoPushToken: string | undefined,
-  message: string
+  message: string,
+  type: string
 ) => {
   const expo = new Expo({ accessToken: process.env.ACCESS_TOKEN });
 
@@ -27,7 +28,8 @@ export const sendNotification = (
 
   const messageSend = {
     to: expoPushToken,
-    body: message
+    body: message,
+    data: {type}
   }
 
   let chunks = expo.chunkPushNotifications([messageSend]);
@@ -50,7 +52,8 @@ export const sendNotification = (
 
 export const sendNotificationList = (
   tokens: ExpoTokenList[],
-  message: string
+  message: string,
+  type: string
 ) => {
   const expo = new Expo({ accessToken: process.env.ACCESS_TOKEN });
   let messages = [];
@@ -64,7 +67,7 @@ export const sendNotificationList = (
     messages.push({
       to: notification_token,
       body: message,
-      data: { id },
+      data: {type},
     });
   }
 

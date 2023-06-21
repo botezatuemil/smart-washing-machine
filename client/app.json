@@ -11,36 +11,60 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-      "extra": {
-        "oneSignalAppId": "f64a9f37-3f0c-4b04-bfc6-d59be8b425aa"
-      },
+    "extra": {
+      "oneSignalAppId": "f64a9f37-3f0c-4b04-bfc6-d59be8b425aa",
+      "eas": {
+        "build": {
+          "experimental": {
+            "ios": {
+              "appExtensions": [
+                {
+                  "targetName": "OneSignalNotificationServiceExtension",
+                  "bundleIdentifier": "com.smart_laundry.OneSignalNotificationServiceExtension",
+                  "entitlements": {
+                    "com.apple.security.application-groups": [
+                      "group.com.smart_laundry.onesignal"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "projectId": "154069c9-da23-42e0-8283-ca77e2836a7e"
+      }
+    },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/154069c9-da23-42e0-8283-ca77e2836a7e"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.smart_laundry"
+      "bundleIdentifier": "smart-wash"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.smart_laundry"
+      "package": "com.smart_laundry",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
     "plugins": [
       [
-        "onesignal-expo-plugin",
+        "expo-updates",
         {
-          "mode": "development"
+          "username": "exposure"
         }
-       
       ]
     ]
   }

@@ -103,7 +103,7 @@ const getIncomingReservation = (req, res) => __awaiter(void 0, void 0, void 0, f
       INNER JOIN laundry on  laundry.id = reservation.laundry_id
       INNER JOIN washing_device on  washing_device.id = reservation.washing_device_id
       WHERE reservation.student_id = ${user_id}
-      AND reservation.start_hour::timestamp >= (NOW() AT TIME ZONE 'Europe/Bucharest')
+      -- AND reservation.start_hour::timestamp >= (NOW() AT TIME ZONE 'Europe/Bucharest')
       ORDER BY reservation.reservation_date::DATE, reservation.start_hour ASC  LIMIT 1`;
         console.log((0, ConvertKeys_1.convertKeys)(reservationStore[0]));
         res.send((0, ConvertKeys_1.convertKeys)(reservationStore[0]));
@@ -133,7 +133,7 @@ const endReservation = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const message = device[0].type === "WASHING_MACHINE"
             ? "A new washing machine is available!"
             : "A new dryer is available";
-        (0, Notifications_1.sendNotificationList)(newTokens, message);
+        (0, Notifications_1.sendNotificationList)(newTokens, message, "AVAILABLE");
         (0, exports.scheduleEarly)((0, moment_1.default)(), moment_1.default.utc(deletedReservation[0].end_hour));
     }
     catch (error) {
@@ -223,7 +223,7 @@ const scheduleEarly = (startTime, endTime) => __awaiter(void 0, void 0, void 0, 
                 (0, moment_1.default)(start).format("YYYY-MM-DD hh:mm") +
                 " to " +
                 (0, moment_1.default)(end).format("YYYY-MM-DD hh:mm");
-            (0, Notifications_1.sendNotification)(yield getTokenById(reservation.student_id), message);
+            (0, Notifications_1.sendNotification)(yield getTokenById(reservation.student_id), message, "SCHEDULE_EARLY");
             // The start time for the next reservation is the end time of the current one
             start = end;
         }

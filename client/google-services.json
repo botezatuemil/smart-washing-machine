@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "382819299067",
+    "project_id": "smart-laundry-f78ef",
+    "storage_bucket": "smart-laundry-f78ef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:382819299067:android:4b01f2dc0fd602f8104a5e",
+        "android_client_info": {
+          "package_name": "com.smart.laundry"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "382819299067-qgq7dcp4kr7oo3hf59rgqgiba0rl754b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsqr_V_VYbqJtRI85XloQHVprgsPfntHw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "382819299067-qgq7dcp4kr7oo3hf59rgqgiba0rl754b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -21,7 +21,7 @@ export const RootStack = createBottomTabNavigator<RootStackParams>();
 
 export type RootStackParams = {
   HomeStack: undefined;
-  WashStack: {laundry: Item, washingDevice: Item};
+  WashStack: {laundry?: Item, washingDevice?: Item};
   InboxStack: undefined;
   ChatStack: undefined;
   ProfileStack: undefined;
