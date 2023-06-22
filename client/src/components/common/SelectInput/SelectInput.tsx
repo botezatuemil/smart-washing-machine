@@ -1,17 +1,28 @@
 import { Check, ChevronDown, ChevronUp } from "@tamagui/lucide-icons";
-import { useState, useEffect } from "react";
-import { Adapt, Select, Sheet, YStack } from "tamagui";
+import { useState, useEffect, useRef } from "react";
+import { Adapt, Select, Sheet, Text, YStack } from "tamagui";
 import { LinearGradient } from "tamagui/linear-gradient";
 import EntypoIcon from "react-native-vector-icons/Entypo";
 import Feather from "react-native-vector-icons/Feather";
-import { Item } from "../../../screens/Wash/Reservations/Reservation.const";
+import {
+  FormReservation,
+  Item,
+  SelectType,
+} from "../../../screens/Wash/Reservations/Reservation.const";
+import { UseFormClearErrors } from "react-hook-form";
+import { View } from "react-native";
 
 type SelectProps = {
   onChange: (newValue: string) => void;
-  onOpen: () => void;
+  onOpen: (field: SelectType) => void;
   items: Item | undefined;
   placeholder: string;
   defaultValue?: Item | undefined;
+  field: SelectType;
+  clearErrors: UseFormClearErrors<FormReservation>;
+  errors: boolean;
+  errorMessage: string;
+  showErrorBorder: boolean;
 };
 
 const SelectInput = ({
@@ -20,10 +31,13 @@ const SelectInput = ({
   onOpen,
   items,
   defaultValue,
+  field,
+  clearErrors,
+  errors,
+  errorMessage,
+  showErrorBorder
 }: SelectProps) => {
   const [value, setValue] = useState("");
-
-  console.log(defaultValue?.values[0].id.toString())
 
   useEffect(() => {
     onChange(
@@ -33,17 +47,19 @@ const SelectInput = ({
 
   return (
     <Select
-      value={
-        defaultValue?.values ? defaultValue.values[0].name : value
-      }
+      value={defaultValue?.values ? defaultValue.values[0].name : value}
       onValueChange={(e: string) => {
         onChange(e), setValue(e);
+        clearErrors(field);
       }}
-      onOpenChange={onOpen}
+      onOpenChange={() => {
+        onOpen(field);
+      }}
     >
       <Select.Trigger
         w="100%"
         iconAfter={<EntypoIcon name="chevron-small-down" size={25} />}
+        borderColor={`${showErrorBorder  ? "#FF0000" : "#DFE1E9"}`}
       >
         <Select.Value placeholder={placeholder} />
       </Select.Trigger>
@@ -82,7 +98,7 @@ const SelectInput = ({
         <Select.Viewport minWidth={200}>
           <Select.Group space="$0">
             <Select.Label>{items?.title}</Select.Label>
-            {items
+            {!errors && items
               ? items.values?.map((item, i) => {
                   return (
                     <Select.Item
@@ -98,7 +114,8 @@ const SelectInput = ({
                     </Select.Item>
                   );
                 })
-              : defaultValue && (
+              : defaultValue &&
+                !errors && (
                   <Select.Item
                     index={1}
                     key={defaultValue.values[0].id}
@@ -113,6 +130,15 @@ const SelectInput = ({
                     </Select.ItemIndicator>
                   </Select.Item>
                 )}
+            {errors && (
+              <Text
+                alignSelf="center"
+                fontFamily="InterSemi"
+                fontSize={18}
+              >
+                {errorMessage}
+              </Text>
+            )}
           </Select.Group>
         </Select.Viewport>
 

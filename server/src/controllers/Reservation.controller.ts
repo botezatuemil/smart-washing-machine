@@ -155,6 +155,7 @@ export const endReservation = async (req: Request, res: Response) => {
         : "A new dryer is available";
     sendNotificationList(newTokens, message, "AVAILABLE");
     scheduleEarly(moment(), moment.utc(deletedReservation[0].end_hour));
+    res.status(200).json("Success")
   } catch (error) {
     console.log(error);
   }

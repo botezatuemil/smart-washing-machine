@@ -11,23 +11,19 @@ import {
   ReservationRequestType,
 } from "./Reservation.const";
 import { SelectInputElements, SelectType } from "./Reservation.const";
-import { Pressable } from "react-native";
+import { Pressable, TouchableWithoutFeedback, View } from "react-native";
 import DateTimePickerSelect, {
   changeTimeZone,
 } from "../../../components/common/DateTimePicker/DateTimePicker";
 import SuccessfulReservation from "../../../components/common/Modal/DialogSuccesfullReservation/SuccessfulReservation";
-import TimePicker from "../../../components/common/Modal/TimePicker/TimePicker";
 import { useLaundries } from "../../../api/laundry/useLaundry";
 import { useDevicesSelect } from "../../../api/washingDevice/getDevicesSelect/useDevicesSelect";
 import { DeviceType, HourInterval, WashingOption } from "../../../interfaces";
 import { useAvailableHours } from "../../../api/reservation/reservationHours/useAvailableHours";
 import TimePickerScroll from "../../../components/common/TimePickerScroll/TimePickerScroll";
-// import { WashStackParams } from "../WashNavigator";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParams } from "../../../navigation/TabNavigator";
-import DateTimePicker from "@react-native-community/datetimepicker";
+
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
-import moment from "moment";
+
 const selectElements: SelectInputElements[] = [
   { key: "laundry", label: "Select Laundry" },
   { key: "washingMachine", label: "Pick a washing machine" },
@@ -64,9 +60,6 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
     ReservationRequestType | undefined
   >();
 
-  // console.log("washingOption", washingDevice.washingOption);
-
-  // console.log(washingDevice.washingOption)
   const [optionDevice, setOptionDevice] =
     useState<WashingOption>("washing machine");
 
@@ -93,6 +86,8 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
     watch,
     getValues,
     setValue,
+    setError,
+    clearErrors,
   } = useForm<FormReservation>({
     defaultValues: {
       date: changeTimeZone(new Date()),
@@ -116,9 +111,10 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
       mode: "date",
       is24Hour: true,
       firstDayOfWeek: 1,
-      minimumDate: new Date(),
+      // minimumDate: new Date(),
     });
   };
+
 
   const onOpenTime = () => {
     setOpenTime(true);
@@ -134,6 +130,66 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
 
   const closeAlertModal = () => {
     setOpenAlert(false);
+  };
+
+
+  const handleOpen = (field: SelectType) => {
+    switch (field) {
+      case "laundry":
+        refetchLaundry();
+        break;
+      case "washingMachine":
+        if (watch("laundry") !== '') {
+          refetchDevice();
+        } else {
+          setError("laundry", {
+            type: "required",
+            message: `Please complete the laundry field`,
+          });
+        }
+        break;
+      case "timeSlot":
+        if (watch("laundry") !== '' && watch("washingMachine") !== '') {
+          refetchAvailableHours();
+        } else {
+          setError("laundry", {
+            type: "required",
+            message: `Please complete the laundry field`,
+          });
+          setError("washingMachine", {
+            type: "required",
+            message: `Please complete the washing device field`,
+          });
+        }
+        break;
+        case "time": 
+        if (watch("laundry")  !== ''&& watch("washingMachine") !== '' && watch("timeSlot") !== '') {
+          onOpenTime();
+        } else  {
+          if (watch("laundry") === "") {
+            setError("laundry", {
+              type: "required",
+              message: `Please complete the laundry field`,
+            });
+          }
+          if (watch("washingMachine") === "") {
+            setError("washingMachine", {
+              type: "required",
+              message: `Please complete the washing device field`,
+            });
+          }
+          if (watch("timeSlot") === "") {
+            setError("timeSlot", {
+              type: "required",
+              message: `Please complete the washing device field`,
+            });
+          }
+          
+        }
+        break;
+      default:
+        break;
+    }
   };
 
   const renderInputElements = (
@@ -156,7 +212,7 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
         const { timeSlot } = getValues();
         return (
           <>
-            <Pressable onPress={onOpenTime}>
+            <Pressable onPress={() => handleOpen(key)}>
               <Input
                 placeholder="Select time"
                 value={value as string}
@@ -175,31 +231,59 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
         );
       case "laundry":
         return (
-          <SelectInput
-            placeholder="Choose a laundry"
-            onChange={onChange}
-            onOpen={refetchLaundry}
-            defaultValue={laundry}
-            items={laundries}
-          />
+          <>
+            <SelectInput
+              placeholder="Choose a laundry"
+              onChange={onChange}
+              onOpen={handleOpen}
+              defaultValue={laundry}
+              items={laundries}
+              field={key}
+              clearErrors={clearErrors}
+              errors={false}
+              showErrorBorder={errors.laundry ? true : false}
+              errorMessage=""
+            />
+          </>
         );
       case "washingMachine":
         return (
-          <SelectInput
-            placeholder="Available washing devices"
-            onChange={onChange}
-            onOpen={refetchDevice}
-            items={devices}
-            defaultValue={washingDevice}
-          />
+          <>
+            <SelectInput
+              placeholder="Available washing devices"
+              onChange={onChange}
+              onOpen={handleOpen}
+              items={devices}
+              defaultValue={washingDevice}
+              field={key}
+              clearErrors={clearErrors}
+              errors={errors.laundry ? true : false}
+              errorMessage={`${
+                errors.laundry && "Please select a laundry first"
+              }`}
+              showErrorBorder={errors.washingMachine ? true : false}
+            />
+          </>
         );
       default:
         return (
           <SelectInput
             placeholder="Choose an available hour interval"
             onChange={onChange}
-            onOpen={refetchAvailableHours}
+            onOpen={handleOpen}
             items={availableHours}
+            field={key}
+            clearErrors={clearErrors}
+            errors={errors.laundry || errors.washingMachine ? true : false}
+            errorMessage={`${
+              errors.laundry !== undefined &&
+              errors.washingMachine !== undefined
+                ? "Please select a laundry and a washing device first"
+                : errors.laundry !== undefined
+                ? "Please select a laundry first"
+                : "Please select a washing device first"
+            }`}
+            showErrorBorder={errors.timeSlot ? true : false}
           />
         );
     }

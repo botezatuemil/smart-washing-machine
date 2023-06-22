@@ -1,16 +1,22 @@
 import axios, { AxiosError } from "axios";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
+import { invalidateQuery } from "../../../utils/InvalidateCache";
 import { EndReservation, endReservation } from "./endpoints";
 
 export const useEndReservation = (
-  onSuccess: () => void,
+ 
   onError?: (error: unknown) => void
 ) => {
+  const queryClient = useQueryClient();
   return useMutation(
-    "qr",
+    "endReservation",
     async (input: EndReservation) => await endReservation(input),
     {
-      onSuccess,
+      onSuccess: async() => {
+        console.log("sdf")
+        await queryClient.invalidateQueries("incomingReservation")
+        
+      },
       onError: () => console.log("Failed authorizing"),
     }
   );

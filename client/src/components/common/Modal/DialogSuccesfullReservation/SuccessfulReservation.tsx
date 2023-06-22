@@ -11,6 +11,7 @@ import { useUserStore } from "../../../../store/UserStore";
 import { ReservationStore, useReservationStore } from "../../../../store/ReservationStore";
 import { invalidateQuery } from "../../../../utils/InvalidateCache";
 import { changeTimeZone } from "../../DateTimePicker/DateTimePicker";
+import { useQueryClient } from "react-query";
 
 type SuccessReservationProp = {
   isOpen: boolean;
@@ -31,15 +32,14 @@ const SuccessfulReservation = ({
   const onSuccess = (data : ReservationStore) => {
     addReservationStore(data)
   }
-  
 
   const addReservation = useReservation(onSuccess);
   const [isActive, setIsActive] = useState<boolean>(false);
-  
+  const queryClient = useQueryClient();
   const {id} = useUserStore();
  
 
-  const onMakeReservation = () => {
+  const onMakeReservation = async() => {
     // get needed reservation data from the data
     if (!data) {
       return;
@@ -49,7 +49,6 @@ const SuccessfulReservation = ({
     const washingDeviceId = parseInt(data.washingMachine);
     const date = data.date;
     const interval = data.time
-
     // split by start hour and end hour
     const hours =  interval!.split("-");
     
@@ -64,7 +63,7 @@ const SuccessfulReservation = ({
       endHour : moment(date).utc().set({h: parseInt(hours[1].split(":")[0]), m: parseInt(hours[1].split(":")[1])}),
     }
     addReservation.mutate(reservation);
-    invalidateQuery("incomingReservation");
+    await queryClient.invalidateQueries("incomingReservation")
     closeModal()
   }
 

@@ -202,7 +202,7 @@ const UserWash = () => {
             </>
           ) : (
             <YStack w="100%" h="100%" ai="center" jc="center">
-              <Text {...styles.headerText} mt={27}>
+              <Text {...styles.headerText}>
                 No reservation incoming
               </Text>
               <Text {...styles.text}>Please make a reservation first</Text>

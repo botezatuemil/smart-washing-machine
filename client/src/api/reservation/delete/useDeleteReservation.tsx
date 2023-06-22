@@ -4,7 +4,6 @@ import { RequestReservationDelete, deleteReservation } from "./endpoints";
 
 export const useDeleteReservation = (
   onSuccess?: (data: string) => void,
-  onError?: (error: unknown) => void
 ) => {
     const queryClient = useQueryClient();
   return useMutation(
@@ -13,6 +12,7 @@ export const useDeleteReservation = (
     {
       onSuccess : () => {
        queryClient.invalidateQueries("history")
+       queryClient.invalidateQueries("incomingReservation")
       },
       onError: () => console.log("Failed authorizing"),
     }

@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Text, YStack } from "tamagui";
 import { useEndReservation } from "../../api/reservation/endReservation/useEndReservation";
+import { invalidateQuery } from "../../utils/InvalidateCache";
 
 type ButtonStateType = {
   onPress: () => void;
@@ -17,11 +18,7 @@ type ButtonStateType = {
 };
 const ButtonState = ({ onPress, deviceState, reservationId, token, refetch }: ButtonStateType) => {
 
-  const onSuccess = () => {
-    console.log("refetch boss");
-    refetch();
-  }
-  const endReservation = useEndReservation(onSuccess);
+  const endReservation = useEndReservation();
 
   const getText = () => {
     if (deviceState === "IDLE" || deviceState === "SCAN") {
