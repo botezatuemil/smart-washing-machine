@@ -22,7 +22,6 @@ export const getConversations = async (req: Request, res: Response) => {
     } else {
       const foundUser2 = await prisma.$queryRaw<unknown[]>`select * from conversations where conversations.user2_id = ${user_id}`;
       if (foundUser2.length > 0) {
-        console.log(user_id)
         conversation = await prisma.$queryRaw`
         select conversations.id, conversations.user2_id, 
         student.first_name, student.last_name, dorm.dorm_number, dorm.dorm_floor from conversations

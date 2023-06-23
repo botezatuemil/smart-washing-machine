@@ -41,7 +41,6 @@ const getNotifications = (req, res) => __awaiter(void 0, void 0, void 0, functio
     const user_id = res.locals.user_id;
     try {
         const notifications = yield prisma.$queryRaw `select * from notifications where notifications.student_id = ${user_id}`;
-        console.log((0, ConvertKeys_1.convertKeysArray)(notifications));
         res.send((0, ConvertKeys_1.convertKeysArray)(notifications));
     }
     catch (error) {

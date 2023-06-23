@@ -114,7 +114,6 @@ export const getIncomingReservation = async (req: Request, res: Response) => {
       WHERE reservation.student_id = ${user_id}
       -- AND reservation.start_hour::timestamp >= (NOW() AT TIME ZONE 'Europe/Bucharest')
       ORDER BY reservation.reservation_date::DATE, reservation.start_hour ASC  LIMIT 1`;
-      console.log(convertKeys(reservationStore[0]))
     res.send(convertKeys(reservationStore[0]));
   } catch (error) {
     console.log(error);

@@ -19,8 +19,6 @@ type PowerData = {
 let powerData: PowerData[] = [];
 let thresholdStartTime: Date | null = null;
 
-// const topic: string = "stat/+/STATUS8";
-
 export const connectToBroker = () => {
   const connectUrl = `mqtt://${process.env.mqtt_host}:${process.env.mqtt_port}`;
   const clientId = `mqtt_${Math.random().toString(16).slice(3)}`;
@@ -35,26 +33,6 @@ export const connectToBroker = () => {
 
   return client;
 };
-
-// export const subscribeToTopic = (topic: string) => {
-//   client.on("connect", () => {
-//     console.log("Connected");
-
-//   });
-// }
-
-// export const unsubscribeFromTopic = (topic: string) => {
-//   client.unsubscribe(topic, (err: any) => {
-//     if (err) {
-//       console.error(`Error subscribing to MQTT topic: ${err.message}`);
-//       client.removeAllListeners('message');
-//       powerData = [];
-//       thresholdStartTime = null;
-//     } else {
-//       console.log(`Unsubscribed from MQTT topic: ${topic}`);
-//     }
-//   });
-// }
 
 export const getPowerStatus = (
   expoPushToken: string,
@@ -91,7 +69,7 @@ export const getPowerStatus = (
           0
         ) / thresholdData.length;
 
-      // if it's below a certain threshold, save the time, else do it again, save the null, and hope that later the data will be below
+      // if it's below a certain threshold, save the time, else do it again, save the null
       if (averagePowerConsumption < 30) {
         if (thresholdStartTime === null) {
           thresholdStartTime = timestamp;
@@ -125,7 +103,6 @@ export const getPowerStatus = (
 
 export const powerSmartPlug = (topic: string, payload: string, client: any) => {
   client.publish(topic, payload, (error: any) => {
-    console.log(payload);
     if (error) {
       console.error(error);
     }

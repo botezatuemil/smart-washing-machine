@@ -8,7 +8,6 @@ const mqtt = require("mqtt");
 const fs = require("fs");
 let powerData = [];
 let thresholdStartTime = null;
-// const topic: string = "stat/+/STATUS8";
 const connectToBroker = () => {
     const connectUrl = `mqtt://${process.env.mqtt_host}:${process.env.mqtt_port}`;
     const clientId = `mqtt_${Math.random().toString(16).slice(3)}`;
@@ -23,23 +22,6 @@ const connectToBroker = () => {
     return client;
 };
 exports.connectToBroker = connectToBroker;
-// export const subscribeToTopic = (topic: string) => {
-//   client.on("connect", () => {
-//     console.log("Connected");
-//   });
-// }
-// export const unsubscribeFromTopic = (topic: string) => {
-//   client.unsubscribe(topic, (err: any) => {
-//     if (err) {
-//       console.error(`Error subscribing to MQTT topic: ${err.message}`);
-//       client.removeAllListeners('message');
-//       powerData = [];
-//       thresholdStartTime = null;
-//     } else {
-//       console.log(`Unsubscribed from MQTT topic: ${topic}`);
-//     }
-//   });
-// }
 const getPowerStatus = (expoPushToken, client, topic, user_id, device) => {
     client.subscribe([topic], () => {
         console.log(`Subscribe to topic '${topic}'`);
@@ -56,7 +38,7 @@ const getPowerStatus = (expoPushToken, client, topic, user_id, device) => {
             const thresholdData = powerData.filter(({ timestamp }) => timestamp.valueOf() >= new Date().valueOf() - 10 * 1000);
             // calculate the average power consumption
             const averagePowerConsumption = thresholdData.reduce((sum, { powerConsumption }) => sum + powerConsumption, 0) / thresholdData.length;
-            // if it's below a certain threshold, save the time, else do it again, save the null, and hope that later the data will be below
+            // if it's below a certain threshold, save the time, else do it again, save the null
             if (averagePowerConsumption < 30) {
                 if (thresholdStartTime === null) {
                     thresholdStartTime = timestamp;
@@ -88,7 +70,6 @@ const getPowerStatus = (expoPushToken, client, topic, user_id, device) => {
 exports.getPowerStatus = getPowerStatus;
 const powerSmartPlug = (topic, payload, client) => {
     client.publish(topic, payload, (error) => {
-        console.log(payload);
         if (error) {
             console.error(error);
         }

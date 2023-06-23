@@ -6,7 +6,6 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParams } from "../../navigation/TabNavigator";
 import * as Notifications from "expo-notifications";
-import { HomeStackParams } from "./HomeNavigator";
 import useAuthToken from "../../hooks/useAuthToken";
 import { useQueryClient } from "react-query";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -45,32 +44,27 @@ const Home = () => {
       refetchNotifications();
       if (
         lastNotificationResponse &&
-        // lastNotificationResponse.notification.request.content.data['someDataToCheck'] &&
         lastNotificationResponse.actionIdentifier ===
           Notifications.DEFAULT_ACTION_IDENTIFIER &&
         lastNotificationResponse.notification.request.identifier !==
           lastProcessedNotificationId
       ) {
-        // Execute your logic here
         
         switch (
           lastNotificationResponse.notification.request.content.data["type"]
         ) {
           case "SCHEDULE_EARLY":
-            console.log("schedule")
             break;
           case "AVAILABLE":
             navigation.navigate("HomeStack")
             break;
           case "MACHINE_FINISHED":
-            console.log("navigate")
             navigation.navigate("WashStack", {});
 
             break;
           default:
             break;
         }
-        // Set the last processed notification ID
         await AsyncStorage.setItem(
           "lastProcessedNotificationId",
           lastNotificationResponse.notification.request.identifier
@@ -81,54 +75,6 @@ const Home = () => {
     processNotification();
   }, [lastNotificationResponse]);
 
-  // useEffect(() => {
-  //   // notificationListener.current =
-  //   //   Notifications.addNotificationReceivedListener((notification) => {
-  //   //     console.log("not", notification);
-  //   //     if (notification) {
-  //   //     }
-  //   //   });
-
-  //   if (
-  //     lastNotificationResponse &&
-  //     lastNotificationResponse.notification.request.content.data.url &&
-  //     lastNotificationResponse.actionIdentifier === Notifications.DEFAULT_ACTION_IDENTIFIER
-  //   ) {
-  //     // Linking.openURL(lastNotificationResponse.notification.request.content.data.url);
-  //     console.log("a intrat")
-  //   }
-
-  //   // responseListener.current =
-  //   //   Notifications.addNotificationResponseReceivedListener((response) => {
-  //   //     if (response) {
-  //   //       const receivedNotification =
-  //   //         response.notification.request.content.data;
-  //   //       console.log("notif", response.notification.request.content.data);
-  //   //       console.log("id notif", id);
-  //   //       refetchNotifications();
-  //   //       console.log("am primit notificare boss")
-  //   //       if (parseInt(receivedNotification.id as string) === id) {
-  //   //         // navigation.navigate("WashStack");
-
-  //   //       }
-  //   //       // } else {
-  //   //       //   navigationOtherUsers.navigate("Laundry", {
-  //   //       //     option:
-  //   //       //       receivedNotification.type === "WASHING_MACHINE"
-  //   //       //         ? "washing machine"
-  //   //       //         : "tumble dryer",
-  //   //       //   });
-  //   //       // }
-  //   //     }
-  //   //   });
-
-  //   // return () => {
-  //   //   Notifications.removeNotificationSubscription(
-  //   //     notificationListener.current
-  //   //   );
-  //   //   Notifications.removeNotificationSubscription(responseListener.current);
-  //   // };
-  // }, [expoToken, lastNotificationResponse]);
 
   return (
     <YStack

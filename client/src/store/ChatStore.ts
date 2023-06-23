@@ -35,7 +35,6 @@ export const useChatStore = create<ChatStoreType>()((set, get) => ({
     set({ chats: updatedChats });
   },
   addMessage : (message: Message) => {
-    console.log(message);
     const existingChats = get().chats;
     const updatedChats = existingChats.map(chat => {
       if (chat.conversation.id === message.conversationId) {

@@ -23,7 +23,6 @@ export const useConversations = (token: string) => {
     {
       // refetchInterval: 1000,
       onSuccess: (data) => {
-        console.log("convos", data)
         setChats(data);
       },
       onError: () => {},

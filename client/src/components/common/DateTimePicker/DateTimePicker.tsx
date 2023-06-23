@@ -22,8 +22,7 @@ const DateTimePickerSelect = ({ isShowing, closeModal, onChangeDate }: DateTimeP
 
   const onChangeHandler = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || date;
-    // const parsedDate = changeTimeZone(currentDate)
-    // console.log("parse", currentDate)
+ 
     setDate(currentDate);
     onChangeDate(currentDate); 
     closeModal();

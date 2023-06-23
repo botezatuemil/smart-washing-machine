@@ -60,7 +60,6 @@ export const getDevicesSelect = async (req: Request, res: Response) => {
 export const startWashing = async (req: Request, res: Response) => {
   try {
     const { id, expoPushToken, user_id } = req.body;
-    console.log(user_id);
     const wash = await prisma.$queryRaw<
       { washing_device_id: number }[]
     >`SELECT reservation.washing_device_id from reservation where reservation.id = ${id}`;
@@ -70,7 +69,6 @@ export const startWashing = async (req: Request, res: Response) => {
     >`SELECT washing_device.type from washing_device where washing_device.id = ${wash[0].washing_device_id}`;
     const updated =
       await prisma.$queryRaw`UPDATE washing_device SET status = false, opened = false where id = ${wash[0].washing_device_id}`;
-    console.log(device[0].type);
     const client = connectToBroker();
     powerSmartPlug("cmnd/tasmota_1/POWER", "on", client);
     res.status(200).json("Washing machine unlocked successfully!");
@@ -81,37 +79,7 @@ export const startWashing = async (req: Request, res: Response) => {
       user_id,
       device[0].type
     );
-    // fs.readFile(
-    //   "./src/files/inputTest.txt",
-    //   "utf8",
-    //   (err: NodeJS.ErrnoException | null, data: any) => {
-    //     if (err) {
-    //       console.error(err);
-    //       return;
-    //     }
-    //     power = data.split(",");
-    //   }
-    // );
-
-    // console.log(isFinished)
-
-    // let isFinished = false;
-    // const interval = setInterval(async () => {
-    //   // const data = await getPowerStatus();
-
-    //   if (!isFinished) {
-    //     isFinished = (await getPowerStatus(
-    //       parseInt(power[(i += 1)]),
-    //       (counter += 1)
-    //     )) as boolean;
-    //     console.log("Finished");
-    //   } else {
-    //     // try counting again
-    //     counter = 0;
-    //   }
-    //   console.log(isFinished);
-    //   // io.emit("washing_machine", isFinished);
-    // }, 3000);
+   
   } catch (error) {
     console.log(error);
   }

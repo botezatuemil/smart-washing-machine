@@ -34,7 +34,6 @@ export const getNotifications = async (req: Request, res: Response) => {
   try {
     const notifications: unknown[] =
       await prisma.$queryRaw`select * from notifications where notifications.student_id = ${user_id}`;
-    console.log(convertKeysArray(notifications));
     res.send(convertKeysArray(notifications));
   } catch (error) {
     console.log(error);

@@ -26,8 +26,6 @@ exports.getStudents = getStudents;
 const addExpoToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { expoToken } = req.body;
     const user_id = res.locals.user_id;
-    console.log("token", expoToken);
-    console.log("user", user_id);
     try {
     }
     catch (error) {

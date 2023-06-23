@@ -16,7 +16,6 @@ export const useEndReservation = (
     async (input: EndReservation) => await endReservation(input),
     {
       onSuccess: async(data : {id: number}) => {
-        console.log("intri?")
         await queryClient.invalidateQueries("incomingReservation");
         removeReservationStore(data.id);
       },
