@@ -155,7 +155,8 @@ export const endReservation = async (req: Request, res: Response) => {
         : "A new dryer is available";
     sendNotificationList(newTokens, message, "AVAILABLE");
     scheduleEarly(moment(), moment.utc(deletedReservation[0].end_hour));
-    res.status(200).json("Success")
+    // res.status(200).json("Success")
+    res.send({id: deletedReservation[0].id})
   } catch (error) {
     console.log(error);
   }
@@ -172,6 +173,7 @@ export const deleteReservation = async (req: Request, res: Response) => {
       moment.utc(deletedReservation[0].end_hour)
     );
     res.status(200).json("Reservation deleted successfully");
+   
   } catch (error) {
     console.log(error);
   }

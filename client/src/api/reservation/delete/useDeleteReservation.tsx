@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from "react-query";
 import { RequestReservationDelete, deleteReservation } from "./endpoints";
 
 export const useDeleteReservation = (
-  onSuccess?: (data: string) => void,
 ) => {
     const queryClient = useQueryClient();
   return useMutation(

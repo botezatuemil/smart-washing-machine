@@ -18,7 +18,7 @@ cron.schedule("* * * * *", async () => {
     `;
     if (reservations.length !== 0) {
       reservations.map(async (reservation) => {
-        // await prisma.$queryRaw`delete from reservation where reservation.id = ${reservation.id}`;
+        await prisma.$queryRaw`delete from reservation where reservation.id = ${reservation.id}`;
         console.log("Found expired ", reservations);
       });
     } else {

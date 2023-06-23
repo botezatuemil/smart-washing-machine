@@ -8,10 +8,7 @@ import DrawerNavigation from "./src/navigation/DrawerNavigation";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useColorScheme } from "react-native";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { PORT, IP, APP_ID } from "@env";
-import * as Notifications from "expo-notifications";
-import { useEffect, useRef } from "react";
-import * as Updates from 'expo-updates';
+
 
 const RootStack = createNativeStackNavigator<RootStackParams>();
 
@@ -28,24 +25,6 @@ export default function App() {
     InterSemi: require("@tamagui/font-inter/otf/Inter-SemiBold.otf"),
     InterMedium: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
   });
-
-  async function onFetchUpdateAsync() {
-    try {
-      const update = await Updates.checkForUpdateAsync();
-
-      if (update.isAvailable) {
-        await Updates.fetchUpdateAsync();
-        await Updates.reloadAsync();
-      }
-    } catch (error) {
-      // You can also add an alert() to see the error message in case of an error when fetching updates.
-      alert(`Error fetching latest Expo update: ${error}`);
-    }
-  }
-
-  useEffect(() => {
-    onFetchUpdateAsync()
-  }, [])
 
   if (!loaded) {
     return null;

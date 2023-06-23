@@ -60,6 +60,7 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
     ReservationRequestType | undefined
   >();
 
+
   const [optionDevice, setOptionDevice] =
     useState<WashingOption>("washing machine");
 
@@ -132,6 +133,8 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
     setOpenAlert(false);
   };
 
+  const isCompleted = watch("laundry") && watch("washingMachine") && watch("date") && watch("time") && watch("timeSlot");
+  const isFormValid = Object.keys(errors).length === 0 && isCompleted;
 
   const handleOpen = (field: SelectType) => {
     switch (field) {
@@ -152,14 +155,19 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
         if (watch("laundry") !== '' && watch("washingMachine") !== '') {
           refetchAvailableHours();
         } else {
-          setError("laundry", {
-            type: "required",
-            message: `Please complete the laundry field`,
-          });
-          setError("washingMachine", {
-            type: "required",
-            message: `Please complete the washing device field`,
-          });
+
+           if (watch("laundry") === "") {
+            setError("laundry", {
+              type: "required",
+              message: `Please complete the laundry field`,
+            });
+          }
+          if (watch("washingMachine") === "") {
+            setError("washingMachine", {
+              type: "required",
+              message: `Please complete the washing device field`,
+            });
+          }
         }
         break;
         case "time": 
@@ -316,8 +324,8 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
         ))}
 
         <YStack alignSelf="flex-end" w="100%" mt="auto" space={20}>
-          <Form.Trigger asChild>
-            <Button backgroundColor="#0055EE">
+          <Form.Trigger asChild  disabled={!isFormValid}>
+            <Button backgroundColor="#0055EE" >
               <Text {...styles.text} color="white">
                 START
               </Text>

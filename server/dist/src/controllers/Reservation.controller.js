@@ -135,7 +135,8 @@ const endReservation = (req, res) => __awaiter(void 0, void 0, void 0, function*
             : "A new dryer is available";
         (0, Notifications_1.sendNotificationList)(newTokens, message, "AVAILABLE");
         (0, exports.scheduleEarly)((0, moment_1.default)(), moment_1.default.utc(deletedReservation[0].end_hour));
-        res.status(200).json("Success");
+        // res.status(200).json("Success")
+        res.send({ id: deletedReservation[0].id });
     }
     catch (error) {
         console.log(error);

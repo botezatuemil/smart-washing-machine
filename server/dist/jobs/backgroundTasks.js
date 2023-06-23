@@ -27,7 +27,7 @@ node_cron_1.default.schedule("* * * * *", () => __awaiter(void 0, void 0, void 0
     `;
         if (reservations.length !== 0) {
             reservations.map((reservation) => __awaiter(void 0, void 0, void 0, function* () {
-                // await prisma.$queryRaw`delete from reservation where reservation.id = ${reservation.id}`;
+                yield prisma.$queryRaw `delete from reservation where reservation.id = ${reservation.id}`;
                 console.log("Found expired ", reservations);
             }));
         }
