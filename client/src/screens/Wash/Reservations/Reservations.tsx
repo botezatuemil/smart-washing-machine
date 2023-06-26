@@ -136,6 +136,8 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
   const isCompleted = watch("laundry") && watch("washingMachine") && watch("date") && watch("time") && watch("timeSlot");
   const isFormValid = Object.keys(errors).length === 0 && isCompleted;
 
+  console.log(watch("date"))
+
   const handleOpen = (field: SelectType) => {
     switch (field) {
       case "laundry":

@@ -21,13 +21,16 @@ node_cron_1.default.schedule("* * * * *", () => __awaiter(void 0, void 0, void 0
     try {
         const reservations = yield prisma.$queryRaw `select reservation.* from reservation
     inner join washing_device on  washing_device.id = reservation.washing_device_id
-    and reservation.start_hour::timestamp < (NOW() AT TIME ZONE 'Europe/Bucharest' - INTERVAL '10' MINUTE) 
+    and reservation.start_hour::timestamp < (NOW() AT TIME ZONE 'Europe/Bucharest' - INTERVAL '2' MINUTE) 
     and reservation.end_hour > NOW() AT TIME ZONE 'Europe/Bucharest' 
     and washing_device.status = true 
+    and washing_device.opened = true
+    or reservation.end_hour::timestamp < (NOW() AT TIME ZONE 'Europe/Bucharest' - INTERVAL '2' MINUTE)
     `;
         if (reservations.length !== 0) {
             reservations.map((reservation) => __awaiter(void 0, void 0, void 0, function* () {
                 yield prisma.$queryRaw `delete from reservation where reservation.id = ${reservation.id}`;
+                yield prisma.$queryRaw `UPDATE washing_device SET status = true, opened = true where id = ${reservation.washing_device_id}`;
                 console.log("Found expired ", reservations);
             }));
         }

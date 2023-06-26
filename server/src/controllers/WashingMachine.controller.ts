@@ -71,7 +71,7 @@ export const startWashing = async (req: Request, res: Response) => {
       await prisma.$queryRaw`UPDATE washing_device SET status = false, opened = false where id = ${wash[0].washing_device_id}`;
     const client = connectToBroker();
     powerSmartPlug("cmnd/tasmota_1/POWER", "on", client);
-    res.status(200).json("Washing machine unlocked successfully!");
+    res.status(200).json("Washing machine unlocked successfully!")
     getPowerStatus(
       expoPushToken,
       client,

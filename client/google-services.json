@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:382819299067:android:4b01f2dc0fd602f8104a5e",
+        "mobilesdk_app_id": "1:382819299067:android:fe95c6ed85e442fe104a5e",
         "android_client_info": {
-          "package_name": "com.smart.laundry"
+          "package_name": "com.smart_laundry"
         }
       },
       "oauth_client": [

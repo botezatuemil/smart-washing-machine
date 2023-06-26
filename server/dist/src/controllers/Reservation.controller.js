@@ -18,8 +18,8 @@ const moment_1 = __importDefault(require("moment"));
 const ConvertKeys_1 = require("../utils/ConvertKeys");
 const Notifications_1 = require("../utils/Notifications");
 const prisma = new client_1.PrismaClient();
-const MIN_HOUR = 12;
-const MAX_HOUR = 24;
+const MIN_HOUR = 8;
+const MAX_HOUR = 21;
 const getAvailableHours = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const option = req.body;

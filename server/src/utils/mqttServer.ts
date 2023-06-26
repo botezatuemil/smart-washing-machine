@@ -28,7 +28,7 @@ export const connectToBroker = () => {
     connectTimeout: 4000,
     reconnectPeriod: 1000,
     username: process.env.mqtt_username,
-    password: process.env.mqtt_password,
+    password: process.env.mqtt_password,    
   });
 
   return client;

@@ -10,8 +10,8 @@ import {
 
 const prisma = new PrismaClient();
 
-const MIN_HOUR = 12;
-const MAX_HOUR = 24;
+const MIN_HOUR = 8;
+const MAX_HOUR = 21;
 
 export const getAvailableHours = async (req: Request, res: Response) => {
   try {
