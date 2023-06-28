@@ -60,11 +60,12 @@ export const getDevicesSelect = async (req: Request, res: Response) => {
 
 export const startWashing = async (req: Request, res: Response) => {
   try {
-    const { id, expoPushToken, user_id } = req.body;
+    const { id,  user_id } = req.body;
     const wash = await prisma.$queryRaw<
       { washing_device_id: number }[]
     >`SELECT reservation.washing_device_id from reservation where reservation.id = ${id}`;
 
+    const expoPushToken : {notification_token: string }[] = await prisma.$queryRaw`Select * from student where student.id = ${user_id}`
     const device = await prisma.$queryRaw<
       { type: device }[]
     >`SELECT washing_device.type from washing_device where washing_device.id = ${wash[0].washing_device_id}`;
@@ -74,7 +75,7 @@ export const startWashing = async (req: Request, res: Response) => {
     powerSmartPlug("cmnd/tasmota_1/POWER", "on", client);
     res.status(200).json("Washing machine unlocked successfully!")
     getPowerStatus(
-      expoPushToken,
+      expoPushToken[0].notification_token,
       client,
       "stat/+/STATUS8",
       user_id,

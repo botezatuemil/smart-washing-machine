@@ -93,8 +93,12 @@ const TimePickerScroll = ({
   const validateData = (start: moment.Moment, end: moment.Moment) => {
     const difference = moment.duration(end.diff(start)).asMinutes();
 
-    if (difference > 180) {
+    if (difference > 181) {
       setErrors("The chosen interval is too large!");
+      return;
+    }
+    if (difference < 20) {
+      setErrors("The chosen interval is too small!");
       return;
     }
     setErrors("");

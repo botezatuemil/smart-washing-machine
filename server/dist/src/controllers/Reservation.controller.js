@@ -19,7 +19,7 @@ const ConvertKeys_1 = require("../utils/ConvertKeys");
 const Notifications_1 = require("../utils/Notifications");
 const prisma = new client_1.PrismaClient();
 const MIN_HOUR = 8;
-const MAX_HOUR = 25;
+const MAX_HOUR = 22;
 const getAvailableHours = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const option = req.body;
@@ -27,7 +27,6 @@ const getAvailableHours = (req, res) => __awaiter(void 0, void 0, void 0, functi
             .toISOString()
             .slice(0, 19)
             .replace("T", " ");
-        // console.log(option.day);
         const reservations = yield prisma.$queryRaw `SELECT * from reservation where reservation.reservation_date::DATE = ${sqlDate}::DATE order by reservation.start_hour`;
         const availableHourRanges = [];
         let currentHour = (0, moment_1.default)(option.day)
