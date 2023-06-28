@@ -17,9 +17,10 @@ const client_1 = require("@prisma/client");
 const moment_1 = __importDefault(require("moment"));
 const ConvertKeys_1 = require("../utils/ConvertKeys");
 const Notifications_1 = require("../utils/Notifications");
+const Notification_controller_1 = require("./Notification.controller");
 const prisma = new client_1.PrismaClient();
 const MIN_HOUR = 8;
-const MAX_HOUR = 22;
+const MAX_HOUR = 26;
 const getAvailableHours = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const option = req.body;
@@ -223,6 +224,13 @@ const scheduleEarly = (startTime, endTime) => __awaiter(void 0, void 0, void 0, 
                 " to " +
                 (0, moment_1.default)(end).format("YYYY-MM-DD hh:mm");
             (0, Notifications_1.sendNotification)(yield getTokenById(reservation.student_id), message, "SCHEDULE_EARLY");
+            const notification = {
+                student_id: reservation.student_id,
+                title: message,
+                timestamp: new Date(),
+                subtitle: null,
+            };
+            (0, Notification_controller_1.createNotification)(notification);
             // The start time for the next reservation is the end time of the current one
             start = end;
         }

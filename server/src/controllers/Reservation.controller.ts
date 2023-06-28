@@ -1,4 +1,4 @@
-import { device, PrismaClient, reservation } from "@prisma/client";
+import { device, notifications, PrismaClient, reservation } from "@prisma/client";
 import { Request, Response } from "express";
 import moment from "moment";
 import { convertKeys, convertKeysArray, parseKeys } from "../utils/ConvertKeys";
@@ -7,11 +7,12 @@ import {
   sendNotification,
   sendNotificationList,
 } from "../utils/Notifications";
+import { createNotification } from "./Notification.controller";
 
 const prisma = new PrismaClient();
 
 const MIN_HOUR = 8;
-const MAX_HOUR = 22;
+const MAX_HOUR = 26;
 
 export const getAvailableHours = async (req: Request, res: Response) => {
   try {
@@ -267,6 +268,14 @@ export const scheduleEarly = async (
         " to " +
         moment(end).format("YYYY-MM-DD hh:mm");
       sendNotification(await getTokenById(reservation.student_id), message, "SCHEDULE_EARLY");
+
+      const notification: Omit<notifications, "id"> = {
+        student_id: reservation.student_id,
+        title: message,
+        timestamp: new Date(),
+        subtitle: null,
+      };
+      createNotification(notification);
       // The start time for the next reservation is the end time of the current one
       start = end;
     }

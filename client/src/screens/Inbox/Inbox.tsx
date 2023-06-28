@@ -7,16 +7,31 @@ import { useGetNotifications } from "../../api/notifications/get/useGetNotificat
 import moment from "moment";
 import { useDeleteNotification } from "../../api/notifications/delete/useDeleteNotification";
 import { useQueryClient } from "react-query";
+import { useIsFocused } from "@react-navigation/native";
 
 const Inbox = () => {
   const { token } = useLoginStore();
-  const { data } = useGetNotifications(token);
+  const { data, refetch } = useGetNotifications(token);
   const deleteNotification = useDeleteNotification();
+  const isFocused = useIsFocused();
 
+  useEffect(() => {
+    refetch();
+  }, [isFocused])
 
-  // useEffect(() => {
-  //   refetch()
-  // }, [])
+  const sortedData = data &&  data.sort((n1, n2) => {
+    if (n1.timestamp < n2.timestamp) {
+      return 1;
+    } else if (n1.timestamp < n2.timestamp) {
+      return -1;
+    } else {
+      if (n1.timestamp < n2.timestamp) {
+        return 1;
+      } else {
+        return -1;
+      }
+    }
+  });
 
   return (
     <ScrollView
@@ -28,7 +43,7 @@ const Inbox = () => {
       space={20}
       bg="white"
     >
-      {data && data.length > 0 ? (
+      {sortedData && sortedData.length > 0 ? (
         data.map((notification) => (
           <Stack style={{ marginBottom: 10 }}>
             <XStack

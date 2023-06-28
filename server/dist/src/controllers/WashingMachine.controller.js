@@ -46,14 +46,15 @@ const getDevicesSelect = (req, res) => __awaiter(void 0, void 0, void 0, functio
 exports.getDevicesSelect = getDevicesSelect;
 const startWashing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id, expoPushToken, user_id } = req.body;
+        const { id, user_id } = req.body;
         const wash = yield prisma.$queryRaw `SELECT reservation.washing_device_id from reservation where reservation.id = ${id}`;
+        const expoPushToken = yield prisma.$queryRaw `Select * from student where student.id = ${user_id}`;
         const device = yield prisma.$queryRaw `SELECT washing_device.type from washing_device where washing_device.id = ${wash[0].washing_device_id}`;
         const updated = yield prisma.$queryRaw `UPDATE washing_device SET status = false, opened = false, student_id = ${user_id} where id = ${wash[0].washing_device_id}`;
         const client = (0, mqttServer_1.connectToBroker)();
         (0, mqttServer_1.powerSmartPlug)("cmnd/tasmota_1/POWER", "on", client);
         res.status(200).json("Washing machine unlocked successfully!");
-        (0, mqttServer_1.getPowerStatus)(expoPushToken, client, "stat/+/STATUS8", user_id, device[0].type);
+        (0, mqttServer_1.getPowerStatus)(expoPushToken[0].notification_token, client, "stat/+/STATUS8", user_id, device[0].type);
     }
     catch (error) {
         console.log(error);
