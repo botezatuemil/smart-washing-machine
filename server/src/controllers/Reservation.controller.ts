@@ -11,7 +11,7 @@ import {
 const prisma = new PrismaClient();
 
 const MIN_HOUR = 8;
-const MAX_HOUR = 21;
+const MAX_HOUR = 22;
 
 export const getAvailableHours = async (req: Request, res: Response) => {
   try {
@@ -21,8 +21,6 @@ export const getAvailableHours = async (req: Request, res: Response) => {
       .toISOString()
       .slice(0, 19)
       .replace("T", " ");
-
-    // console.log(option.day);
 
     const reservations = await prisma.$queryRaw<
       reservation[]
@@ -62,9 +60,7 @@ export const getAvailableHours = async (req: Request, res: Response) => {
 
 export const addReservation = async (req: Request, res: Response) => {
   const { reservation } = req.body;
-
   // get the keys from camel case to snake case to keep consistency across frontend / backend
-  console.log(reservation);
   const parsedReservation = parseKeys(reservation) as Omit<reservation, "id">;
   try {
     const addedReservation: reservation = await prisma.reservation.create({
@@ -77,7 +73,6 @@ export const addReservation = async (req: Request, res: Response) => {
     INNER JOIN laundry on  laundry.id = ${addedReservation.laundry_id}
     INNER JOIN washing_device on  washing_device.id = ${addedReservation.washing_device_id}
     WHERE reservation.id = ${addedReservation.id}`;
-
     const convertedReservation = convertKeys(reservationStore[0]);
     // console.log(convertedReservation);
 

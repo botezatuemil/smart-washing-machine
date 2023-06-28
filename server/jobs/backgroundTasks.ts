@@ -22,7 +22,6 @@ cron.schedule("* * * * *", async () => {
       reservations.map(async (reservation) => {
         await prisma.$queryRaw`delete from reservation where reservation.id = ${reservation.id}`;
         await prisma.$queryRaw`UPDATE washing_device SET status = true, opened = true where id = ${reservation.washing_device_id}`
-        console.log("Found expired ", reservations);
       });
     } else {
       console.log("Every thing up to date!")

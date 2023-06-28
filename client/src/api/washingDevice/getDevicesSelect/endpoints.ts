@@ -8,9 +8,9 @@ const url = `http://${IP}:${PORT}/getDevicesSelect`;
 LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreAllLogs();
 
-export const getDevicesSelect = async (option: WashingOption) => {
+export const getDevicesSelect = async (option: WashingOption, laundry_id: number) => {
   try {
-    const {data} = await axios.post(url, {option});
+    const {data} = await axios.post(url, {option, laundry_id});
     console.log("data", data);
     return data;
   } catch (error) {

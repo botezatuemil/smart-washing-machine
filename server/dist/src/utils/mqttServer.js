@@ -44,7 +44,9 @@ const getPowerStatus = (expoPushToken, client, topic, user_id, device) => {
                     thresholdStartTime = timestamp;
                 }
                 // if it passed a whole minute between the current time and the earlier saved time, do that
-                if (timestamp.valueOf() - thresholdStartTime.valueOf() >= 30 * 1000) {
+                if (timestamp.valueOf() - thresholdStartTime.valueOf() >= 10 * 1000) {
+                    console.log(timestamp);
+                    console.log(thresholdStartTime);
                     (0, exports.powerSmartPlug)(`cmnd/tasmota_${smart_plug_id}/POWER`, "off", client);
                     (0, WashingMachine_controller_1.updateWashingMachineStatus)(parseInt(smart_plug_id));
                     const message = device === "WASHING_MACHINE"
@@ -58,6 +60,7 @@ const getPowerStatus = (expoPushToken, client, topic, user_id, device) => {
                         subtitle: null,
                     };
                     (0, Notification_controller_1.createNotification)(notification);
+                    thresholdStartTime = null;
                     client.end();
                 }
             }

@@ -1,10 +1,10 @@
 import ModalOverlay from "../ModalLayout/ModalOverlay";
 import { Text, YStack } from "tamagui";
 import SwitchWithLabel from "../../SwitchWithLabel/SwitchWithLabel";
-import { LaundryType, ReservationRequestType } from "../../../../screens/Wash/Reservations/Reservation.const";
+import { FormReservation, LaundryType, ReservationRequestType } from "../../../../screens/Wash/Reservations/Reservation.const";
 import { useState } from "react";
 import { useReservation } from "../../../../api/reservation/makeReservation/useReservation";
-import { HourInterval, ReservationType } from "../../../../interfaces";
+import { HourInterval, ReservationType, WashingOption } from "../../../../interfaces";
 import { WashingDevice } from "../../../../api/washingDevice/getDevicesSelect/types";
 import moment from "moment";
 import { useUserStore } from "../../../../store/UserStore";
@@ -12,19 +12,22 @@ import { ReservationStore, useReservationStore } from "../../../../store/Reserva
 import { invalidateQuery } from "../../../../utils/InvalidateCache";
 import { changeTimeZone } from "../../DateTimePicker/DateTimePicker";
 import { useQueryClient } from "react-query";
+import { UseFormReset } from "react-hook-form";
 
 type SuccessReservationProp = {
   isOpen: boolean;
   closeModal: () => void;
   onCancel: () => void;
-  data : ReservationRequestType | undefined
+  data : ReservationRequestType | undefined;
+  reset: UseFormReset<FormReservation>;
 };
 
 const SuccessfulReservation = ({
   isOpen,
   closeModal,
   onCancel,
-  data
+  data,
+  reset
 }: SuccessReservationProp) => {
 
   const { addReservationStore } = useReservationStore();
@@ -63,8 +66,10 @@ const SuccessfulReservation = ({
       endHour : moment(date).utc().set({h: parseInt(hours[1].split(":")[0]), m: parseInt(hours[1].split(":")[1])}),
     }
     addReservation.mutate(reservation);
-    await queryClient.invalidateQueries("incomingReservation")
-    closeModal()
+    await queryClient.invalidateQueries("incomingReservation");
+    reset({timeSlot: ""});
+
+    closeModal();
   }
 
   return (
@@ -79,9 +84,9 @@ const SuccessfulReservation = ({
     >
       <YStack paddingTop={20} >
       <Text fontFamily="Inter" >
-        To ensure the validity of a reservation, it is essential to scan the NFC
+        To ensure the validity of a reservation, it is essential to scan the QR code
         when the designated time period begins. Failure to validate within the
-        first 5 minutes of the reservation will result in automatic cancellation.
+        first 10 minutes of the reservation will result in automatic cancellation.
       </Text>
       <SwitchWithLabel isActive={isActive} setIsActive={setIsActive} label="Schedule early"/>
       </YStack>

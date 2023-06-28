@@ -46,11 +46,12 @@ export const getLaundryDevices = async (req: Request, res: Response) => {
 
 export const getDevicesSelect = async (req: Request, res: Response) => {
   try {
-    const { option } = req.body;
+    const { option, laundry_id } = req.body;
+    console.log(laundry_id)
     const convertedDeviceType = convertTypes(option);
     const washing_device = await prisma.$queryRaw<
       washing_device[]
-    >`SELECT * from washing_device where washing_device.type = ${convertedDeviceType}::device`;
+    >`SELECT * from washing_device where washing_device.type = ${convertedDeviceType}::device and laundry_id = ${laundry_id}`;
     res.send(convertKeysArray(washing_device));
   } catch (error) {
     console.log(error);
@@ -68,7 +69,7 @@ export const startWashing = async (req: Request, res: Response) => {
       { type: device }[]
     >`SELECT washing_device.type from washing_device where washing_device.id = ${wash[0].washing_device_id}`;
     const updated =
-      await prisma.$queryRaw`UPDATE washing_device SET status = false, opened = false where id = ${wash[0].washing_device_id}`;
+      await prisma.$queryRaw`UPDATE washing_device SET status = false, opened = false, student_id = ${user_id} where id = ${wash[0].washing_device_id}`;
     const client = connectToBroker();
     powerSmartPlug("cmnd/tasmota_1/POWER", "on", client);
     res.status(200).json("Washing machine unlocked successfully!")

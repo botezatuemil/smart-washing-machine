@@ -13,6 +13,7 @@ import { ChatStackParams } from "../../../screens/Chat/ChatNavigator";
 import { useCreateChat } from "../../../api/chat/createChat/useCreateChat";
 import { useLoginStore } from "../../../store/LoginStore";
 import {Item, LaundryType} from "../../../screens/Wash/Reservations/Reservation.const";
+import { useUserStore } from "../../../store/UserStore";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -40,12 +41,14 @@ const Device = ({
     useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const createChat = useCreateChat();
   const { token } = useLoginStore();
+  const {id} = useUserStore();
+
   const getStatus = () => {
     if (status && opened) {
       return ["FREE", "#50BF6F"];
     }
 
-    if (!opened) {
+    if (status && !opened) {
       return ["NOT OPENED", "#FFB800"];
     }
 
@@ -141,6 +144,7 @@ const Device = ({
           w="100%"
           icon={<Ionicons size={16} name="chatbubble-outline" />}
           onPress={onStartChat}
+          disabled={studentId === id}
         >
           CHAT
         </Button>

@@ -35,22 +35,23 @@ const SelectInput = ({
   clearErrors,
   errors,
   errorMessage,
-  showErrorBorder
+  showErrorBorder,
 }: SelectProps) => {
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(defaultValue?.values[0].id.toString());
 
   useEffect(() => {
-    onChange(
-      defaultValue?.values ? defaultValue.values[0].id.toString() : value
-    );
+    onChange(defaultValue ? defaultValue?.values[0].id.toString() : "");
+    setValue(defaultValue ? defaultValue?.values[0].id.toString() : "");
   }, [defaultValue]);
+
+  
 
   return (
     <Select
-      value={defaultValue?.values ? defaultValue.values[0].name : value}
+      value={value}
       onValueChange={(e: string) => {
-        onChange(e), setValue(e);
-        clearErrors(field);
+        setValue(e);
+        onChange(e), clearErrors(field);
       }}
       onOpenChange={() => {
         onOpen(field);
@@ -59,7 +60,7 @@ const SelectInput = ({
       <Select.Trigger
         w="100%"
         iconAfter={<EntypoIcon name="chevron-small-down" size={25} />}
-        borderColor={`${showErrorBorder  ? "#FF0000" : "#DFE1E9"}`}
+        borderColor={`${showErrorBorder ? "#FF0000" : "#DFE1E9"}`}
       >
         <Select.Value placeholder={placeholder} />
       </Select.Trigger>
@@ -118,8 +119,8 @@ const SelectInput = ({
                 !errors && (
                   <Select.Item
                     index={1}
-                    key={defaultValue.values[0].id}
-                    value={defaultValue.values[0].name}
+                    key={defaultValue.values[0].name}
+                    value={defaultValue.values[0].id.toString()}
                     w="100%"
                   >
                     <Select.ItemText>
@@ -131,11 +132,7 @@ const SelectInput = ({
                   </Select.Item>
                 )}
             {errors && (
-              <Text
-                alignSelf="center"
-                fontFamily="InterSemi"
-                fontSize={18}
-              >
+              <Text alignSelf="center" fontFamily="InterSemi" fontSize={18}>
                 {errorMessage}
               </Text>
             )}

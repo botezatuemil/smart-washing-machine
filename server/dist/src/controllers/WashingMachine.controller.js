@@ -33,9 +33,10 @@ const getLaundryDevices = (req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.getLaundryDevices = getLaundryDevices;
 const getDevicesSelect = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { option } = req.body;
+        const { option, laundry_id } = req.body;
+        console.log(laundry_id);
         const convertedDeviceType = (0, ConvertTypes_1.convertTypes)(option);
-        const washing_device = yield prisma.$queryRaw `SELECT * from washing_device where washing_device.type = ${convertedDeviceType}::device`;
+        const washing_device = yield prisma.$queryRaw `SELECT * from washing_device where washing_device.type = ${convertedDeviceType}::device and laundry_id = ${laundry_id}`;
         res.send((0, ConvertKeys_1.convertKeysArray)(washing_device));
     }
     catch (error) {
@@ -48,7 +49,7 @@ const startWashing = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const { id, expoPushToken, user_id } = req.body;
         const wash = yield prisma.$queryRaw `SELECT reservation.washing_device_id from reservation where reservation.id = ${id}`;
         const device = yield prisma.$queryRaw `SELECT washing_device.type from washing_device where washing_device.id = ${wash[0].washing_device_id}`;
-        const updated = yield prisma.$queryRaw `UPDATE washing_device SET status = false, opened = false where id = ${wash[0].washing_device_id}`;
+        const updated = yield prisma.$queryRaw `UPDATE washing_device SET status = false, opened = false, student_id = ${user_id} where id = ${wash[0].washing_device_id}`;
         const client = (0, mqttServer_1.connectToBroker)();
         (0, mqttServer_1.powerSmartPlug)("cmnd/tasmota_1/POWER", "on", client);
         res.status(200).json("Washing machine unlocked successfully!");

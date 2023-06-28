@@ -19,7 +19,7 @@ const ConvertKeys_1 = require("../utils/ConvertKeys");
 const Notifications_1 = require("../utils/Notifications");
 const prisma = new client_1.PrismaClient();
 const MIN_HOUR = 8;
-const MAX_HOUR = 21;
+const MAX_HOUR = 25;
 const getAvailableHours = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const option = req.body;
@@ -60,7 +60,6 @@ exports.getAvailableHours = getAvailableHours;
 const addReservation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { reservation } = req.body;
     // get the keys from camel case to snake case to keep consistency across frontend / backend
-    console.log(reservation);
     const parsedReservation = (0, ConvertKeys_1.parseKeys)(reservation);
     try {
         const addedReservation = yield prisma.reservation.create({

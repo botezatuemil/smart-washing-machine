@@ -89,15 +89,18 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
     setValue,
     setError,
     clearErrors,
+    reset
   } = useForm<FormReservation>({
     defaultValues: {
       date: changeTimeZone(new Date()),
+      laundry: laundry ? laundry.values[0].id.toString() : "",
+      washingMachine:  washingDevice ?  washingDevice.values[0].id.toString() : ""
     },
   });
 
   const { items: laundries, refetch: refetchLaundry } = useLaundries();
   const { items: devices, refetch: refetchDevice } =
-    useDevicesSelect(optionDevice);
+    useDevicesSelect(optionDevice, watch("laundry"));
   const { items: availableHours, refetch: refetchAvailableHours } =
     useAvailableHours(watch("date"));
 
@@ -112,7 +115,7 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
       mode: "date",
       is24Hour: true,
       firstDayOfWeek: 1,
-      // minimumDate: new Date(),
+      minimumDate: new Date(),
     });
   };
 
@@ -135,8 +138,6 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
 
   const isCompleted = watch("laundry") && watch("washingMachine") && watch("date") && watch("time") && watch("timeSlot");
   const isFormValid = Object.keys(errors).length === 0 && isCompleted;
-
-  console.log(watch("date"))
 
   const handleOpen = (field: SelectType) => {
     switch (field) {
@@ -299,6 +300,7 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
     }
   };
 
+
   const renderReservationForm = () => {
     const onSubmit = (data: FormReservation) => {
       onOpenAlert();
@@ -373,6 +375,7 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
         isOpen={openAlert}
         closeModal={closeAlertModal}
         onCancel={closeAlertModal}
+        reset={reset}
       />
     </YStack>
   );

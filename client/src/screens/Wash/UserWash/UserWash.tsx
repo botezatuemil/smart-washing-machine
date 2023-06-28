@@ -10,6 +10,8 @@ import { useQR } from "../../../api/authQR/useQR";
 import ButtonState from "../../../components/common/ButtonState";
 import { useIsFocused } from "@react-navigation/native";
 import { useUserStore } from "../../../store/UserStore";
+import { useQueryClient } from "react-query";
+import { WashingOption } from "../../../interfaces";
 
 
 type WashingState =
@@ -33,6 +35,7 @@ const UserWash = () => {
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const [scanned, setScanned] = useState<boolean>(false);
   const isFocused = useIsFocused();
+  const queryClient = useQueryClient();
 
   const calculateCurrentTime = () => {
     const now = moment();
@@ -40,9 +43,10 @@ const UserWash = () => {
     now.set({ h: now.hour() + difference });
     return now;
   };
-
-  const onSuccess = (data: string) => {
+  const onSuccess = async(data: string) => {
     refetch();
+    await queryClient.refetchQueries(["allDevices", "washing machine" as WashingOption]);
+    await queryClient.refetchQueries(["allDevices", "tumble dryer" as WashingOption]);
   };
 
   const sendQR = useQR(onSuccess);

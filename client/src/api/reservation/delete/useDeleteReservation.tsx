@@ -9,9 +9,9 @@ export const useDeleteReservation = (
     "deleteReservation",
     async (input: RequestReservationDelete) => await deleteReservation(input),
     {
-      onSuccess : () => {
-       queryClient.invalidateQueries("history")
-       queryClient.invalidateQueries("incomingReservation")
+      onSuccess : async() => {
+       await queryClient.invalidateQueries("history")
+       await queryClient.invalidateQueries("incomingReservation")
       },
       onError: () => console.log("Failed authorizing"),
     }

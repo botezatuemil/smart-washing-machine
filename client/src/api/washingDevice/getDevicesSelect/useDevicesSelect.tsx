@@ -5,11 +5,11 @@ import { Item } from "../../../screens/Wash/Reservations/Reservation.const";
 import { getDevicesSelect } from "./endpoints";
 import { WashingDevice } from "./types";
 
-export const useDevicesSelect = (option: WashingOption) : { items: Item | undefined, refetch : () => void} => {
+export const useDevicesSelect = (option: WashingOption, laundry_id: string) : { items: Item | undefined, refetch : () => void} => {
   const [items, setItems] = useState<Item>();
   const { refetch } = useQuery<WashingDevice[]>(
     "devices",
-    async () => await getDevicesSelect(option),
+    async () => await getDevicesSelect(option, parseInt(laundry_id)),
     {
       enabled: false,
       onSuccess: (data) => {

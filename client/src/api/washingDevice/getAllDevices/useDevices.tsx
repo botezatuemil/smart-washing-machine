@@ -7,7 +7,7 @@ export const useDevices = (
   option: WashingOption,
 
 ) => {
-  return useQuery<Laundry[]>(["devices", option], () => getAllDevices(option), {
+  return useQuery<Laundry[]>(["allDevices", option], () => getAllDevices(option), {
     // enabled: true,
     onSuccess : () => console.log("success"),
     onError : () => console.log("error"),

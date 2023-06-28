@@ -6,6 +6,7 @@ import {
   ReservationStore,
   useReservationStore,
 } from "../../../store/ReservationStore";
+import { WashingOption } from "../../../interfaces";
 
 export const useEndReservation = (
 ) => {
@@ -17,6 +18,8 @@ export const useEndReservation = (
     {
       onSuccess: async(data : {id: number}) => {
         await queryClient.invalidateQueries("incomingReservation");
+        await queryClient.refetchQueries(["allDevices", "washing machine" as WashingOption]);
+        await queryClient.refetchQueries(["allDevices", "tumble dryer" as WashingOption]);
         removeReservationStore(data.id);
       },
       onError: () => console.log("Failed authorizing"),

@@ -6,33 +6,11 @@ import { WashingDevice } from "../../interfaces";
 import { HomeStackParams } from "../../screens/Home/HomeNavigator";
 import Device from "./Device/Device";
 import { Dimensions } from "react-native";
-import axios from "axios";
 import { useDevices } from "../../api/washingDevice/getAllDevices/useDevices";
 
 const windowHeight = Dimensions.get("window").height;
 
 type Props = NativeStackScreenProps<HomeStackParams, "Laundry">;
-
-const DATA: WashingDevice[] = [
-  {
-    id: 1,
-    laundry_id: 1,
-    name: "M4",
-    opened: false,
-    status: false,
-    student_id: 1,
-    type: "WASHING_MACHINE",
-  },
-  {
-    id: 2,
-    laundry_id: 1,
-    name: "M4",
-    opened: false,
-    status: false,
-    student_id: 1,
-    type: "WASHING_MACHINE",
-  },
-];
 
 const Laundry = ({ route }: Props) => {
   const { data } = useDevices(route.params.option);
