@@ -1,10 +1,7 @@
-import moment from "moment";
 import { updateWashingMachineStatus } from "../controllers/WashingMachine.controller";
 import { TasmotaPayload } from "../interfaces/index.interface";
 import {
-  ExpoTokenList,
   sendNotification,
-  sendNotificationList,
 } from "./Notifications";
 import { device, notifications } from "@prisma/client";
 import { createNotification } from "../controllers/Notification.controller";
@@ -77,8 +74,6 @@ export const getPowerStatus = (
 
         // if it passed a whole minute between the current time and the earlier saved time, do that
         if (timestamp.valueOf() - thresholdStartTime.valueOf() >= 10 * 1000) {
-          console.log(timestamp);
-          console.log(thresholdStartTime);
           powerSmartPlug(`cmnd/tasmota_${smart_plug_id}/POWER`, "off", client);
           updateWashingMachineStatus(parseInt(smart_plug_id));
           const message =

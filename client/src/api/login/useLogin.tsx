@@ -1,4 +1,3 @@
-import axios, { AxiosError } from "axios";
 import { useMutation } from "react-query";
 import { LoginRequestType } from "../../screens/Auth/Auth.const";
 import { login } from "./endpoints";

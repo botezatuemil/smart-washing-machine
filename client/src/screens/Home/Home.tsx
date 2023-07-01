@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { YStack } from "tamagui";
 import WashCard from "../../components/WashCard";
 
@@ -22,7 +22,7 @@ const Home = () => {
   const queryClient = useQueryClient();
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
 
-  const { id, expoToken, getAuthToken } = useAuthToken();
+  const { getAuthToken } = useAuthToken();
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParams>>();
@@ -30,7 +30,6 @@ const Home = () => {
   const refetchNotifications = async () => {
     await queryClient.invalidateQueries("getNotifications");
   };
-
 
   useEffect(() => {
     getAuthToken();
@@ -49,14 +48,13 @@ const Home = () => {
         lastNotificationResponse.notification.request.identifier !==
           lastProcessedNotificationId
       ) {
-        
         switch (
           lastNotificationResponse.notification.request.content.data["type"]
         ) {
           case "SCHEDULE_EARLY":
             break;
           case "AVAILABLE":
-            navigation.navigate("HomeStack")
+            navigation.navigate("HomeStack");
             break;
           case "MACHINE_FINISHED":
             navigation.navigate("WashStack", {});
@@ -74,7 +72,6 @@ const Home = () => {
 
     processNotification();
   }, [lastNotificationResponse]);
-
 
   return (
     <YStack

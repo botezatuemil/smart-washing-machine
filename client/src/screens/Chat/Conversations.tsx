@@ -15,7 +15,6 @@ const Conversations = () => {
     useNavigation<NativeStackNavigationProp<ChatStackParams>>();
   const { token } = useLoginStore();
   const { data } = useConversations(token);
-  // const { setChats } = useChatStore();
 
   const openConversation = (id: number) => {
     const currentConversation = data?.filter(

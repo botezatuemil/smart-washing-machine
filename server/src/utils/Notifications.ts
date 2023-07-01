@@ -1,10 +1,8 @@
 import { Expo } from "expo-server-sdk";
-import { notifications, PrismaClient } from "@prisma/client";
-import { createNotification } from "../controllers/Notification.controller";
 
 export type Notification = {
   body: string;
-  data?: { id: string; };
+  data?: { id: string };
 };
 
 export type ExpoTokenList = {
@@ -20,17 +18,15 @@ export const sendNotification = (
   const expo = new Expo({ accessToken: process.env.ACCESS_TOKEN });
 
   if (!Expo.isExpoPushToken(expoPushToken)) {
-    console.error(
-      `Push token ${expoPushToken} is not a valid Expo push token`
-    );
+    console.error(`Push token ${expoPushToken} is not a valid Expo push token`);
     return;
   }
 
   const messageSend = {
     to: expoPushToken,
     body: message,
-    data: {type}
-  }
+    data: { type },
+  };
 
   let chunks = expo.chunkPushNotifications([messageSend]);
   let tickets = [];
@@ -67,7 +63,7 @@ export const sendNotificationList = (
     messages.push({
       to: notification_token,
       body: message,
-      data: {type},
+      data: { type },
     });
   }
 

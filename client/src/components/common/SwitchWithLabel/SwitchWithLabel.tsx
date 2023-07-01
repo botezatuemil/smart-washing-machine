@@ -1,29 +1,23 @@
-import React, { useState } from "react";
-import {
-  Label,
-  Separator,
-  Switch,
-  XStack,
-  Text,
-  YStack,
-  SizeTokens,
-  TextProps,
-} from "tamagui";
+import React from "react";
+import { Switch, XStack, Text, TextProps } from "tamagui";
 
 type SwitchType = {
   isActive: boolean;
-  setIsActive: (value : boolean) => void;
+  setIsActive: (value: boolean) => void;
   label: string;
   textProps?: TextProps;
-}
+};
 
-const SwitchWithLabel = ({isActive, setIsActive, label, textProps} : SwitchType) => {
-  
-
+const SwitchWithLabel = ({
+  isActive,
+  setIsActive,
+  label,
+  textProps,
+}: SwitchType) => {
   return (
     <XStack w={200} ai="center" space="$4" alignItems="center" pt={10}>
-      <Text  miw={90} jc="flex-end" fontFamily="InterMedium" {...textProps}>
-       {label}
+      <Text miw={90} jc="flex-end" fontFamily="InterMedium" {...textProps}>
+        {label}
       </Text>
       <Switch
         size="$3"

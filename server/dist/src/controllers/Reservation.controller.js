@@ -20,7 +20,7 @@ const Notifications_1 = require("../utils/Notifications");
 const Notification_controller_1 = require("./Notification.controller");
 const prisma = new client_1.PrismaClient();
 const MIN_HOUR = 8;
-const MAX_HOUR = 26;
+const MAX_HOUR = 22;
 const getAvailableHours = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const option = req.body;

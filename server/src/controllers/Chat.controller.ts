@@ -7,10 +7,11 @@ const prisma = new PrismaClient();
 export const getConversations = async (req: Request, res: Response) => {
   const user_id: number = res.locals.user_id;
 
-  
   try {
-    let conversation : unknown[] = []
-    const foundUser1 = await prisma.$queryRaw<unknown[]>`select * from conversations where conversations.user1_id = ${user_id}`
+    let conversation: unknown[] = [];
+    const foundUser1 = await prisma.$queryRaw<
+      unknown[]
+    >`select * from conversations where conversations.user1_id = ${user_id}`;
     if (foundUser1.length > 0) {
       conversation = await prisma.$queryRaw`
       select conversations.id, conversations.user1_id, 
@@ -20,7 +21,9 @@ export const getConversations = async (req: Request, res: Response) => {
       where conversations.user1_id = ${user_id};
       `;
     } else {
-      const foundUser2 = await prisma.$queryRaw<unknown[]>`select * from conversations where conversations.user2_id = ${user_id}`;
+      const foundUser2 = await prisma.$queryRaw<
+        unknown[]
+      >`select * from conversations where conversations.user2_id = ${user_id}`;
       if (foundUser2.length > 0) {
         conversation = await prisma.$queryRaw`
         select conversations.id, conversations.user2_id, 
@@ -51,19 +54,16 @@ export const getMessages = async (req: Request, res: Response) => {
 };
 
 export const getUpdatedMessage = async (data: Omit<messages, "id">) => {
-  console.log(data)
   try {
     const message = await prisma.messages.create({
       data: {
         conversation_id: data.conversation_id,
         message: data.message,
         sender_id: data.sender_id,
-        timestamp: data.timestamp
-      }
+        timestamp: data.timestamp,
+      },
     });
-    console.log(message);
     return message;
-
   } catch (error) {
     console.log(error);
   }
@@ -71,25 +71,25 @@ export const getUpdatedMessage = async (data: Omit<messages, "id">) => {
 
 export const createChat = async (req: Request, res: Response) => {
   const user_id: number = res.locals.user_id;
-  const {receiverId} = req.body;
+  const { receiverId } = req.body;
   const existingConversation = await prisma.$queryRaw<unknown[]>`
   select * from conversations 
   where conversations.user1_id = ${user_id} 
   and conversations.user2_id = ${receiverId} 
   or conversations.user2_id = ${user_id}
-  and conversations.user1_id = ${receiverId}`
-  
+  and conversations.user1_id = ${receiverId}`;
+
   try {
     if (existingConversation.length === 0) {
       const createdChat = await prisma.conversations.create({
         data: {
-         user1_id: user_id,
-         user2_id: receiverId
-        }
+          user1_id: user_id,
+          user2_id: receiverId,
+        },
       });
       res.send(convertKeys(createdChat));
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};

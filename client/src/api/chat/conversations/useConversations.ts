@@ -1,8 +1,5 @@
-import { cos } from "react-native-reanimated";
 import { useQuery } from "react-query";
 import { useChatStore } from "../../../store/ChatStore";
-import { useQueryClient } from 'react-query';
-
 import { getConversations } from "./endpoints";
 
 export type Conversations = {
@@ -15,13 +12,12 @@ export type Conversations = {
 };
 
 export const useConversations = (token: string) => {
-  const {setChats} = useChatStore();
+  const { setChats } = useChatStore();
 
   return useQuery<Conversations[]>(
     "getConversations",
     async () => await getConversations(token),
     {
-      // refetchInterval: 1000,
       onSuccess: (data) => {
         setChats(data);
       },

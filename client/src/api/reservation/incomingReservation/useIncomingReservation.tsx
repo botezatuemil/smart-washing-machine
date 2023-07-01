@@ -1,8 +1,6 @@
 import { useQuery } from "react-query";
-import { ReservationType, WashingOption } from "../../../interfaces";
 import {
     ReservationStore,
-    useReservationStore,
   } from "../../../store/ReservationStore";
 import {getIncomingReservation} from "./endpoints"
 

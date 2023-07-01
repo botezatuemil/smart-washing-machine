@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { TamaguiProvider, Theme, YStack } from "tamagui";
+import { TamaguiProvider, Theme } from "tamagui";
 import { NavigationContainer } from "@react-navigation/native";
 import config from "./tamagui.config";
 import { useFonts } from "expo-font";
@@ -8,7 +8,6 @@ import DrawerNavigation from "./src/navigation/DrawerNavigation";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useColorScheme } from "react-native";
 import { QueryClient, QueryClientProvider } from "react-query";
-
 
 const RootStack = createNativeStackNavigator<RootStackParams>();
 
@@ -40,11 +39,6 @@ export default function App() {
     },
   });
 
- 
-  
- 
-
- 
   return (
     <QueryClientProvider client={queryClient}>
       <TamaguiProvider config={config}>

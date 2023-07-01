@@ -1,5 +1,4 @@
-import { Check, ChevronDown, ChevronUp } from "@tamagui/lucide-icons";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Adapt, Select, Sheet, Text, YStack } from "tamagui";
 import { LinearGradient } from "tamagui/linear-gradient";
 import EntypoIcon from "react-native-vector-icons/Entypo";
@@ -10,7 +9,6 @@ import {
   SelectType,
 } from "../../../screens/Wash/Reservations/Reservation.const";
 import { UseFormClearErrors } from "react-hook-form";
-import { View } from "react-native";
 
 type SelectProps = {
   onChange: (newValue: string) => void;
@@ -43,8 +41,6 @@ const SelectInput = ({
     onChange(defaultValue ? defaultValue?.values[0].id.toString() : "");
     setValue(defaultValue ? defaultValue?.values[0].id.toString() : "");
   }, [defaultValue]);
-
-  
 
   return (
     <Select

@@ -1,21 +1,18 @@
 import React from "react";
 import { YStack, Text, XStack, Stack, Button, Image } from "tamagui";
-import { WashingDevice, WashingOption } from "../../../interfaces";
+import {  WashingOption } from "../../../interfaces";
 import * as styles from "./Device.styles";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Dimensions } from "react-native";
 import { Laundry } from "../../../api/washingDevice/getAllDevices/types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
-// import { WashStackParams } from "../../../screens/Wash/WashNavigator";
 import { RootStackParams } from "../../../navigation/TabNavigator";
-import { ChatStackParams } from "../../../screens/Chat/ChatNavigator";
 import { useCreateChat } from "../../../api/chat/createChat/useCreateChat";
 import { useLoginStore } from "../../../store/LoginStore";
-import {Item, LaundryType} from "../../../screens/Wash/Reservations/Reservation.const";
+import {Item} from "../../../screens/Wash/Reservations/Reservation.const";
 import { useUserStore } from "../../../store/UserStore";
 
-const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const Device = ({
@@ -35,8 +32,7 @@ const Device = ({
   imagePath,
   laundryName
 }: Laundry & { type: WashingOption } & { imagePath: string }) => {
-  // const navigationWash =
-    // useNavigation<NativeStackNavigationProp<RootStackParams>>();
+
   const navigationRoot =
     useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const createChat = useCreateChat();
@@ -81,7 +77,6 @@ const Device = ({
       values: valuesWashingDevice
     }
     navigationRoot.navigate("WashStack", {laundry: laundryItem, washingDevice : {...washingDeviceItem,  washingOption: type}});
-    // navigationRoot.navigate("WashStack", {screen: "Wash", params: {}}).navigationWash.navigate("Wash", {laundry: laundryItem})
   }
 
   return (

@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { useUserStore } from "../store/UserStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
@@ -7,7 +6,7 @@ import { useLoginStore } from "../store/LoginStore";
 const useAuthToken = () => {
   const { setFirstName, setId, setLastName, setExpoToken, id, expoToken } =
     useUserStore();
-  const { setToken, token } = useLoginStore();
+  const { setToken } = useLoginStore();
   const getAuthToken = async () => {
     try {
       const token: string | null = await AsyncStorage.getItem("token");

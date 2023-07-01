@@ -29,7 +29,7 @@ node_cron_1.default.schedule("* * * * *", () => __awaiter(void 0, void 0, void 0
     `;
         if (reservations.length !== 0) {
             reservations.map((reservation) => __awaiter(void 0, void 0, void 0, function* () {
-                // await prisma.$queryRaw`delete from reservation where reservation.id = ${reservation.id}`;
+                yield prisma.$queryRaw `delete from reservation where reservation.id = ${reservation.id}`;
                 yield prisma.$queryRaw `UPDATE washing_device SET status = true, opened = true where id = ${reservation.washing_device_id}`;
             }));
         }

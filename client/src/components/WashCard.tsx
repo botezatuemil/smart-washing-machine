@@ -1,14 +1,18 @@
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { YStack, Text, Image } from "tamagui";
 import { WashingOption } from "../interfaces";
-import {useNavigation} from  "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { HomeStackParams } from "../screens/Home/HomeNavigator";
 import { RootStackParams } from "../navigation/TabNavigator";
 
-const WashCard: React.FC<{ title: string; imagePath: string, type: WashingOption }> = (props) => {
-
-  const navigation = useNavigation<NativeStackNavigationProp<HomeStackParams>>();
+const WashCard: React.FC<{
+  title: string;
+  imagePath: string;
+  type: WashingOption;
+}> = (props) => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<HomeStackParams>>();
 
   return (
     <YStack
@@ -27,16 +31,20 @@ const WashCard: React.FC<{ title: string; imagePath: string, type: WashingOption
       borderRadius={12}
       paddingTop={10}
       width="100%"
-      onPress={() => {  navigation.navigate("Laundry", {option: props.type})}}
+      onPress={() => {
+        navigation.navigate("Laundry", { option: props.type });
+      }}
     >
-      <Text fontFamily="InterSemi" fontSize={18} color="#6d6e74">{props.title}</Text>
+      <Text fontFamily="InterSemi" fontSize={18} color="#6d6e74">
+        {props.title}
+      </Text>
       <TouchableOpacity>
-      <Image
-        src={props.imagePath}
-        height={250}
-        width={250}
-        resizeMode="contain"
-      />
+        <Image
+          src={props.imagePath}
+          height={250}
+          width={250}
+          resizeMode="contain"
+        />
       </TouchableOpacity>
     </YStack>
   );

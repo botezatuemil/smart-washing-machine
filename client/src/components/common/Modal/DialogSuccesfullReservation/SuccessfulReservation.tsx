@@ -1,25 +1,22 @@
 import ModalOverlay from "../ModalLayout/ModalOverlay";
 import { Text, YStack } from "tamagui";
 import SwitchWithLabel from "../../SwitchWithLabel/SwitchWithLabel";
-import { FormReservation, LaundryType, ReservationRequestType } from "../../../../screens/Wash/Reservations/Reservation.const";
+import { FormReservation, ReservationRequestType } from "../../../../screens/Wash/Reservations/Reservation.const";
 import { useState } from "react";
 import { useReservation } from "../../../../api/reservation/makeReservation/useReservation";
-import { HourInterval, ReservationType, WashingOption } from "../../../../interfaces";
-import { WashingDevice } from "../../../../api/washingDevice/getDevicesSelect/types";
+import { ReservationType } from "../../../../interfaces";
 import moment from "moment";
 import { useUserStore } from "../../../../store/UserStore";
 import { ReservationStore, useReservationStore } from "../../../../store/ReservationStore";
-import { invalidateQuery } from "../../../../utils/InvalidateCache";
-import { changeTimeZone } from "../../DateTimePicker/DateTimePicker";
 import { useQueryClient } from "react-query";
-import { UseFormReset } from "react-hook-form";
+import {  UseFormSetValue } from "react-hook-form";
 
 type SuccessReservationProp = {
   isOpen: boolean;
   closeModal: () => void;
   onCancel: () => void;
   data : ReservationRequestType | undefined;
-  reset: UseFormReset<FormReservation>;
+  setValue: UseFormSetValue<FormReservation>;
 };
 
 const SuccessfulReservation = ({
@@ -27,7 +24,7 @@ const SuccessfulReservation = ({
   closeModal,
   onCancel,
   data,
-  reset
+  setValue
 }: SuccessReservationProp) => {
 
   const { addReservationStore } = useReservationStore();
@@ -43,7 +40,6 @@ const SuccessfulReservation = ({
  
 
   const onMakeReservation = async() => {
-    // get needed reservation data from the data
     if (!data) {
       return;
     }
@@ -52,8 +48,7 @@ const SuccessfulReservation = ({
     const washingDeviceId = parseInt(data.washingMachine);
     const date = data.date;
     const interval = data.time
-    // split by start hour and end hour
-    const hours =  interval!.split("-");
+    const hours = interval!.split("-");
     
     // convert start hour and end hour back to moment type
     const reservation : Omit<ReservationType, "id"> = {
@@ -67,8 +62,8 @@ const SuccessfulReservation = ({
     }
     addReservation.mutate(reservation);
     await queryClient.invalidateQueries("incomingReservation");
-    reset({timeSlot: ""});
-
+    setValue("timeSlot", "");
+    setValue("time", "");
     closeModal();
   }
 

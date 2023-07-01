@@ -1,4 +1,4 @@
-import { JsonWebTokenError, Secret, sign, verify } from "jsonwebtoken";
+import { verify } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 
 type JWTPayload = {

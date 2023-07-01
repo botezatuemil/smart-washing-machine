@@ -1,12 +1,8 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
 import IconMaterial from "react-native-vector-icons/MaterialCommunityIcons";
 import IconFeather from "react-native-vector-icons/Feather";
 import IoniIcon from "react-native-vector-icons/Ionicons";
-import Octicons from "react-native-vector-icons/Octicons";
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Home as HomeIcon } from "@tamagui/lucide-icons";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 import HomeScreenStack from "../screens/Home/HomeNavigator";
@@ -15,7 +11,6 @@ import ChatScreenStack from "../screens/Chat/ChatNavigator";
 import InboxScreenStack from "../screens/Inbox/InboxNavigator";
 import { Item } from "../screens/Wash/Reservations/Reservation.const";
 import { Wash } from "../screens/Wash/Tabs/WashTabs";
-import { WashingOption } from "../interfaces";
 
 export const RootStack = createBottomTabNavigator<RootStackParams>();
 

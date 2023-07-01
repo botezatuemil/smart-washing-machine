@@ -1,4 +1,3 @@
-import axios, { AxiosError } from "axios";
 import { useMutation, useQueryClient } from "react-query";
 import { createChat } from "./endpoints";
 
@@ -8,8 +7,7 @@ export type ChatRequest = {
 };
 
 export const useCreateChat = (
-  onSuccess?: (data: string) => void,
-  onError?: (error: unknown) => void
+ 
 ) => {
   const queryClient = useQueryClient();
   return useMutation(

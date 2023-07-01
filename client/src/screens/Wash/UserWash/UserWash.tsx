@@ -1,5 +1,5 @@
 import moment from "moment-timezone";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect} from "react";
 import { YStack, Text, Stack, Button, XStack } from "tamagui";
 import { useIncomingReservation } from "../../../api/reservation/incomingReservation/useIncomingReservation";
 import WashingMachineDoor from "../../../components/WashingMachine/WashingMachineDoor";

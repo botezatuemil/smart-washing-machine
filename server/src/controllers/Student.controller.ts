@@ -4,34 +4,6 @@ import { convertKeys } from "../utils/ConvertKeys";
 
 const prisma = new PrismaClient();
 
-interface Student {
-  id: number;
-  name: string;
-}
-
-export const getStudents = async (req: Request, res: Response) => {
-  try {
-    const students: Student[] = await prisma.$queryRaw<
-      Student[]
-    >`SELECT * FROM student`;
-    res.send(JSON.stringify(students));
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const addExpoToken = async(req: Request, res: Response) => {
-    const { expoToken} = req.body;
-    const user_id: number = res.locals.user_id;
-    
-    try {
-      
-    } catch (error) {
-      
-    }
-
-}
-
 export const getProfile = async(req: Request, res: Response) => {
   const user_id: number = res.locals.user_id;
   try {

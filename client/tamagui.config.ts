@@ -6,8 +6,7 @@ import { shorthands } from "@tamagui/shorthands";
 
 import { themes, tokens } from "@tamagui/theme-base";
 
-import { createFont, createTamagui } from "tamagui";
-import { useFonts } from "expo-font";
+import {  createTamagui } from "tamagui";
 
 import { createAnimations } from "@tamagui/animations-react-native";
 const animations = createAnimations({

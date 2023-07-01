@@ -5,15 +5,10 @@ import bodyParser from "body-parser";
 import router from "./src/routes/routes";
 import { Server } from "socket.io";
 import { createServer } from "http";
-import { getPowerStatus } from "./src/utils/mqttServer";
 import "./jobs/backgroundTasks";
 import { messages } from "@prisma/client";
 import { getUpdatedMessage } from "./src/controllers/Chat.controller";
-import { convertTypes } from "./src/utils/ConvertTypes";
 import { convertKeys, parseKeys } from "./src/utils/ConvertKeys";
-
-const fs = require("fs");
-// nodejs server
 
 dotenv.config();
 

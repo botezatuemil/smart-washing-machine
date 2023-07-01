@@ -1,14 +1,11 @@
-import axios, { AxiosError } from "axios";
 import { useMutation } from "react-query";
 import { ReservationType } from "../../../interfaces";
 
-import { ReservationRequestType } from "../../../screens/Wash/Reservations/Reservation.const";
 import { ReservationStore } from "../../../store/ReservationStore";
 import { addReservation } from "./endpoints";
 
 export const useReservation = (
   onSuccess: (data: ReservationStore) => void,
-  onError?: (error: unknown) => void
 ) => {
   return useMutation(
     "reservation",

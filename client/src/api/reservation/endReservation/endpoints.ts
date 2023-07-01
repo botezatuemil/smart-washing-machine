@@ -1,5 +1,5 @@
 import { IP, PORT } from "@env";
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosError } from "axios";
 import React from "react";
 import { LogBox } from "react-native";
 const url = `http://${IP}:${PORT}/endReservation`;
@@ -8,15 +8,15 @@ LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 export type EndReservation = {
-    token: string;
-    reservationId: React.Key;
-}
+  token: string;
+  reservationId: React.Key;
+};
 
 export const endReservation = async (input: EndReservation) => {
   try {
     const { data } = await axios.post(
       url,
-      {reservationId: input.reservationId},
+      { reservationId: input.reservationId },
       {
         headers: {
           "x-access-token": input.token,

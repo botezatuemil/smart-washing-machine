@@ -1,14 +1,12 @@
 import { device, PrismaClient, washing_device } from "@prisma/client";
 import { Request, Response } from "express";
-import { convertKeys, convertKeysArray } from "../utils/ConvertKeys";
+import { convertKeysArray } from "../utils/ConvertKeys";
 import { convertTypes } from "../utils/ConvertTypes";
 import {
   connectToBroker,
   getPowerStatus,
   powerSmartPlug,
 } from "../utils/mqttServer";
-import { sendNotification } from "../utils/Notifications";
-const fs = require("fs");
 
 const prisma = new PrismaClient();
 

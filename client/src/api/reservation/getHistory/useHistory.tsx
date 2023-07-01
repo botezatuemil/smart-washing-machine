@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useQuery } from "react-query";
 import {
   ReservationStore,
@@ -13,7 +12,6 @@ export const useHistory = (id: React.Key) => {
     async () => await getHistory(id),
     {
       onSuccess: (data) => {
-        
         setReservations(data);
       },
       onError: () => console.log("Error getting history"),

@@ -1,9 +1,6 @@
-import axios, { AxiosError } from "axios";
 import { useMutation, useQueryClient } from "react-query";
-import { invalidateQuery } from "../../../utils/InvalidateCache";
 import { EndReservation, endReservation } from "./endpoints";
 import {
-  ReservationStore,
   useReservationStore,
 } from "../../../store/ReservationStore";
 import { WashingOption } from "../../../interfaces";

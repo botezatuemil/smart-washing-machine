@@ -12,7 +12,7 @@ import { createNotification } from "./Notification.controller";
 const prisma = new PrismaClient();
 
 const MIN_HOUR = 8;
-const MAX_HOUR = 26;
+const MAX_HOUR = 22;
 
 export const getAvailableHours = async (req: Request, res: Response) => {
   try {
@@ -75,7 +75,6 @@ export const addReservation = async (req: Request, res: Response) => {
     INNER JOIN washing_device on  washing_device.id = ${addedReservation.washing_device_id}
     WHERE reservation.id = ${addedReservation.id}`;
     const convertedReservation = convertKeys(reservationStore[0]);
-    // console.log(convertedReservation);
 
     res.send(convertedReservation);
   } catch (error) {

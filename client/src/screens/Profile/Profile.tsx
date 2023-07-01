@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button, XStack, YStack, Text, Stack } from "tamagui";
 import * as styles from "./Profile.styles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -22,9 +22,6 @@ const Profile = () => {
   const { toggleLogin, token } = useLoginStore();
   const { data } = useGetProfile(token);
   const [active, setActive] = useState<boolean>(true);
-  
-    const queryClient = useQueryClient();
- 
 
   const logout = async () => {
     try {
@@ -34,10 +31,6 @@ const Profile = () => {
       console.log(error);
     }
   };
- const refetch = async() => {
-    await queryClient.invalidateQueries("getProfile");
-  }
-  
 
   return (
     <YStack
@@ -61,14 +54,14 @@ const Profile = () => {
             </XStack>
           ))}
       </YStack>
-        <Stack paddingHorizontal={40}>
-          <SwitchWithLabel
-            isActive={active}
-            setIsActive={setActive}
-            label="Notifications:"
-            textProps={styles.label}
-          />
-        </Stack>
+      <Stack paddingHorizontal={40}>
+        <SwitchWithLabel
+          isActive={active}
+          setIsActive={setActive}
+          label="Notifications:"
+          textProps={styles.label}
+        />
+      </Stack>
       <Stack
         position="absolute"
         bottom={0}

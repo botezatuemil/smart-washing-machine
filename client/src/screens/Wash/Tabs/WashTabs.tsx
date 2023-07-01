@@ -142,8 +142,6 @@ export const Wash = ({route}: Props) => {
 
           {selectIndicator && (
             <TabsRovingIndicator
-              // theme="active"
-              // theme="blue"
               active
               width={selectIndicator.width}
               height={3}

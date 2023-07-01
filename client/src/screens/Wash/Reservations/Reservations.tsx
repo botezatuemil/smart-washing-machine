@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useMemo, useEffect } from "react";
-import { YStack, XStack, Button, Form, Input, Stack } from "tamagui";
+import React, { useState, useEffect } from "react";
+import { YStack, XStack, Button, Form, Input} from "tamagui";
 import { Text } from "tamagui";
 import * as styles from "./Reservation.styles";
 import { useForm, Controller } from "react-hook-form";
@@ -11,18 +11,17 @@ import {
   ReservationRequestType,
 } from "./Reservation.const";
 import { SelectInputElements, SelectType } from "./Reservation.const";
-import { Pressable, TouchableWithoutFeedback, View } from "react-native";
-import DateTimePickerSelect, {
-  changeTimeZone,
-} from "../../../components/common/DateTimePicker/DateTimePicker";
+import { Pressable } from "react-native";
+
 import SuccessfulReservation from "../../../components/common/Modal/DialogSuccesfullReservation/SuccessfulReservation";
 import { useLaundries } from "../../../api/laundry/useLaundry";
 import { useDevicesSelect } from "../../../api/washingDevice/getDevicesSelect/useDevicesSelect";
-import { DeviceType, HourInterval, WashingOption } from "../../../interfaces";
+import { HourInterval, WashingOption } from "../../../interfaces";
 import { useAvailableHours } from "../../../api/reservation/reservationHours/useAvailableHours";
 import TimePickerScroll from "../../../components/common/TimePickerScroll/TimePickerScroll";
 
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
+import { changeTimeZone } from "../../../utils/TimeZone";
 
 const selectElements: SelectInputElements[] = [
   { key: "laundry", label: "Select Laundry" },
@@ -33,8 +32,8 @@ const selectElements: SelectInputElements[] = [
 ];
 
 type Props = {
-  laundry: Item;
-  washingDevice: Item;
+  laundry: Item | undefined;
+  washingDevice: Item| undefined;
 };
 
 const Reservations = ({ laundry, washingDevice }: Props) => {
@@ -89,7 +88,6 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
     setValue,
     setError,
     clearErrors,
-    reset
   } = useForm<FormReservation>({
     defaultValues: {
       date: changeTimeZone(new Date()),
@@ -97,6 +95,7 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
       washingMachine:  washingDevice ?  washingDevice.values[0].id.toString() : ""
     },
   });
+
 
   const { items: laundries, refetch: refetchLaundry } = useLaundries();
   const { items: devices, refetch: refetchDevice } =
@@ -375,7 +374,7 @@ const Reservations = ({ laundry, washingDevice }: Props) => {
         isOpen={openAlert}
         closeModal={closeAlertModal}
         onCancel={closeAlertModal}
-        reset={reset}
+        setValue={setValue}
       />
     </YStack>
   );

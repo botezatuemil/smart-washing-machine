@@ -1,5 +1,5 @@
 import { IP, PORT } from "@env";
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosError } from "axios";
 import { LogBox } from "react-native";
 import { RequestMessage } from "./messages.const";
 const url = `http://${IP}:${PORT}/getMessages`;

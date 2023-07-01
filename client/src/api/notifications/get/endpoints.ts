@@ -1,5 +1,5 @@
 import { IP, PORT } from "@env";
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosError } from "axios";
 import moment from "moment";
 import { LogBox } from "react-native";
 const url = `http://${IP}:${PORT}/getNotifications`;

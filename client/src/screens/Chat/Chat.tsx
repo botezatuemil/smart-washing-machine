@@ -21,8 +21,8 @@ import moment from "moment";
 import io from "socket.io-client";
 import { PORT, IP } from "@env";
 type Props = NativeStackScreenProps<ChatStackParams, "Chat">;
-const socket = io(`http://${IP}:${PORT}`);
 
+const socket = io(`http://${IP}:${PORT}`);
 
 const Chat = ({ route }: Props) => {
 
@@ -61,7 +61,6 @@ const Chat = ({ route }: Props) => {
     e: NativeSyntheticEvent<TextInputChangeEventData>
   ) => {
     setMessage(e.nativeEvent.text);
-  
   };
 
   const ChatMessage = (message: Message) => {

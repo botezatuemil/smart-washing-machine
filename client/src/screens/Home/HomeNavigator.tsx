@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import Home from "./Home";
-import { Avatar, Text } from "tamagui";
+import { Avatar } from "tamagui";
 import EntypoIcon from "react-native-vector-icons/Entypo";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { WashingOption } from "../../interfaces";

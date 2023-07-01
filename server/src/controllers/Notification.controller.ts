@@ -1,6 +1,6 @@
 import { notifications, PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { convertKeys, convertKeysArray } from "../utils/ConvertKeys";
+import { convertKeysArray } from "../utils/ConvertKeys";
 const prisma = new PrismaClient();
 
 export const createNotification = async (
@@ -43,7 +43,6 @@ export const getNotifications = async (req: Request, res: Response) => {
 export const deleteNotification = async (req: Request, res: Response) => {
   const { id } = req.body;
   try {
-    console.log(id)
     await prisma.$queryRaw`delete from notifications where notifications.id = ${id}`;
     res.status(200).json("Notification deleted successfully!");
   } catch (error) {
